@@ -77,12 +77,10 @@ private[netty] class NettyRpcEnv(
   private val clientFactory = transportContext.createClientFactory(createClientBootstraps())
 
   /**
-   * A separate client factory for file downloads. This avoids using the same RPC handler as
-   * the main RPC context, so that events caused by these clients are kept isolated from the
-   * main RPC traffic.
+   * 一个单独的客户端工厂，用于文件下载。这样可以避免使用与主RPC上下文相同的RPC处理程序，
+    * 从而使这些客户端引起的事件与主RPC流量保持隔离。
    *
-   * It also allows for different configuration of certain properties, such as the number of
-   * connections per peer.
+   * 它还允许对某些属性进行不同的配置，例如每个对等方的连接数。
    */
   @volatile private var fileDownloadFactory: TransportClientFactory = _
 
@@ -471,12 +469,13 @@ private[netty] object NettyRpcEnv extends Logging {
 
 }
 
+// netty rpc工厂
 private[rpc] class NettyRpcEnvFactory extends RpcEnvFactory with Logging {
 
   def create(config: RpcEnvConfig): RpcEnv = {
     val sparkConf = config.conf
-    // Use JavaSerializerInstance in multiple threads is safe. However, if we plan to support
-    // KryoSerializer in future, we have to use ThreadLocal to store SerializerInstance
+    // 在多个线程中使用JavaSerializerInstance是安全的。
+    // 但是，如果我们计划将来支持KryoSerializer，则必须使用ThreadLocal来存储SerializerInstance
     val javaSerializerInstance =
       new JavaSerializer(sparkConf).newInstance().asInstanceOf[JavaSerializerInstance]
     val nettyEnv =
@@ -579,7 +578,7 @@ private[netty] class RequestMessage(
     val receiver: NettyRpcEndpointRef,
     val content: Any) {
 
-  /** Manually serialize [[RequestMessage]] to minimize the size. */
+  /** 手动序列化[[RequestMessage]]以最小化大小。 */
   def serialize(nettyEnv: NettyRpcEnv): ByteBuffer = {
     val bos = new ByteBufferOutputStream()
     val out = new DataOutputStream(bos)
@@ -648,7 +647,7 @@ private[netty] object RequestMessage {
 private[netty] case class RpcFailure(e: Throwable)
 
 /**
- * Dispatches incoming RPCs to registered endpoints.
+ * 将传入的RPC调度到已注册的端点。
  *
  * The handler keeps track of all client instances that communicate with it, so that the RpcEnv
  * knows which `TransportClient` instance to use when sending RPCs to a client endpoint (i.e.,
@@ -664,7 +663,7 @@ private[netty] class NettyRpcHandler(
     nettyEnv: NettyRpcEnv,
     streamManager: StreamManager) extends RpcHandler with Logging {
 
-  // A variable to track the remote RpcEnv addresses of all clients
+  // 跟踪所有客户端的远程RpcEnv地址的变量
   private val remoteAddresses = new ConcurrentHashMap[RpcAddress, RpcAddress]()
 
   override def receive(
@@ -688,11 +687,10 @@ private[netty] class NettyRpcHandler(
     val clientAddr = RpcAddress(addr.getHostString, addr.getPort)
     val requestMessage = RequestMessage(nettyEnv, client, message)
     if (requestMessage.senderAddress == null) {
-      // Create a new message with the socket address of the client as the sender.
+      // 用客户端的套接字地址作为发送者创建一条新消息。
       new RequestMessage(clientAddr, requestMessage.receiver, requestMessage.content)
     } else {
-      // The remote RpcEnv listens to some port, we should also fire a RemoteProcessConnected for
-      // the listening address
+      // 远程RpcEnv侦听某些端口，我们还应该触发RemoteProcessConnected作为侦听地址
       val remoteEnvAddress = requestMessage.senderAddress
       if (remoteAddresses.putIfAbsent(clientAddr, remoteEnvAddress) == null) {
         dispatcher.postToAll(RemoteProcessConnected(remoteEnvAddress))

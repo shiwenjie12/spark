@@ -187,6 +187,7 @@ private[spark] class DriverLogger(conf: SparkConf) extends Logging {
 
 }
 
+// 驱动日志
 private[spark] object DriverLogger extends Logging {
   val DRIVER_LOG_DIR = "__driver_logs__"
   val DRIVER_LOG_FILE = "driver.log"

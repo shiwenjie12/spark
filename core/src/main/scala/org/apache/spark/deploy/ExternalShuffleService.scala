@@ -34,9 +34,7 @@ import org.apache.spark.network.util.TransportConf
 import org.apache.spark.util.{ShutdownHookManager, Utils}
 
 /**
- * Provides a server from which Executors can read shuffle files (rather than reading directly from
- * each other), to provide uninterrupted access to the files in the face of executors being turned
- * off or killed.
+ * 提供一台服务器，执行者可以从中读取随机文件（而不是直接从彼此读取），以在执行者被关闭或杀死时提供对文件的不间断访问。
  *
  * Optionally requires SASL authentication in order to read. See [[SecurityManager]].
  */
@@ -62,6 +60,7 @@ class ExternalShuffleService(sparkConf: SparkConf, securityManager: SecurityMana
   private val shuffleServiceSource = new ExternalShuffleServiceSource
 
   protected def findRegisteredExecutorsDBFile(dbName: String): File = {
+    // 获取注册执行器的db文件
     val localDirs = sparkConf.getOption("spark.local.dir").map(_.split(",")).getOrElse(Array())
     if (localDirs.length >= 1) {
       new File(localDirs.find(new File(_, dbName).exists()).getOrElse(localDirs(0)), dbName)
@@ -77,7 +76,7 @@ class ExternalShuffleService(sparkConf: SparkConf, securityManager: SecurityMana
     blockHandler
   }
 
-  /** Create a new shuffle block handler. Factored out for subclasses to override. */
+  /** 创建一个新的随机播放块处理程序。分解为子类覆盖。 */
   protected def newShuffleBlockHandler(conf: TransportConf): ExternalBlockHandler = {
     if (sparkConf.get(config.SHUFFLE_SERVICE_DB_ENABLED) && enabled) {
       new ExternalBlockHandler(conf, findRegisteredExecutorsDBFile(registeredExecutorsDB))
@@ -86,7 +85,7 @@ class ExternalShuffleService(sparkConf: SparkConf, securityManager: SecurityMana
     }
   }
 
-  /** Starts the external shuffle service if the user has configured us to. */
+  /** 如果用户已将我们配置为启动外部随机播放服务. */
   def startIfEnabled(): Unit = {
     if (enabled) {
       start()

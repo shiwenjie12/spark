@@ -28,20 +28,17 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
- * A customized frame decoder that allows intercepting raw data.
+ * 允许截取原始数据的定制帧解码器。
  * <p>
- * This behaves like Netty's frame decoder (with hard coded parameters that match this library's
- * needs), except it allows an interceptor to be installed to read data directly before it's
- * framed.
+ * 行为类似于Netty的帧解码器（具有与该库的需求相匹配的硬编码参数），
+ * 不同之处在于，它允许安装拦截器以在帧被成帧之前直接读取数据。
  * <p>
- * Unlike Netty's frame decoder, each frame is dispatched to child handlers as soon as it's
- * decoded, instead of building as many frames as the current buffer allows and dispatching
- * all of them. This allows a child handler to install an interceptor if needed.
+ * 与Netty的帧解码器不同，每个帧在解码后都会立即分派给子处理程序，
+ * 而不是构建当前缓冲区允许的尽可能多的帧并分派所有帧。这允许子处理程序在需要时安装拦截器。
  * <p>
- * If an interceptor is installed, framing stops, and data is instead fed directly to the
- * interceptor. When the interceptor indicates that it doesn't need to read any more data,
- * framing resumes. Interceptors should not hold references to the data buffers provided
- * to their handle() method.
+ * 如果安装了拦截器，则框架将停止，而数据将直接馈送到拦截器。
+ * 当拦截器指示它不需要再读取任何数据时，将恢复帧。
+ * 拦截器不应持有对为其handle()方法提供的数据缓冲区的引用。
  */
 public class TransportFrameDecoder extends ChannelInboundHandlerAdapter {
 
@@ -80,7 +77,7 @@ public class TransportFrameDecoder extends ChannelInboundHandlerAdapter {
     totalSize += in.readableBytes();
 
     while (!buffers.isEmpty()) {
-      // First, feed the interceptor, and if it's still, active, try again.
+      // 首先，输入拦截器，如果仍处于活动状态，请重试。
       if (interceptor != null) {
         ByteBuf first = buffers.getFirst();
         int available = first.readableBytes();
@@ -94,7 +91,7 @@ public class TransportFrameDecoder extends ChannelInboundHandlerAdapter {
         }
         totalSize -= read;
       } else {
-        // Interceptor is not active, so try to decode one frame.
+        // 拦截器未激活，因此请尝试解码一帧。
         ByteBuf frame = decodeNext();
         if (frame == null) {
           break;

@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier
 import org.apache.spark.SparkConf
 
 /**
- * Entry point for a Spark application. Implementations must provide a no-argument constructor.
+ * Spark应用程序的入口点。实现必须提供一个无参数的构造函数。
  */
 private[spark] trait SparkApplication {
 

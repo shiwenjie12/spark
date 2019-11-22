@@ -22,12 +22,11 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * This interface provides an immutable view for data in the form of bytes. The implementation
- * should specify how the data is provided:
+ * 该接口以字节形式提供了一个不变的数据视图。该实现应指定如何提供数据：
  *
- * - {@link FileSegmentManagedBuffer}: data backed by part of a file
- * - {@link NioManagedBuffer}: data backed by a NIO ByteBuffer
- * - {@link NettyManagedBuffer}: data backed by a Netty ByteBuf
+ * - {@link FileSegmentManagedBuffer}: 由文件的一部分支持的数据
+ * - {@link NioManagedBuffer}: 由NIO ByteBuffer支持的数据
+ * - {@link NettyManagedBuffer}: 由Netty ByteBuf支持的数据
  *
  * The concrete buffer implementation might be managed outside the JVM garbage collector.
  * For example, in the case of {@link NettyManagedBuffer}, the buffers are reference counted.

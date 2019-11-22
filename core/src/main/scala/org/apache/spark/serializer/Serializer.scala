@@ -46,8 +46,7 @@ import org.apache.spark.util.NextIterator
 abstract class Serializer {
 
   /**
-   * Default ClassLoader to use in deserialization. Implementations of [[Serializer]] should
-   * make sure it is using this when set.
+   * 用于反序列化的默认ClassLoader。 [[Serializer]]的实现应确保设置时正在使用它。
    */
   @volatile protected var defaultClassLoader: Option[ClassLoader] = None
 

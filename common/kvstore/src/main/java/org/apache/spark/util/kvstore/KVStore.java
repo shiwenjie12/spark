@@ -23,13 +23,13 @@ import java.util.Collection;
 import org.apache.spark.annotation.Private;
 
 /**
- * Abstraction for a local key/value store for storing app data.
+ * 本地键/值存储的抽象，用于存储应用程序数据。
  *
  * <p>
- * There are two main features provided by the implementations of this interface:
+ * 此接口的实现提供了两个主要功能：
  * </p>
  *
- * <h3>Serialization</h3>
+ * <h3>序列化</h3>
  *
  * <p>
  * If the underlying data store requires serialization, data will be serialized to and deserialized
@@ -42,7 +42,7 @@ import org.apache.spark.annotation.Private;
  * Data is also automatically compressed to save disk space.
  * </p>
  *
- * <h3>Automatic Key Management</h3>
+ * <h3>自动键管理</h3>
  *
  * <p>
  * When using the built-in key management, the implementation will automatically create unique

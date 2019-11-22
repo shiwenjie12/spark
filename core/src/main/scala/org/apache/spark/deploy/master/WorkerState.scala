@@ -17,6 +17,9 @@
 
 package org.apache.spark.deploy.master
 
+/*
+  work状态
+ */
 private[master] object WorkerState extends Enumeration {
   type WorkerState = Value
 

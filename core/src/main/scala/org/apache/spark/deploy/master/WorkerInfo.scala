@@ -24,7 +24,7 @@ import org.apache.spark.rpc.RpcEndpointRef
 import org.apache.spark.util.Utils
 
 private[spark] case class WorkerResourceInfo(name: String, addresses: Seq[String])
-  extends ResourceAllocator {
+  extends ResourceAllocator { // worker资源信息
 
   override protected def resourceName = this.name
   override protected def resourceAddresses = this.addresses
@@ -144,7 +144,7 @@ private[spark] class WorkerInfo(
   def isAlive(): Boolean = this.state == WorkerState.ALIVE
 
   /**
-   * acquire specified amount resources for driver/executor from the worker
+   * 从工人那里获得指定数量的driver/executor资源
    * @param resourceReqs the resources requirement from driver/executor
    */
   def acquireResources(resourceReqs: Seq[ResourceRequirement])

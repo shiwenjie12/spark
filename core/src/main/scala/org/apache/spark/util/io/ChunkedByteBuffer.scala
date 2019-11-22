@@ -34,13 +34,11 @@ import org.apache.spark.unsafe.array.ByteArrayMethods
 import org.apache.spark.util.Utils
 
 /**
- * Read-only byte buffer which is physically stored as multiple chunks rather than a single
- * contiguous array.
+ * 只读字节缓冲区，物理存储为多个块，而不是单个连续数组。
  *
- * @param chunks an array of [[ByteBuffer]]s. Each buffer in this array must have position == 0.
- *               Ownership of these buffers is transferred to the ChunkedByteBuffer, so if these
- *               buffers may also be used elsewhere then the caller is responsible for copying
- *               them as needed.
+ * @param chunks [[ByteBuffer]]的数组。此数组中的每个缓冲区的位置都必须为==0。
+ *              这些缓冲区的所有权已转移到ChunkedByteBuffer，因此，
+ *              如果这些缓冲区也可以在其他地方使用，则调用者负责根据需要复制它们。
  */
 private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
   require(chunks != null, "chunks must not be null")

@@ -44,9 +44,7 @@ import org.apache.spark.network.protocol.*;
 import static org.apache.spark.network.util.NettyUtils.getRemoteAddress;
 
 /**
- * Client for fetching consecutive chunks of a pre-negotiated stream. This API is intended to allow
- * efficient transfer of a large amount of data, broken up into chunks with size ranging from
- * hundreds of KB to a few MB.
+ * 用于获取预协商流的连续块的客户端。该API旨在允许高效传输大量数据，将其分成大小范围从数百KB到几MB的数据块。
  *
  * Note that while this client deals with the fetching of chunks from a stream (i.e., data plane),
  * the actual setup of the streams is done outside the scope of the transport layer. The convenience
@@ -96,7 +94,7 @@ public class TransportClient implements Closeable {
   }
 
   /**
-   * Returns the ID used by the client to authenticate itself when authentication is enabled.
+   * 返回启用身份验证时客户端用于对其自身进行身份验证的ID。
    *
    * @return The client ID, or null if authentication is disabled.
    */
@@ -177,11 +175,10 @@ public class TransportClient implements Closeable {
   }
 
   /**
-   * Sends an opaque message to the RpcHandler on the server-side. The callback will be invoked
-   * with the server's response or upon any failure.
+   * 将不透明消息发送到服务器端的RpcHandler。该回调将在服务器的响应或任何失败时被调用。
    *
-   * @param message The message to send.
-   * @param callback Callback to handle the RPC's reply.
+   * @param message 要发送的消息。
+   * @param callback 回调以处理RPC的回复。
    * @return The RPC's id.
    */
   public long sendRpc(ByteBuffer message, RpcResponseCallback callback) {

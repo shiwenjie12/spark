@@ -17,6 +17,9 @@
 
 package org.apache.spark.deploy
 
+/*
+ 执行器状态
+ */
 private[deploy] object ExecutorState extends Enumeration {
 
   val LAUNCHING, RUNNING, KILLED, FAILED, LOST, EXITED = Value

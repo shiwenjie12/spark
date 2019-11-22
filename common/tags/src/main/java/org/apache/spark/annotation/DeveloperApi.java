@@ -20,14 +20,14 @@ package org.apache.spark.annotation;
 import java.lang.annotation.*;
 
 /**
- * A lower-level, unstable API intended for developers.
+ * 面向开发人员的较低级别的不稳定API。
  *
- * Developer API's might change or be removed in minor versions of Spark.
+ * 在次要版本的Spark中，开发人员API可能会更改或删除。
  *
- * NOTE: If there exists a Scaladoc comment that immediately precedes this annotation, the first
- * line of the comment must be ":: DeveloperApi ::" with no trailing blank line. This is because
- * of the known issue that Scaladoc displays only either the annotation or the comment, whichever
- * comes first.
+ * 注意：如果在此注释之前有Scaladoc注释，则第一个注释
+ * 注释的行必须为“ :: DeveloperApi ::”，且无尾随空白行。这是因为
+ * Scaladoc仅显示注释或注释的已知问题
+ * 首先。
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

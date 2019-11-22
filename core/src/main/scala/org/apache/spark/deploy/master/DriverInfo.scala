@@ -23,6 +23,7 @@ import org.apache.spark.deploy.DriverDescription
 import org.apache.spark.resource.ResourceInformation
 import org.apache.spark.util.Utils
 
+// driver信息
 private[deploy] class DriverInfo(
     val startTime: Long,
     val id: String,

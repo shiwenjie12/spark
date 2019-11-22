@@ -44,10 +44,9 @@ import static org.apache.spark.network.util.NettyUtils.getRemoteAddress;
 import org.apache.spark.network.util.TransportFrameDecoder;
 
 /**
- * Handler that processes server responses, in response to requests issued from a
- * [[TransportClient]]. It works by tracking the list of outstanding requests (and their callbacks).
+ * 处理服务器响应以响应[[TransportClient]]发出的请求的处理程序。它通过跟踪未完成的请求（及其回调）列表来工作。
  *
- * Concurrency: thread safe and can be called from multiple threads.
+ * 并发：线程安全，可以从多个线程中调用。
  */
 public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
   private static final Logger logger = LoggerFactory.getLogger(TransportResponseHandler.class);
@@ -61,7 +60,7 @@ public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
   private final Queue<Pair<String, StreamCallback>> streamCallbacks;
   private volatile boolean streamActive;
 
-  /** Records the time (in system nanoseconds) that the last fetch or RPC request was sent. */
+  /** 记录发送上一次获取或RPC请求的时间（以系统纳秒为单位）。 */
   private final AtomicLong timeOfLastRequestNs;
 
   public TransportResponseHandler(Channel channel) {
@@ -101,8 +100,7 @@ public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
   }
 
   /**
-   * Fire the failure callback for all outstanding requests. This is called when we have an
-   * uncaught exception or pre-mature connection termination.
+   * 对所有未完成的请求触发失败回调。当我们有未捕获的异常或过早的连接终止时，将调用此方法。
    */
   private void failOutstandingRequests(Throwable cause) {
     for (Map.Entry<StreamChunkId, ChunkReceivedCallback> entry : outstandingFetches.entrySet()) {
@@ -251,18 +249,18 @@ public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
     }
   }
 
-  /** Returns total number of outstanding requests (fetch requests + rpcs) */
+  /** 返回未完成请求的总数（获取请求+ rpcs） */
   public int numOutstandingRequests() {
     return outstandingFetches.size() + outstandingRpcs.size() + streamCallbacks.size() +
       (streamActive ? 1 : 0);
   }
 
-  /** Returns the time in nanoseconds of when the last request was sent out. */
+  /** 返回上次发送请求的时间（以纳秒为单位）。 */
   public long getTimeOfLastRequestNs() {
     return timeOfLastRequestNs.get();
   }
 
-  /** Updates the time of the last request to the current system time. */
+  /** 将最后一个请求的时间更新为当前系统时间。 */
   public void updateTimeOfLastRequest() {
     timeOfLastRequestNs.set(System.nanoTime());
   }

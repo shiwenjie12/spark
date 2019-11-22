@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * LevelDB utility class available in the network package.
+ * 网络包中提供了LevelDB实用程序类。
  */
 public class LevelDBProvider {
   private static final Logger logger = LoggerFactory.getLogger(LevelDBProvider.class);
@@ -79,7 +79,7 @@ public class LevelDBProvider {
 
         }
       }
-      // if there is a version mismatch, we throw an exception, which means the service is unusable
+      // 如果版本不匹配，我们将引发异常，这意味着该服务不可用
       checkVersion(tmpDb, version, mapper);
     }
     return tmpDb;

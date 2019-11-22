@@ -25,6 +25,9 @@ import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.spark.network.util.JavaUtils;
 
+/*
+  执行器的磁盘工具
+ */
 public class ExecutorDiskUtils {
 
   private static final Pattern MULTIPLE_SEPARATORS = Pattern.compile(File.separator + "{2,}");

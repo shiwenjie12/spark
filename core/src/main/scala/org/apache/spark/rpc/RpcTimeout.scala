@@ -33,22 +33,21 @@ private[rpc] class RpcTimeoutException(message: String, cause: TimeoutException)
 
 
 /**
- * Associates a timeout with a description so that a when a TimeoutException occurs, additional
- * context about the timeout can be amended to the exception message.
+ * 将超时与描述相关联，以便在发生TimeoutException时，可以将有关超时的其他上下文修改为异常消息。
  *
- * @param duration timeout duration in seconds
- * @param timeoutProp the configuration property that controls this timeout
+ * @param duration 超时时间（以秒为单位）
+ * @param timeoutProp 控制此超时的配置属性
  */
 private[spark] class RpcTimeout(val duration: FiniteDuration, val timeoutProp: String)
   extends Serializable {
 
-  /** Amends the standard message of TimeoutException to include the description */
+  /** 修改TimeoutException的标准消息以包含描述 */
   private def createRpcTimeoutException(te: TimeoutException): RpcTimeoutException = {
     new RpcTimeoutException(te.getMessage + ". This timeout is controlled by " + timeoutProp, te)
   }
 
   /**
-   * PartialFunction to match a TimeoutException and add the timeout description to the message
+   * PartialFunction以匹配TimeoutException并将超时描述添加到消息中
    *
    * @note This can be used in the recover callback of a Future to add to a TimeoutException
    * Example:
@@ -108,9 +107,7 @@ private[spark] object RpcTimeout {
   }
 
   /**
-   * Lookup prioritized list of timeout properties in the configuration
-   * and create a RpcTimeout with the first set property key in the
-   * description.
+   * 查找超时属性的优先级列表在配置和创建描述中的第一套物业键RpcTimeout。
    * Uses the given default value if property is not set
    *
    * @param conf configuration properties containing the timeout

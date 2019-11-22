@@ -27,9 +27,8 @@ import org.slf4j.impl.StaticLoggerBinder
 import org.apache.spark.util.Utils
 
 /**
- * Utility trait for classes that want to log data. Creates a SLF4J logger for the class and allows
- * logging messages at different levels using methods that only evaluate parameters lazily if the
- * log level is enabled.
+ * 要记录数据的类的实用程序特征。为该类创建SLF4J记录器，
+  * 并允许使用仅在启用了日志级别的情况下才对参数进行延迟评估的方法在不同级别记录消息。
  */
 trait Logging {
 

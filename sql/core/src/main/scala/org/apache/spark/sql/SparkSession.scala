@@ -845,8 +845,7 @@ object SparkSession extends Logging {
     }
 
     /**
-     * Gets an existing [[SparkSession]] or, if there is no existing one, creates a new
-     * one based on the options set in this builder.
+     * 获取一个现有的[[SparkSession]]，或者，如果不存在，则根据此构建器中设置的选项创建一个新的[[SparkSession]]。
      *
      * This method first checks whether there is a valid thread-local SparkSession,
      * and if yes, return that one. It then checks whether there is a valid global
@@ -883,7 +882,7 @@ object SparkSession extends Logging {
           return session
         }
 
-        // No active nor global default session. Create a new one.
+        // 无活动或全局默认会话。创建一个新的。
         val sparkContext = userSuppliedContext.getOrElse {
           val sparkConf = new SparkConf()
           options.foreach { case (k, v) => sparkConf.set(k, v) }

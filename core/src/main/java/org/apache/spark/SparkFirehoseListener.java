@@ -20,13 +20,11 @@ package org.apache.spark;
 import org.apache.spark.scheduler.*;
 
 /**
- * Class that allows users to receive all SparkListener events.
- * Users should override the onEvent method.
+ * 允许用户接收所有SparkListener事件的类。
+ * 用户应重写onEvent方法。
  *
- * This is a concrete Java class in order to ensure that we don't forget to update it when adding
- * new methods to SparkListener: forgetting to add a method will result in a compilation error (if
- * this was a concrete Scala class, default implementations of new event handlers would be inherited
- * from the SparkListener trait).
+ * 这是一个具体的Java类，以确保在向SparkListener添加新方法时不会忘记更新它：
+ * 忘记添加方法将导致编译错误（如果这是具体的Scala类，则new的默认实现事件处理程序将继承自SparkListener特性）。
  */
 public class SparkFirehoseListener implements SparkListenerInterface {
 

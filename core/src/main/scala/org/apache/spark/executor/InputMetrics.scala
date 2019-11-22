@@ -23,9 +23,8 @@ import org.apache.spark.util.LongAccumulator
 
 /**
  * :: DeveloperApi ::
- * Method by which input data was read. Network means that the data was read over the network
- * from a remote block manager (which may have stored the data on-disk or in-memory).
- * Operations are not thread-safe.
+ * 读取输入数据的方法。网络是指从远程块管理器（可能已将数据存储在磁盘或内存中）中通过网络读取数据。
+ * 操作不是线程安全的。
  */
 @DeveloperApi
 object DataReadMethod extends Enumeration with Serializable {

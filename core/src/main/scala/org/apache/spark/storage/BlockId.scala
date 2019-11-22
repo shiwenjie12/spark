@@ -24,11 +24,11 @@ import org.apache.spark.annotation.DeveloperApi
 
 /**
  * :: DeveloperApi ::
- * Identifies a particular Block of data, usually associated with a single file.
- * A Block can be uniquely identified by its filename, but each type of Block has a different
- * set of keys which produce its unique name.
+ * 标识通常与单个文件关联的特定数据块。
+ * 块可以通过其文件名唯一标识，但是每种类型的块都有一组不同的键，这些键会产生其唯一的名称。
  *
- * If your BlockId should be serializable, be sure to add it to the BlockId.apply() method.
+ *
+ * 如果您的BlockId应该可序列化，请确保将其添加到BlockId.apply()方法。
  */
 @DeveloperApi
 sealed abstract class BlockId {

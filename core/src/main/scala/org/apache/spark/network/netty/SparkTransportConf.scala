@@ -23,14 +23,13 @@ import org.apache.spark.SparkConf
 import org.apache.spark.network.util.{ConfigProvider, NettyUtils, TransportConf}
 
 /**
- * Provides a utility for transforming from a SparkConf inside a Spark JVM (e.g., Executor,
- * Driver, or a standalone shuffle service) into a TransportConf with details on our environment
- * like the number of cores that are allocated to this JVM.
+ * 提供用于从Spark JVM内部的SparkConf转换的实用程序（例如，Executor，
+ * 驱动程序或独立的混洗服务）添加到TransportConf中，其中包含有关我们环境的详细信息，例如分配给此JVM的内核数。
  */
 object SparkTransportConf {
 
   /**
-   * Utility for creating a [[TransportConf]] from a [[SparkConf]].
+   * 从[[SparkConf]]创建[[TransportConf]]的实用程序。
    * @param _conf the [[SparkConf]]
    * @param module the module name
    * @param numUsableCores if nonzero, this will restrict the server and client threads to only

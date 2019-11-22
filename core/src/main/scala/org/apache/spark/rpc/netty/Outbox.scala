@@ -92,6 +92,7 @@ private[netty] case class RpcOutboxMessage(
 
 }
 
+// 发件箱
 private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
 
   outbox => // Give this an alias so we can use it more clearly in closures.

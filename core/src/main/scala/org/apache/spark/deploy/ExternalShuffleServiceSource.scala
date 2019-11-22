@@ -24,7 +24,7 @@ import com.codahale.metrics.{MetricRegistry, MetricSet}
 import org.apache.spark.metrics.source.Source
 
 /**
- * Provides metrics source for external shuffle service
+ * 提供外部洗牌服务的指标来源
  */
 @ThreadSafe
 private class ExternalShuffleServiceSource extends Source {

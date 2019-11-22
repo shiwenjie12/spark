@@ -26,7 +26,7 @@ import org.apache.spark.internal.config.Worker._
 import org.apache.spark.util.{IntParam, MemoryParam, Utils}
 
 /**
- * Command-line parser for the worker.
+ * worker的命令行解析器，还有环境变量
  */
 private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
   var host = Utils.localHostName()

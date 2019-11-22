@@ -39,7 +39,7 @@ private[netty] abstract class NettyRpcCallContext(override val senderAddress: Rp
 }
 
 /**
- * If the sender and the receiver are in the same process, the reply can be sent back via `Promise`.
+ * 如果发送方和接收方处于同一过程中，则可以通过“承诺”将回复发送回去。
  */
 private[netty] class LocalNettyRpcCallContext(
     senderAddress: RpcAddress,
@@ -52,7 +52,7 @@ private[netty] class LocalNettyRpcCallContext(
 }
 
 /**
- * A [[RpcCallContext]] that will call [[RpcResponseCallback]] to send the reply back.
+ * 一个[[RpcCallContext]]，它将调用[[RpcResponseCallback]]以将回复发送回去。
  */
 private[netty] class RemoteNettyRpcCallContext(
     nettyEnv: NettyRpcEnv,

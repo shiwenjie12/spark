@@ -82,8 +82,7 @@ public abstract class RpcHandler {
   }
 
   /**
-   * Returns the StreamManager which contains the state about which streams are currently being
-   * fetched by a TransportClient.
+   * 返回StreamManager，其中包含有关TransportClient当前正在获取流的状态。
    */
   public abstract StreamManager getStreamManager();
 

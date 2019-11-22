@@ -25,7 +25,7 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.util.RpcUtils
 
 /**
- * A reference for a remote [[RpcEndpoint]]. [[RpcEndpointRef]] is thread-safe.
+ * 远程[[RpcEndpoint]]的参考。 [[RpcEndpointRef]]是线程安全的。
  */
 private[spark] abstract class RpcEndpointRef(conf: SparkConf)
   extends Serializable with Logging {
@@ -111,8 +111,8 @@ private[spark] abstract class RpcEndpointRef(conf: SparkConf)
 class RpcAbortException(message: String) extends Exception(message)
 
 /**
- * A wrapper for [[Future]] but add abort method.
- * This is used in long run RPC and provide an approach to abort the RPC.
+ * [[Future]]的包装器，但添加了abort方法。
+ * 这在长期运行的RPC中使用，并提供了中止RPC的方法。
  */
 private[spark] class AbortableRpcFuture[T: ClassTag](
     future: Future[T],

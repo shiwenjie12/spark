@@ -20,7 +20,7 @@ package org.apache.spark.scheduler
 import org.apache.spark.util.ListenerBus
 
 /**
- * A [[SparkListenerEvent]] bus that relays [[SparkListenerEvent]]s to its listeners
+ * [[SparkListenerEvent]]总线将[[SparkListenerEvent]]中继到其侦听器
  */
 private[spark] trait SparkListenerBus
   extends ListenerBus[SparkListenerInterface, SparkListenerEvent] {

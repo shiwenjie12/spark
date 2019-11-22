@@ -28,6 +28,7 @@ import org.apache.spark.{SecurityManager, SparkConf}
 import org.apache.spark.api.python.PythonBroadcast
 import org.apache.spark.internal.Logging
 
+// 广播管理
 private[spark] class BroadcastManager(
     val isDriver: Boolean,
     conf: SparkConf,
@@ -54,6 +55,7 @@ private[spark] class BroadcastManager(
     broadcastFactory.stop()
   }
 
+  // 广播id
   private val nextBroadcastId = new AtomicLong(0)
 
   private[broadcast] val cachedValues =

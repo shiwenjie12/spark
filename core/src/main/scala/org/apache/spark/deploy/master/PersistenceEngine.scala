@@ -23,15 +23,13 @@ import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.rpc.RpcEnv
 
 /**
- * Allows Master to persist any state that is necessary in order to recover from a failure.
- * The following semantics are required:
- *   - addApplication and addWorker are called before completing registration of a new app/worker.
- *   - removeApplication and removeWorker are called at any time.
- * Given these two requirements, we will have all apps and workers persisted, but
- * we might not have yet deleted apps or workers that finished (so their liveness must be verified
- * during recovery).
+ * 允许Master保留从故障中恢复所必需的任何状态。
+ * 需要以下语义：
+ *   -在完成新应用程序/工作程序的注册之前，将调用addApplication和addWorker。
+ *   -随时调用removeApplication和removeWorker。
+ * 鉴于这两个要求，我们将保留所有应用程序和工作程序，但可能尚未删除已完成的应用程序或工作程序（因此必须在恢复过程中验证其活动性）。
  *
- * The implementation of this trait defines how name-object pairs are stored or retrieved.
+ * 此特征的实现定义了如何存储或检索名称-对象对。
  */
 @DeveloperApi
 abstract class PersistenceEngine {
@@ -91,6 +89,7 @@ abstract class PersistenceEngine {
   def close(): Unit = {}
 }
 
+// 黑洞持久化引擎，即不写入
 private[master] class BlackHolePersistenceEngine extends PersistenceEngine {
 
   override def persist(name: String, obj: Object): Unit = {}

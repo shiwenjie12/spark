@@ -17,6 +17,9 @@
 
 package org.apache.spark.internal.config
 
+/*
+  关于部署的相关配置
+ */
 private[spark] object Deploy {
   val RECOVERY_MODE = ConfigBuilder("spark.deploy.recoveryMode")
     .stringConf

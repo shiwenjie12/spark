@@ -28,17 +28,16 @@ import org.apache.spark.network.shuffle.protocol.mesos.RegisterDriver;
 import org.apache.spark.network.shuffle.protocol.mesos.ShuffleServiceHeartbeat;
 
 /**
- * Messages handled by the {@link ExternalBlockHandler}, or
- * by Spark's NettyBlockTransferService.
+ * 由{@link ExternalBlockHandler}或Spark的NettyBlockTransferService处理的消息。
  *
- * At a high level:
- *   - OpenBlock is logically only handled by the NettyBlockTransferService, but for the capability
- *     for old version Spark, we still keep it in external shuffle service.
- *     It returns a StreamHandle.
- *   - UploadBlock is only handled by the NettyBlockTransferService.
- *   - RegisterExecutor is only handled by the external shuffle service.
- *   - RemoveBlocks is only handled by the external shuffle service.
- *   - FetchShuffleBlocks is handled by both services for shuffle files. It returns a StreamHandle.
+ * 在高层次上：
+ *   -从逻辑上讲，OpenBlock仅由NettyBlockTransferService处理，但出于功能考虑
+ *     对于旧版本的Spark，我们仍将其保留在外部洗牌服务中。
+ *     它返回一个StreamHandle。
+ *   -UploadBlock仅由NettyBlockTransferService处理。
+ *   -RegisterExecutor仅由外部洗牌服务处理。
+ *   -RemoveBlocks仅由外部随机播放服务处理。
+ *   -两种服务都对FetchShuffleBlocks处理随机文件。它返回一个StreamHandle。
  */
 public abstract class BlockTransferMessage implements Encodable {
   protected abstract Type type();

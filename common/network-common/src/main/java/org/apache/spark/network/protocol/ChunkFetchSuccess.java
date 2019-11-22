@@ -24,7 +24,7 @@ import org.apache.spark.network.buffer.ManagedBuffer;
 import org.apache.spark.network.buffer.NettyManagedBuffer;
 
 /**
- * Response to {@link ChunkFetchRequest} when a chunk exists and has been successfully fetched.
+ * 块存在且已成功获取时，对{@link ChunkFetchRequest}的响应。
  *
  * Note that the server-side encoding of this messages does NOT include the buffer itself, as this
  * may be written by Netty in a more efficient manner (i.e., zero-copy write).

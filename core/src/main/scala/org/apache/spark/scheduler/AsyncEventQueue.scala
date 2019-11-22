@@ -28,11 +28,9 @@ import org.apache.spark.internal.config._
 import org.apache.spark.util.Utils
 
 /**
- * An asynchronous queue for events. All events posted to this queue will be delivered to the child
- * listeners in a separate thread.
+ * 事件的异步队列。发布到此队列的所有事件将在单独的线程中传递给子侦听器。
  *
- * Delivery will only begin when the `start()` method is called. The `stop()` method should be
- * called when no more events need to be delivered.
+ * 仅在调用`start()`方法时开始交付。当不再需要传递事件时，应该调用stop()方法。
  */
 private class AsyncEventQueue(
     val name: String,
@@ -114,9 +112,9 @@ private class AsyncEventQueue(
   }
 
   /**
-   * Start an asynchronous thread to dispatch events to the underlying listeners.
+   * 启动异步线程以将事件调度到基础侦听器。
    *
-   * @param sc Used to stop the SparkContext in case the async dispatcher fails.
+   * @param sc 用于在异步调度程序失败时停止SparkContext。
    */
   private[scheduler] def start(sc: SparkContext): Unit = {
     if (started.compareAndSet(false, true)) {

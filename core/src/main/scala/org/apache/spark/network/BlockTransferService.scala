@@ -30,11 +30,9 @@ import org.apache.spark.storage.{BlockId, EncryptedManagedBuffer, StorageLevel}
 import org.apache.spark.util.ThreadUtils
 
 /**
- * The BlockTransferService that used for fetching a set of blocks at time. Each instance of
- * BlockTransferService contains both client and server inside.
+ * 用于一次获取一组块的BlockTransferService。每个BlockTransferService实例都包含客户端和服务器。
  */
-private[spark]
-abstract class BlockTransferService extends BlockStoreClient with Logging {
+private[spark] abstract class BlockTransferService extends BlockStoreClient with Logging {
 
   /**
    * Initialize the transfer service by giving it the BlockDataManager that can be used to fetch

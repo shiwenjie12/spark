@@ -42,7 +42,7 @@ import org.apache.spark.internal.config.BUFFER_SIZE
 import org.apache.spark.util.Utils
 
 /**
- * Contains util methods to interact with Hadoop from Spark.
+ * 包含util方法，可与Spark中的Hadoop进行交互。
  */
 private[spark] class SparkHadoopUtil extends Logging {
   private val sparkConf = new SparkConf(false).loadFromSystemProperties(true)
@@ -115,8 +115,7 @@ private[spark] class SparkHadoopUtil extends Logging {
   }
 
   /**
-   * Return an appropriate (subclass) of Configuration. Creating config can initialize some Hadoop
-   * subsystems.
+   * 返回适当的（子类）Configuration。创建配置可以初始化一些Hadoop子系统。
    */
   def newConfiguration(conf: SparkConf): Configuration = {
     val hadoopConf = SparkHadoopUtil.newConfiguration(conf)

@@ -27,6 +27,9 @@ import org.apache.spark.resource.ResourceInformation
 import org.apache.spark.rpc.RpcEndpointRef
 import org.apache.spark.util.Utils
 
+/*
+  应用信息
+ */
 private[spark] class ApplicationInfo(
     val startTime: Long,
     val id: String,
@@ -80,6 +83,7 @@ private[spark] class ApplicationInfo(
     }
   }
 
+  // 添加执行器
   private[master] def addExecutor(
       worker: WorkerInfo,
       cores: Int,
@@ -130,7 +134,7 @@ private[spark] class ApplicationInfo(
    */
   private[deploy] def getExecutorLimit: Int = executorLimit
 
-  def duration: Long = {
+  def duration: Long = { // 存活时间
     if (endTime != -1) {
       endTime - startTime
     } else {

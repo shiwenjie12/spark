@@ -28,6 +28,10 @@ import org.apache.spark.resource.ResourceInformation
 import org.apache.spark.rpc.{RpcAddress, RpcEndpointRef}
 import org.apache.spark.util.Utils
 
+
+/*
+  关于部署的消息
+ */
 private[deploy] sealed trait DeployMessage extends Serializable
 
 /** Contains messages sent between Scheduler endpoint nodes. */
@@ -60,6 +64,7 @@ private[deploy] object DeployMessages {
     assert (port > 0)
   }
 
+  // 执行器状态改变
   case class ExecutorStateChanged(
       appId: String,
       execId: Int,
@@ -88,9 +93,9 @@ private[deploy] object DeployMessages {
       driverResponses: Seq[WorkerDriverStateResponse])
 
   /**
-   * A worker will send this message to the master when it registers with the master. Then the
-   * master will compare them with the executors and drivers in the master and tell the worker to
-   * kill the unknown executors and drivers.
+   * 当工作人员向主服务器注册时，它将向主服务器发送此消息。
+    * 然后，主服务器将它们与主服务器中的执行者和驱动程序进行比较，
+    * 并告诉工作人员杀死未知的执行者和驱动程序。
    */
   case class WorkerLatestState(
       id: String,

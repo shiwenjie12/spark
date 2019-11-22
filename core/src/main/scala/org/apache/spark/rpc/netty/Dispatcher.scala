@@ -29,7 +29,7 @@ import org.apache.spark.network.client.RpcResponseCallback
 import org.apache.spark.rpc._
 
 /**
- * A message dispatcher, responsible for routing RPC messages to the appropriate endpoint(s).
+ * 消息分发程序，负责将RPC消息路由到适当的端点。
  *
  * @param numUsableCores Number of CPU cores allocated to the process, for sizing the thread pool.
  *                       If 0, will consider the available CPUs on the host.
@@ -54,10 +54,6 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv, numUsableCores: Int) exte
     }
   }
 
-  /**
-   * True if the dispatcher has been stopped. Once stopped, all messages posted will be bounced
-   * immediately.
-   */
   @GuardedBy("this")
   private var stopped = false
 
@@ -114,7 +110,8 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv, numUsableCores: Int) exte
           case e: RpcEnvStoppedException => logDebug (s"Message $message dropped. ${e.getMessage}")
           case e: Throwable => logWarning(s"Message $message dropped. ${e.getMessage}")
         }}
-      )}
+      )
+    }
   }
 
   /** Posts a message sent by a remote endpoint. */
@@ -125,7 +122,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv, numUsableCores: Int) exte
     postMessage(message.receiver.name, rpcMessage, (e) => callback.onFailure(e))
   }
 
-  /** Posts a message sent by a local endpoint. */
+  /** 发布本地端点发送的消息。 */
   def postLocalMessage(message: RequestMessage, p: Promise[Any]): Unit = {
     val rpcCallContext =
       new LocalNettyRpcCallContext(message.senderAddress, p)
@@ -140,7 +137,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv, numUsableCores: Int) exte
   }
 
   /**
-   * Posts a message to a specific endpoint.
+   * 将消息发布到特定端点。
    *
    * @param endpointName name of the endpoint.
    * @param message the message to post

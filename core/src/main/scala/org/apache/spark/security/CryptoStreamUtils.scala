@@ -36,7 +36,7 @@ import org.apache.spark.internal.config._
 import org.apache.spark.network.util.{CryptoUtils, JavaUtils}
 
 /**
- * A util class for manipulating IO encryption and decryption streams.
+ * 用于处理IO加密和解密流的util类。
  */
 private[spark] object CryptoStreamUtils extends Logging {
 

@@ -24,7 +24,7 @@ import org.apache.spark.internal.{config, Logging}
 import org.apache.spark.util.{IntParam, Utils}
 
 /**
- * Continuously appends the data from an input stream into the given file.
+ * 将输入流中的数据连续追加到给定文件中。
  */
 private[spark] class FileAppender(inputStream: InputStream, file: File, bufferSize: Int = 8192)
   extends Logging {
@@ -55,7 +55,7 @@ private[spark] class FileAppender(inputStream: InputStream, file: File, bufferSi
     markedForStop = true
   }
 
-  /** Continuously read chunks from the input stream and append to the file */
+  /** 从输入流中连续读取块并将其追加到文件 */
   protected def appendStreamToFile(): Unit = {
     try {
       logDebug("Started appending thread")
@@ -92,13 +92,13 @@ private[spark] class FileAppender(inputStream: InputStream, file: File, bufferSi
     outputStream.write(bytes, 0, len)
   }
 
-  /** Open the file output stream */
+  /** 打开文件输出流 */
   protected def openFile(): Unit = {
     outputStream = new FileOutputStream(file, true)
     logDebug(s"Opened file $file")
   }
 
-  /** Close the file output stream */
+  /** 关闭文件输出流 */
   protected def closeFile(): Unit = {
     outputStream.flush()
     outputStream.close()

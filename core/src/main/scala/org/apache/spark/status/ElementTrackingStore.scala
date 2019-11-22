@@ -33,17 +33,13 @@ import org.apache.spark.util.{ThreadUtils, Utils}
 import org.apache.spark.util.kvstore._
 
 /**
- * A KVStore wrapper that allows tracking the number of elements of specific types, and triggering
- * actions once they reach a threshold. This allows writers, for example, to control how much data
- * is stored by potentially deleting old data as new data is added.
+ * KVStore包装器，可以跟踪特定类型的元素的数量，并在达到阈值时触发操作。
+ * 例如，这允许编写者通过在添加新数据时潜在地删除旧数据来控制存储多少数据。
  *
- * This store is used when populating data either from a live UI or an event log. On top of firing
- * triggers when elements reach a certain threshold, it provides two extra bits of functionality:
+ * 从实时UI或事件日志填充数据时，将使用此存储。当元素达到某个阈值时，触发触发器之上，它还提供了两个额外的功能：
  *
- * - a generic worker thread that can be used to run expensive tasks asynchronously; the tasks can
- *   be configured to run on the calling thread when more determinism is desired (e.g. unit tests).
- * - a generic flush mechanism so that listeners can be notified about when they should flush
- *   internal state to the store (e.g. after the SHS finishes parsing an event log).
+ * -通用工作线程，可用于异步运行昂贵的任务；当需要更多确定性时（例如，单元测试），可以将任务配置为在调用线程上运行。
+ * -一种通用的刷新机制，以便可以通知侦听器何时将内部状态刷新到存储（例如，在SHS完成对事件日志的解析之后）。
  *
  * The configured triggers are run on a separate thread by default; they can be forced to run on
  * the calling thread by setting the `ASYNC_TRACKING_ENABLED` configuration to `false`.
@@ -81,13 +77,11 @@ private[spark] class ElementTrackingStore(store: KVStore, conf: SparkConf) exten
   @volatile private var stopped = false
 
   /**
-   * Register a trigger that will be fired once the number of elements of a given type reaches
-   * the given threshold.
+   * 注册一个触发器，一旦给定类型的元素数达到给定阈值，该触发器将被触发。
    *
    * @param klass The type to monitor.
-   * @param threshold The number of elements that should trigger the action.
-   * @param action Action to run when the threshold is reached; takes as a parameter the number
-   *               of elements of the registered type currently known to be in the store.
+   * @param threshold 应该触发动作的元素数。
+   * @param action 达到阈值时要执行的操作；将当前已知存储中已注册类型的元素数作为参数。
    */
   def addTrigger(klass: Class[_], threshold: Long)(action: Long => Unit): Unit = {
     val newTrigger = Trigger(threshold, action)
@@ -111,8 +105,7 @@ private[spark] class ElementTrackingStore(store: KVStore, conf: SparkConf) exten
   }
 
   /**
-   * Enqueues an action to be executed asynchronously. The task will run on the calling thread if
-   * `ASYNC_TRACKING_ENABLED` is `false`.
+   * 使要异步执行的动作入队。如果ASYNC_TRACKING_ENABLED为false，则任务将在调用线程上运行。
    */
   def doAsync(fn: => Unit): Unit = {
     executor.submit(new Runnable() {
@@ -124,7 +117,7 @@ private[spark] class ElementTrackingStore(store: KVStore, conf: SparkConf) exten
 
   override def write(value: Any): Unit = store.write(value)
 
-  /** Write an element to the store, optionally checking for whether to fire triggers. */
+  /** 将元素写入存储，可以选择是否触发触发器。 */
   def write(value: Any, checkTriggers: Boolean): WriteQueueResult = {
     write(value)
 

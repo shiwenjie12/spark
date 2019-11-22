@@ -30,7 +30,7 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.util.Utils.executeAndGetOutput
 
 /**
- * Resource identifier.
+ * 资源标识符。
  * @param componentName spark.driver / spark.executor / spark.task
  * @param resourceName  gpu, fpga, etc
  */
@@ -155,10 +155,10 @@ private[spark] object ResourceUtils extends Logging {
   }
 
   /**
-   * Gets all allocated resource information for the input component from input resources file and
-   * discover the remaining via discovery scripts.
-   * It also verifies the resource allocation meets required amount for each resource.
-   * @return a map from resource name to resource info
+   * 从输入资源文件中为输入组件获取所有分配的资源信息，并通过发现脚本发现剩余的信息。
+   * 它还验证资源分配是否满足每种资源的要求量。
+   *
+   * @return 从资源名称到资源信息的映射
    */
   def getOrDiscoverAllResources(
       sparkConf: SparkConf,

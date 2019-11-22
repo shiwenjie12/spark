@@ -27,71 +27,72 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Encoder used by the server side to encode server-to-client responses.
- * This encoder is stateless so it is safe to be shared by multiple threads.
+ * 服务器端使用的编码器来编码服务器到客户端的响应。
+ * 该编码器是无状态的，因此可以安全地由多个线程共享。
  */
 @ChannelHandler.Sharable
 public final class MessageEncoder extends MessageToMessageEncoder<Message> {
 
-  private static final Logger logger = LoggerFactory.getLogger(MessageEncoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(MessageEncoder.class);
 
-  public static final MessageEncoder INSTANCE = new MessageEncoder();
+    public static final MessageEncoder INSTANCE = new MessageEncoder();
 
-  private MessageEncoder() {}
+    private MessageEncoder() {
+    }
 
-  /***
-   * Encodes a Message by invoking its encode() method. For non-data messages, we will add one
-   * ByteBuf to 'out' containing the total frame length, the message type, and the message itself.
-   * In the case of a ChunkFetchSuccess, we will also add the ManagedBuffer corresponding to the
-   * data to 'out', in order to enable zero-copy transfer.
-   */
-  @Override
-  public void encode(ChannelHandlerContext ctx, Message in, List<Object> out) throws Exception {
-    Object body = null;
-    long bodyLength = 0;
-    boolean isBodyInFrame = false;
+    /***
+     * Encodes a Message by invoking its encode() method. For non-data messages, we will add one
+     * ByteBuf to 'out' containing the total frame length, the message type, and the message itself.
+     * In the case of a ChunkFetchSuccess, we will also add the ManagedBuffer corresponding to the
+     * data to 'out', in order to enable zero-copy transfer.
+     */
+    @Override
+    public void encode(ChannelHandlerContext ctx, Message in, List<Object> out) throws Exception {
+        Object body = null;
+        long bodyLength = 0;
+        boolean isBodyInFrame = false;
 
-    // If the message has a body, take it out to enable zero-copy transfer for the payload.
-    if (in.body() != null) {
-      try {
-        bodyLength = in.body().size();
-        body = in.body().convertToNetty();
-        isBodyInFrame = in.isBodyInFrame();
-      } catch (Exception e) {
-        in.body().release();
-        if (in instanceof AbstractResponseMessage) {
-          AbstractResponseMessage resp = (AbstractResponseMessage) in;
-          // Re-encode this message as a failure response.
-          String error = e.getMessage() != null ? e.getMessage() : "null";
-          logger.error(String.format("Error processing %s for client %s",
-            in, ctx.channel().remoteAddress()), e);
-          encode(ctx, resp.createFailureResponse(error), out);
-        } else {
-          throw e;
+        // 如果消息包含正文，请将其取出以启用有效内容的零拷贝传输。
+        if (in.body() != null) {
+            try {
+                bodyLength = in.body().size();
+                body = in.body().convertToNetty();
+                isBodyInFrame = in.isBodyInFrame();
+            } catch (Exception e) {
+                in.body().release();
+                if (in instanceof AbstractResponseMessage) {
+                    AbstractResponseMessage resp = (AbstractResponseMessage) in;
+                    // Re-encode this message as a failure response.
+                    String error = e.getMessage() != null ? e.getMessage() : "null";
+                    logger.error(String.format("Error processing %s for client %s",
+                            in, ctx.channel().remoteAddress()), e);
+                    encode(ctx, resp.createFailureResponse(error), out);
+                } else {
+                    throw e;
+                }
+                return;
+            }
         }
-        return;
-      }
-    }
 
-    Message.Type msgType = in.type();
-    // All messages have the frame length, message type, and message itself. The frame length
-    // may optionally include the length of the body data, depending on what message is being
-    // sent.
-    int headerLength = 8 + msgType.encodedLength() + in.encodedLength();
-    long frameLength = headerLength + (isBodyInFrame ? bodyLength : 0);
-    ByteBuf header = ctx.alloc().buffer(headerLength);
-    header.writeLong(frameLength);
-    msgType.encode(header);
-    in.encode(header);
-    assert header.writableBytes() == 0;
+        Message.Type msgType = in.type();
+        // All messages have the frame length, message type, and message itself. The frame length
+        // may optionally include the length of the body data, depending on what message is being
+        // sent.
+        int headerLength = 8 + msgType.encodedLength() + in.encodedLength();
+        long frameLength = headerLength + (isBodyInFrame ? bodyLength : 0);
+        ByteBuf header = ctx.alloc().buffer(headerLength);
+        header.writeLong(frameLength);
+        msgType.encode(header);
+        in.encode(header);
+        assert header.writableBytes() == 0;
 
-    if (body != null) {
-      // We transfer ownership of the reference on in.body() to MessageWithHeader.
-      // This reference will be freed when MessageWithHeader.deallocate() is called.
-      out.add(new MessageWithHeader(in.body(), header, body, bodyLength));
-    } else {
-      out.add(header);
+        if (body != null) {
+            // We transfer ownership of the reference on in.body() to MessageWithHeader.
+            // This reference will be freed when MessageWithHeader.deallocate() is called.
+            out.add(new MessageWithHeader(in.body(), header, body, bodyLength));
+        } else {
+            out.add(header);
+        }
     }
-  }
 
 }

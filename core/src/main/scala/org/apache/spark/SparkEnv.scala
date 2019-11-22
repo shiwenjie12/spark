@@ -155,7 +155,7 @@ object SparkEnv extends Logging {
   }
 
   /**
-   * Create a SparkEnv for the driver.
+   * 为驱动程序创建一个SparkEnv。
    */
   private[spark] def createDriverEnv(
       conf: SparkConf,
@@ -214,7 +214,7 @@ object SparkEnv extends Logging {
   }
 
   /**
-   * Helper method to create a SparkEnv for a driver or an executor.
+   * 为驱动程序或执行程序创建SparkEnv的帮助程序方法。
    */
   private def create(
       conf: SparkConf,
@@ -251,12 +251,12 @@ object SparkEnv extends Logging {
     val rpcEnv = RpcEnv.create(systemName, bindAddress, advertiseAddress, port.getOrElse(-1), conf,
       securityManager, numUsableCores, !isDriver)
 
-    // Figure out which port RpcEnv actually bound to in case the original port is 0 or occupied.
+    // 弄清楚RpcEnv实际绑定到哪个端口，以防原始端口为0或被占用。
     if (isDriver) {
       conf.set(DRIVER_PORT, rpcEnv.address.port)
     }
 
-    // Create an instance of the class with the given name, possibly initializing it with our conf
+    // 使用给定名称创建该类的实例，可能使用我们的conf对其进行初始化
     def instantiateClass[T](className: String): T = {
       val cls = Utils.classForName(className)
       // Look for a constructor taking a SparkConf and a boolean isDriver, then one taking just
@@ -276,8 +276,8 @@ object SparkEnv extends Logging {
       }
     }
 
-    // Create an instance of the class named by the given SparkConf property
-    // if the property is not set, possibly initializing it with our conf
+    // 创建由给定的SparkConf属性命名的类的实例
+    // 如果未设置该属性，则可以使用我们的conf对其进行初始化
     def instantiateClassFromConf[T](propertyName: ConfigEntry[String]): T = {
       instantiateClass[T](conf.get(propertyName))
     }
@@ -285,6 +285,7 @@ object SparkEnv extends Logging {
     val serializer = instantiateClassFromConf[Serializer](SERIALIZER)
     logDebug(s"Using serializer: ${serializer.getClass}")
 
+    // 序列化管理器
     val serializerManager = new SerializerManager(serializer, conf, ioEncryptionKey)
 
     val closureSerializer = new JavaSerializer(conf)

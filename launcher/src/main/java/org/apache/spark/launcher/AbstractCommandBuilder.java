@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 import static org.apache.spark.launcher.CommandBuilderUtils.*;
 
 /**
- * Abstract Spark command builder that defines common functionality.
+ * 定义通用功能的抽象Spark命令构建器。
  */
 abstract class AbstractCommandBuilder {
 

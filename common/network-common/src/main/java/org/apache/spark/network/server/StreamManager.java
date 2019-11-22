@@ -23,18 +23,15 @@ import org.apache.spark.network.buffer.ManagedBuffer;
 import org.apache.spark.network.client.TransportClient;
 
 /**
- * The StreamManager is used to fetch individual chunks from a stream. This is used in
- * {@link TransportRequestHandler} in order to respond to fetchChunk() requests. Creation of the
- * stream is outside the scope of the transport layer, but a given stream is guaranteed to be read
- * by only one client connection, meaning that getChunk() for a particular stream will be called
- * serially and that once the connection associated with the stream is closed, that stream will
- * never be used again.
+ * StreamManager用于从流中获取单个块。
+ * {@link TransportRequestHandler}中使用了此参数，以响应fetchChunk()请求。
+ * 流的创建不在传输层的范围内，但是保证只能通过一个客户端连接读取给定的流，
+ * 这意味着特定流的getChunk()将被串行调用，并且一旦与该流关联的连接关闭后，该流将不再使用。
  */
 public abstract class StreamManager {
   /**
-   * Called in response to a fetchChunk() request. The returned buffer will be passed as-is to the
-   * client. A single stream will be associated with a single TCP connection, so this method
-   * will not be called in parallel for a particular stream.
+   * 在响应fetchChunk()请求时调用。返回的缓冲区将按原样传递给客户端。
+   * 单个流将与单个TCP连接相关联，因此不会为特定流并行调用此方法。
    *
    * Chunks may be requested in any order, and requests may be repeated, but it is not required
    * that implementations support this behavior.
@@ -47,8 +44,7 @@ public abstract class StreamManager {
   public abstract ManagedBuffer getChunk(long streamId, int chunkIndex);
 
   /**
-   * Called in response to a stream() request. The returned data is streamed to the client
-   * through a single TCP connection.
+   * 在响应stream()请求时调用。返回的数据通过单个TCP连接流式传输到客户端。
    *
    * Note the <code>streamId</code> argument is not related to the similarly named argument in the
    * {@link #getChunk(long, int)} method.
@@ -61,42 +57,41 @@ public abstract class StreamManager {
   }
 
   /**
-   * Indicates that the given channel has been terminated. After this occurs, we are guaranteed not
-   * to read from the associated streams again, so any state can be cleaned up.
+   * 指示给定的频道已被终止。发生这种情况之后，我们保证不再从关联的流中读取数据，因此可以清除任何状态。
    */
   public void connectionTerminated(Channel channel) { }
 
   /**
-   * Verify that the client is authorized to read from the given stream.
+   * 验证客户端是否有权从给定流中读取。
    *
    * @throws SecurityException If client is not authorized.
    */
   public void checkAuthorization(TransportClient client, long streamId) { }
 
   /**
-   * Return the number of chunks being transferred and not finished yet in this StreamManager.
+   * 返回此StreamManager中正在传输但尚未完成的块数。
    */
   public long chunksBeingTransferred() {
     return 0;
   }
 
   /**
-   * Called when start sending a chunk.
+   * 开始发送块时调用。
    */
   public void chunkBeingSent(long streamId) { }
 
   /**
-   * Called when start sending a stream.
+   * 开始发送流时调用。
    */
   public void streamBeingSent(String streamId) { }
 
   /**
-   * Called when a chunk is successfully sent.
+   * 成功发送块时调用。
    */
   public void chunkSent(long streamId) { }
 
   /**
-   * Called when a stream is successfully sent.
+   * 流成功发送时调用。
    */
   public void streamSent(String streamId) { }
 

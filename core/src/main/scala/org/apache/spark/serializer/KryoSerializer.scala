@@ -47,8 +47,7 @@ import org.apache.spark.util.{BoundedPriorityQueue, ByteBufferInputStream, Seria
 import org.apache.spark.util.collection.CompactBuffer
 
 /**
- * A Spark serializer that uses the <a href="https://code.google.com/p/kryo/">
- * Kryo serialization library</a>.
+ * 使用<a href="https://code.google.com/p/kryo/"> Kryo序列化库</a>的Spark序列化程序。
  *
  * @note This serializer is not guaranteed to be wire-compatible across different versions of
  * Spark. It is intended to be used to serialize/de-serialize data within a single
@@ -243,6 +242,7 @@ class KryoSerializer(conf: SparkConf)
   }
 }
 
+// Kryo序列化流
 private[spark]
 class KryoSerializationStream(
     serInstance: KryoSerializerInstance,
@@ -279,6 +279,7 @@ class KryoSerializationStream(
   }
 }
 
+// Kryo反序列流
 private[spark]
 class KryoDeserializationStream(
     serInstance: KryoSerializerInstance,

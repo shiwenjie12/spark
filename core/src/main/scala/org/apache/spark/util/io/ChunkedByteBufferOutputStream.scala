@@ -25,7 +25,7 @@ import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.storage.StorageUtils
 
 /**
- * An OutputStream that writes to fixed-size chunks of byte arrays.
+ * 一个OutputStream，它写入固定大小的字节数组块。
  *
  * @param chunkSize size of each chunk, in bytes.
  */
@@ -38,7 +38,7 @@ private[spark] class ChunkedByteBufferOutputStream(
 
   private val chunks = new ArrayBuffer[ByteBuffer]
 
-  /** Index of the last chunk. Starting with -1 when the chunks array is empty. */
+  /** 最后一块的索引。当块数组为空时以-1开头。 */
   private[this] var lastChunkIndex = -1
 
   /**

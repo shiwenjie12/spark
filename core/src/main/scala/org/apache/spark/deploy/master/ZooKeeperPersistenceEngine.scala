@@ -31,7 +31,9 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.internal.config.Deploy._
 import org.apache.spark.serializer.Serializer
 
-
+/*
+  zk 持久化引擎
+ */
 private[master] class ZooKeeperPersistenceEngine(conf: SparkConf, val serializer: Serializer)
   extends PersistenceEngine
   with Logging {
@@ -52,7 +54,8 @@ private[master] class ZooKeeperPersistenceEngine(conf: SparkConf, val serializer
 
   override def read[T: ClassTag](prefix: String): Seq[T] = {
     zk.getChildren.forPath(workingDir).asScala
-      .filter(_.startsWith(prefix)).flatMap(deserializeFromFile[T])
+      .filter(_.startsWith(prefix))
+      .flatMap(deserializeFromFile[T])
   }
 
   override def close(): Unit = {

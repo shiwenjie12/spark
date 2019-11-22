@@ -22,6 +22,7 @@ import org.apache.spark.internal.config
 import org.apache.spark.internal.config.Network._
 import org.apache.spark.rpc.{RpcAddress, RpcEndpointRef, RpcEnv, RpcTimeout}
 
+// rpc工具
 private[spark] object RpcUtils {
 
   /**
@@ -34,7 +35,7 @@ private[spark] object RpcUtils {
     rpcEnv.setupEndpointRef(RpcAddress(driverHost, driverPort), name)
   }
 
-  /** Returns the configured number of times to retry connecting */
+  /** 返回配置的重试连接次数 */
   def numRetries(conf: SparkConf): Int = {
     conf.get(RPC_NUM_RETRIES)
   }
@@ -44,7 +45,7 @@ private[spark] object RpcUtils {
     conf.get(RPC_RETRY_WAIT)
   }
 
-  /** Returns the default Spark timeout to use for RPC ask operations. */
+  /** 返回用于RPC询问操作的默认Spark超时。 */
   def askRpcTimeout(conf: SparkConf): RpcTimeout = {
     RpcTimeout(conf, Seq(RPC_ASK_TIMEOUT.key, NETWORK_TIMEOUT.key), "120s")
   }

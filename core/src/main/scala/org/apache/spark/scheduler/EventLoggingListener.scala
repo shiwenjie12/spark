@@ -34,13 +34,13 @@ import org.apache.spark.internal.config._
 import org.apache.spark.util.{JsonProtocol, Utils}
 
 /**
- * A SparkListener that logs events to persistent storage.
+ * 一个将事件记录到持久性存储中的SparkListener。
  *
- * Event logging is specified by the following configurable parameters:
- *   spark.eventLog.enabled - Whether event logging is enabled.
- *   spark.eventLog.dir - Path to the directory in which events are logged.
- *   spark.eventLog.logBlockUpdates.enabled - Whether to log block updates
- *   spark.eventLog.logStageExecutorMetrics.enabled - Whether to log stage executor metrics
+ * 事件日志记录由以下可配置参数指定：
+ *   spark.eventLog.enabled-是否启用事件日志记录。
+ *   spark.eventLog.dir-记录事件的目录的路径。
+ *   spark.eventLog.logBlockUpdates.enabled-是否记录块更新
+ *   spark.eventLog.logStageExecutorMetrics.enabled-是否记录阶段执行者指标
  *
  * Event log file writer maintains its own parameters: refer the doc of [[EventLogFileWriter]]
  * and its descendant for more details.

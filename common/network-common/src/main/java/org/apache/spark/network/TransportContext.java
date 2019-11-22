@@ -48,9 +48,8 @@ import org.apache.spark.network.util.TransportConf;
 import org.apache.spark.network.util.TransportFrameDecoder;
 
 /**
- * Contains the context to create a {@link TransportServer}, {@link TransportClientFactory}, and to
- * setup Netty Channel pipelines with a
- * {@link org.apache.spark.network.server.TransportChannelHandler}.
+ * 包含用于创建{@link TransportServer}，{@link TransportClientFactory}和
+ * 使用{@link org.apache.spark.network.server.TransportChannelHandler}设置Netty Channel管道。
  *
  * There are two communication protocols that the TransportClient provides, control-plane RPCs and
  * data-plane "chunk fetching". The handling of the RPCs is performed outside of the scope of the
@@ -67,7 +66,7 @@ public class TransportContext implements Closeable {
   private final TransportConf conf;
   private final RpcHandler rpcHandler;
   private final boolean closeIdleConnections;
-  // Number of registered connections to the shuffle service
+  // 与随机播放服务的已注册连接数
   private Counter registeredConnections = new Counter();
 
   /**
@@ -85,9 +84,8 @@ public class TransportContext implements Closeable {
   private static final MessageEncoder ENCODER = MessageEncoder.INSTANCE;
   private static final MessageDecoder DECODER = MessageDecoder.INSTANCE;
 
-  // Separate thread pool for handling ChunkFetchRequest. This helps to enable throttling
-  // max number of TransportServer worker threads that are blocked on writing response
-  // of ChunkFetchRequest message back to the client via the underlying channel.
+  // 用于处理ChunkFetchRequest的单独线程池。这有助于启用限制最大数量的TransportServer工作线程，
+  // 这些线程在通过基础通道将ChunkFetchRequest消息的响应写回到客户端时被阻止。
   private final EventLoopGroup chunkFetchWorkers;
 
   public TransportContext(TransportConf conf, RpcHandler rpcHandler) {
@@ -102,7 +100,7 @@ public class TransportContext implements Closeable {
   }
 
   /**
-   * Enables TransportContext initialization for underlying client and server.
+   * 为基础客户端和服务器启用TransportContext初始化。
    *
    * @param conf TransportConf
    * @param rpcHandler RpcHandler responsible for handling requests and responses.
@@ -146,12 +144,12 @@ public class TransportContext implements Closeable {
     return createClientFactory(new ArrayList<>());
   }
 
-  /** Create a server which will attempt to bind to a specific port. */
+  /** 创建一个将尝试绑定到特定端口的服务器。 */
   public TransportServer createServer(int port, List<TransportServerBootstrap> bootstraps) {
     return new TransportServer(this, null, port, rpcHandler, bootstraps);
   }
 
-  /** Create a server which will attempt to bind to a specific host and port. */
+  /** 创建将尝试绑定到特定主机和端口的服务器。 */
   public TransportServer createServer(
       String host, int port, List<TransportServerBootstrap> bootstraps) {
     return new TransportServer(this, host, port, rpcHandler, bootstraps);
@@ -171,12 +169,11 @@ public class TransportContext implements Closeable {
   }
 
   /**
-   * Initializes a client or server Netty Channel Pipeline which encodes/decodes messages and
-   * has a {@link org.apache.spark.network.server.TransportChannelHandler} to handle request or
-   * response messages.
+   * 初始化客户端或服务器Netty Channel管道，该管道对消息进行编码/解码，
+   * 并具有{@link org.apache.spark.network.server.TransportChannelHandler}来处理请求或响应消息。
    *
-   * @param channel The channel to initialize.
-   * @param channelRpcHandler The RPC handler to use for the channel.
+   * @param channel 要初始化的通道。
+   * @param channelRpcHandler 用于通道的RPC处理程序。
    *
    * @return Returns the created TransportChannelHandler, which includes a TransportClient that can
    * be used to communicate on this channel. The TransportClient is directly associated with a
@@ -198,7 +195,7 @@ public class TransportContext implements Closeable {
         // NOTE: Chunks are currently guaranteed to be returned in the order of request, but this
         // would require more logic to guarantee if this were not part of the same event loop.
         .addLast("handler", channelHandler);
-      // Use a separate EventLoopGroup to handle ChunkFetchRequest messages for shuffle rpcs.
+      // 使用单独的EventLoopGroup处理Shuffle RPC的ChunkFetchRequest消息。
       if (chunkFetchWorkers != null) {
         pipeline.addLast(chunkFetchWorkers, "chunkFetchHandler", chunkFetchHandler);
       }
@@ -210,9 +207,8 @@ public class TransportContext implements Closeable {
   }
 
   /**
-   * Creates the server- and client-side handler which is used to handle both RequestMessages and
-   * ResponseMessages. The channel is expected to have been successfully created, though certain
-   * properties (such as the remoteAddress()) may not be available yet.
+   * 创建用于处理RequestMessages和ResponseMessages的服务器和客户端处理程序。
+   * 尽管某些属性（例如remoteAddress()）可能尚不可用，但是该通道应该已成功创建。
    */
   private TransportChannelHandler createChannelHandler(Channel channel, RpcHandler rpcHandler) {
     TransportResponseHandler responseHandler = new TransportResponseHandler(channel);
@@ -224,7 +220,7 @@ public class TransportContext implements Closeable {
   }
 
   /**
-   * Creates the dedicated ChannelHandler for ChunkFetchRequest messages.
+   * 为ChunkFetchRequest消息创建专用的ChannelHandler。
    */
   private ChunkFetchRequestHandler createChunkFetchHandler(TransportChannelHandler channelHandler,
       RpcHandler rpcHandler) {

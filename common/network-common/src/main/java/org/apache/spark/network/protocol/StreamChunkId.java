@@ -21,7 +21,7 @@ import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 
 /**
-* Encapsulates a request for a particular chunk of a stream.
+* 封装对流的特定块的请求。
 */
 public final class StreamChunkId implements Encodable {
   public final long streamId;

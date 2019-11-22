@@ -35,20 +35,17 @@ import org.apache.spark.util.{KeyLock, Utils}
 import org.apache.spark.util.io.{ChunkedByteBuffer, ChunkedByteBufferOutputStream}
 
 /**
- * A BitTorrent-like implementation of [[org.apache.spark.broadcast.Broadcast]].
+ * [[org.apache.spark.broadcast.Broadcast]]的类似BitTorrent的实现。
  *
- * The mechanism is as follows:
+ * 机制如下：
  *
- * The driver divides the serialized object into small chunks and
- * stores those chunks in the BlockManager of the driver.
+ * 驱动程序将序列化的对象分成小块，并将这些块存储在驱动程序的BlockManager中。
  *
- * On each executor, the executor first attempts to fetch the object from its BlockManager. If
- * it does not exist, it then uses remote fetches to fetch the small chunks from the driver and/or
- * other executors if available. Once it gets the chunks, it puts the chunks in its own
- * BlockManager, ready for other executors to fetch from.
+ * 在每个执行程序上，执行程序首先尝试从其BlockManager中获取对象。
+  * 如果不存在，则使用远程获取从驱动程序和/或其他执行程序（如果有）中获取小块。
+  * 一旦获取了块，便将块放入自己的BlockManager中，以备其他执行者从中获取。
  *
- * This prevents the driver from being the bottleneck in sending out multiple copies of the
- * broadcast data (one per executor).
+ * 这样可以防止驱动程序成为发送广播数据的多个副本（每个执行程序一个）的瓶颈。
  *
  * When initialized, TorrentBroadcast objects read SparkEnv.get.conf.
  *
@@ -79,7 +76,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     } else {
       None
     }
-    // Note: use getSizeAsKb (not bytes) to maintain compatibility if no units are provided
+    // Note: use getSizeAsKb (not bytes) to maintain compatibility if no units are provided(4m)
     blockSize = conf.get(config.BROADCAST_BLOCKSIZE).toInt * 1024
     checksumEnabled = conf.get(config.BROADCAST_CHECKSUM)
   }
@@ -87,7 +84,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
 
   private val broadcastId = BroadcastBlockId(id)
 
-  /** Total number of blocks this broadcast variable contains. */
+  /** 此广播变量包含的块总数。 */
   private val numBlocks: Int = writeBlocks(obj)
 
   /** Whether to generate checksum for blocks or not. */
@@ -106,6 +103,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     }
   }
 
+  // 计算checksum
   private def calcChecksum(block: ByteBuffer): Int = {
     val adler = new Adler32()
     if (block.hasArray) {
@@ -120,15 +118,14 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
   }
 
   /**
-   * Divide the object into multiple blocks and put those blocks in the block manager.
+   * 将对象分成多个块，然后将这些块放入块管理器中。
    *
    * @param value the object to divide
    * @return number of blocks this broadcast variable is divided into
    */
   private def writeBlocks(value: T): Int = {
     import StorageLevel._
-    // Store a copy of the broadcast variable in the driver so that tasks run on the driver
-    // do not create a duplicate copy of the broadcast variable's value.
+    // 将广播变量的副本存储在驱动程序中，以便在驱动程序上运行的任务不会创建广播变量值的重复副本。
     val blockManager = SparkEnv.get.blockManager
     if (!blockManager.putSingle(broadcastId, value, MEMORY_AND_DISK, tellMaster = false)) {
       throw new SparkException(s"Failed to store $broadcastId in BlockManager")
@@ -151,7 +148,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     blocks.length
   }
 
-  /** Fetch torrent blocks from the driver and/or other executors. */
+  /** 从驱动程序和/或其他执行程序中获取种子块。 */
   private def readBlocks(): Array[BlockData] = {
     // Fetch chunks of data. Note that all these chunks are stored in the BlockManager and reported
     // to the driver, so other executors can pull these chunks from this executor as well.
@@ -214,6 +211,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     out.defaultWriteObject()
   }
 
+  // 读取广播块
   private def readBroadcastBlock(): T = Utils.tryOrIOException {
     TorrentBroadcast.torrentBroadcastLock.withLock(broadcastId) {
       // As we only lock based on `broadcastId`, whenever using `broadcastCache`, we should only
@@ -293,11 +291,11 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
 private object TorrentBroadcast extends Logging {
 
   /**
-   * A [[KeyLock]] whose key is [[BroadcastBlockId]] to ensure there is only one thread fetching
-   * the same [[TorrentBroadcast]] block.
+   * 一个密钥为[[BroadcastBlockId]]的[[KeyLock]]，以确保只有一个线程在提取相同的[[TorrentBroadcast]]块。
    */
   private val torrentBroadcastLock = new KeyLock[BroadcastBlockId]
 
+  // 将对象进行块化
   def blockifyObject[T: ClassTag](
       obj: T,
       blockSize: Int,

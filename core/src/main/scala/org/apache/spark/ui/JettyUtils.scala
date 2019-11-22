@@ -231,11 +231,9 @@ private[spark] object JettyUtils extends Logging {
   }
 
   /**
-   * Attempt to start a Jetty server bound to the supplied hostName:port using the given
-   * context handlers.
+   * 尝试使用给定的上下文处理程序启动绑定到提供的hostName：port的Jetty服务器。
    *
-   * If the desired port number is contended, continues incrementing ports until a free port is
-   * found. Return the jetty Server object, the chosen port, and a mutable collection of handlers.
+   * 如果需要的端口号有争议，请继续增加端口号，直到找到可用端口为止。返回码头服务器对象，所选端口和可变的处理程序集合。
    */
   def startJettyServer(
       hostName: String,

@@ -20,9 +20,8 @@ package org.apache.spark.util
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * A special locking mechanism to provide locking with a given key. By providing the same key
- * (identity is tested using the `equals` method), we ensure there is only one `func` running at
- * the same time.
+ * 一种特殊的锁定机制，可通过给定的钥匙进行锁定。
+ * 通过提供相同的密钥（使用“等于”方法测试身份），我们确保同一时间仅运行一个“ func”。
  *
  * @tparam K the type of key to identify a lock. This type must implement `equals` and `hashCode`
  *           correctly as it will be the key type of an internal Map.

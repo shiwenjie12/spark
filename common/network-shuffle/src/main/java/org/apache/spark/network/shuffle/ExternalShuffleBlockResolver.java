@@ -51,10 +51,9 @@ import org.apache.spark.network.util.NettyUtils;
 import org.apache.spark.network.util.TransportConf;
 
 /**
- * Manages converting shuffle BlockIds into physical segments of local files, from a process outside
- * of Executors. Each Executor must register its own configuration about where it stores its files
- * (local dirs) and how (shuffle manager). The logic for retrieval of individual files is replicated
- * from Spark's IndexShuffleBlockResolver.
+ * 从执行程序外部的进程管理将随机的BlockId转换为本地文件的物理段。
+ * 每个执行器都必须注册自己的配置，以了解其存储文件的位置（本地目录）和存储方式（随机播放管理器）。
+ * 用于检索单个文件的逻辑是从Spark的IndexShuffleBlockResolver复制的。
  */
 public class ExternalShuffleBlockResolver {
   private static final Logger logger = LoggerFactory.getLogger(ExternalShuffleBlockResolver.class);
@@ -80,7 +79,7 @@ public class ExternalShuffleBlockResolver {
    */
   private final LoadingCache<File, ShuffleIndexInformation> shuffleIndexCache;
 
-  // Single-threaded Java executor used to perform expensive recursive directory deletion.
+  // 用于执行昂贵的递归目录删除的单线程Java执行程序。
   private final Executor directoryCleaner;
 
   private final TransportConf conf;
@@ -165,7 +164,7 @@ public class ExternalShuffleBlockResolver {
   }
 
   /**
-   * Obtains a FileSegmentManagedBuffer from a single block (shuffleId, mapId, reduceId).
+   * 从单个块（shuffleId，mapId，reduceId）获取FileSegmentManagedBuffer。
    */
   public ManagedBuffer getBlockData(
       String appId,

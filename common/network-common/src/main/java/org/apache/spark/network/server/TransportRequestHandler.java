@@ -37,9 +37,9 @@ import org.apache.spark.network.util.TransportFrameDecoder;
 import static org.apache.spark.network.util.NettyUtils.getRemoteAddress;
 
 /**
- * A handler that processes requests from clients and writes chunk data back. Each handler is
- * attached to a single Netty channel, and keeps track of which streams have been fetched via this
- * channel, in order to clean them up if the channel is terminated (see #channelUnregistered).
+ * 一个处理程序，该处理程序处理来自客户端的请求并写回块数据。
+ * 每个处理程序都附加到一个Netty通道，并跟踪通过该通道获取了哪些流，
+ * 以便在终止该通道时对其进行清理（请参阅#channelUnregistered）。
  *
  * The messages should have been processed by the pipeline setup by {@link TransportServer}.
  */
@@ -47,13 +47,13 @@ public class TransportRequestHandler extends MessageHandler<RequestMessage> {
 
   private static final Logger logger = LoggerFactory.getLogger(TransportRequestHandler.class);
 
-  /** The Netty channel that this handler is associated with. */
+  /** 与该处理程序关联的Netty通道。 */
   private final Channel channel;
 
-  /** Client on the same channel allowing us to talk back to the requester. */
+  /** 客户在同一个频道上，使我们可以与请求者交流。 */
   private final TransportClient reverseClient;
 
-  /** Handles all RPC messages. */
+  /** 处理所有RPC消息。 */
   private final RpcHandler rpcHandler;
 
   /** Returns each chunk part of a stream. */
@@ -111,12 +111,16 @@ public class TransportRequestHandler extends MessageHandler<RequestMessage> {
     }
   }
 
+  /*
+    处理stream请求（下载）
+   */
   private void processStreamRequest(final StreamRequest req) {
     if (logger.isTraceEnabled()) {
       logger.trace("Received req from {} to fetch stream {}", getRemoteAddress(channel),
         req.streamId);
     }
 
+    // 限制
     long chunksBeingTransferred = streamManager.chunksBeingTransferred();
     if (chunksBeingTransferred >= maxChunksBeingTransferred) {
       logger.warn("The number of chunks being transferred {} is above {}, close the connection.",
@@ -126,6 +130,7 @@ public class TransportRequestHandler extends MessageHandler<RequestMessage> {
     }
     ManagedBuffer buf;
     try {
+      // 获取buffer
       buf = streamManager.openStream(req.streamId);
     } catch (Exception e) {
       logger.error(String.format(
@@ -147,6 +152,7 @@ public class TransportRequestHandler extends MessageHandler<RequestMessage> {
     }
   }
 
+  // 处理rpc请求
   private void processRpcRequest(final RpcRequest req) {
     try {
       rpcHandler.receive(reverseClient, req.body().nioByteBuffer(), new RpcResponseCallback() {
@@ -169,7 +175,7 @@ public class TransportRequestHandler extends MessageHandler<RequestMessage> {
   }
 
   /**
-   * Handle a request from the client to upload a stream of data.
+   * 处理来自客户端的上传数据流的请求。
    */
   private void processStreamUpload(final UploadStream req) {
     assert (req.body() == null);
@@ -252,8 +258,7 @@ public class TransportRequestHandler extends MessageHandler<RequestMessage> {
   }
 
   /**
-   * Responds to a single message with some Encodable object. If a failure occurs while sending,
-   * it will be logged and the channel closed.
+   * 用某些可编码对象响应一条消息。如果在发送过程中发生故障，它将被记录下来并关闭通道。
    */
   private ChannelFuture respond(Encodable result) {
     SocketAddress remoteAddress = channel.remoteAddress();

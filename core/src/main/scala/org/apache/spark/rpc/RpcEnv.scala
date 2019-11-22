@@ -28,8 +28,8 @@ import org.apache.spark.util.RpcUtils
 
 
 /**
- * A RpcEnv implementation must have a [[RpcEnvFactory]] implementation with an empty constructor
- * so that it can be created via Reflection.
+ * RpcEnv实现必须具有带空构造函数的[[RpcEnvFactory]]实现
+ * 以便可以通过反射创建它。
  */
 private[spark] object RpcEnv {
 
@@ -84,8 +84,7 @@ private[spark] abstract class RpcEnv(conf: SparkConf) {
   def address: RpcAddress
 
   /**
-   * Register a [[RpcEndpoint]] with a name and return its [[RpcEndpointRef]]. [[RpcEnv]] does not
-   * guarantee thread-safety.
+   * 用名称注册[[RpcEndpointRef]]并返回其[[RpcEndpointRef]]。 [[RpcEnv]]不保证线程安全。
    */
   def setupEndpoint(name: String, endpoint: RpcEndpoint): RpcEndpointRef
 
@@ -150,16 +149,16 @@ private[spark] abstract class RpcEnv(conf: SparkConf) {
 }
 
 /**
- * A server used by the RpcEnv to server files to other processes owned by the application.
+ * RpcEnv使用的服务器，用于将文件服务器提供给应用程序所拥有的其他进程。
  *
- * The file server can return URIs handled by common libraries (such as "http" or "hdfs"), or
+ * 文件服务器可以返回由公共库处理的URI（例如“ http”或“ hdfs”），也可以返回将由`RpcEnv#fetchFile`处理的“ spark” URI。
+ *  The file server can return URIs handled by common libraries (such as "http" or "hdfs"), or
  * it can return "spark" URIs which will be handled by `RpcEnv#fetchFile`.
  */
 private[spark] trait RpcEnvFileServer {
 
   /**
-   * Adds a file to be served by this RpcEnv. This is used to serve files from the driver
-   * to executors when they're stored on the driver's local file system.
+   * 添加此RpcEnv服务的文件。当文件存储在驱动程序的本地文件系统上时，用于将文件从驱动程序提供给执行程序。
    *
    * @param file Local file to serve.
    * @return A URI for the location of the file.

@@ -28,14 +28,14 @@ import sun.misc.{Signal, SignalHandler}
 import org.apache.spark.internal.Logging
 
 /**
- * Contains utilities for working with posix signals.
+ * 包含用于处理posix信号的实用程序。
  */
 private[spark] object SignalUtils extends Logging {
 
   /** A flag to make sure we only register the logger once. */
   private var loggerRegistered = false
 
-  /** Register a signal handler to log signals on UNIX-like systems. */
+  /** 注册信号处理程序以在类似UNIX的系统上记录信号。 */
   def registerLogger(log: Logger): Unit = synchronized {
     if (!loggerRegistered) {
       Seq("TERM", "HUP", "INT").foreach { sig =>
@@ -49,7 +49,7 @@ private[spark] object SignalUtils extends Logging {
   }
 
   /**
-   * Adds an action to be run when a given signal is received by this process.
+   * 添加一个要在此过程收到给定信号时运行的操作。
    *
    * Note that signals are only supported on unix-like operating systems and work on a best-effort
    * basis: if a signal is not available or cannot be intercepted, only a warning is emitted.
@@ -71,7 +71,7 @@ private[spark] object SignalUtils extends Logging {
   }
 
   /**
-   * A handler for the given signal that runs a collection of actions.
+   * 给定信号的处理程序，它运行一系列动作。
    */
   private class ActionHandler(signal: Signal) extends SignalHandler {
 

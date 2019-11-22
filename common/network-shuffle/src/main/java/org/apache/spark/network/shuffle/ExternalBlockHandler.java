@@ -47,12 +47,10 @@ import static org.apache.spark.network.util.NettyUtils.getRemoteAddress;
 import org.apache.spark.network.util.TransportConf;
 
 /**
- * RPC Handler for a server which can serve both RDD blocks and shuffle blocks from outside
- * of an Executor process.
+ * 服务器的RPC处理程序，可以从Executor进程外部为RDD块和shuffle块提供服务。
  *
- * Handles registering executors and opening shuffle or disk persisted RDD blocks from them.
- * Blocks are registered with the "one-for-one" strategy, meaning each Transport-layer Chunk
- * is equivalent to one block.
+ * 处理注册执行程序并从中打开随机播放或磁盘持久化的RDD块。
+ * 块以“一对一”策略注册，这意味着每个传输层块相当于一个块。
  */
 public class ExternalBlockHandler extends RpcHandler {
   private static final Logger logger = LoggerFactory.getLogger(ExternalBlockHandler.class);
@@ -210,7 +208,7 @@ public class ExternalBlockHandler extends RpcHandler {
   }
 
   /**
-   * A simple class to wrap all shuffle service wrapper metrics
+   * 一个简单的类，用于包装所有随机播放服务包装器指标
    */
   @VisibleForTesting
   public class ShuffleMetrics implements MetricSet {

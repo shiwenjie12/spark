@@ -20,8 +20,7 @@ package org.apache.spark.rpc
 import org.apache.spark.SparkException
 
 /**
- * A factory class to create the [[RpcEnv]]. It must have an empty constructor so that it can be
- * created using Reflection.
+ * 用于创建[[RpcEnv]]的工厂类。它必须具有一个空的构造函数，以便可以使用Reflection创建它。
  */
 private[spark] trait RpcEnvFactory {
 
@@ -29,7 +28,7 @@ private[spark] trait RpcEnvFactory {
 }
 
 /**
- * An end point for the RPC that defines what functions to trigger given a message.
+ * RPC的端点，它定义给定消息触发什么功能。
  *
  * It is guaranteed that `onStart`, `receive` and `onStop` will be called in sequence.
  *
@@ -71,8 +70,8 @@ private[spark] trait RpcEndpoint {
   }
 
   /**
-   * Process messages from `RpcEndpointRef.ask`. If receiving a unmatched message,
-   * `SparkException` will be thrown and sent to `onError`.
+   * 处理来自"RpcEndpointRef.ask"的消息。如果收到不匹配的消息，
+   * SparkException将被抛出并发送到onError。
    */
   def receiveAndReply(context: RpcCallContext): PartialFunction[Any, Unit] = {
     case _ => context.sendFailure(new SparkException(self + " won't reply anything"))

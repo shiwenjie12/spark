@@ -26,10 +26,9 @@ import org.apache.spark.util.Utils
 
 /**
  * :: DeveloperApi ::
- * Flags for controlling the storage of an RDD. Each StorageLevel records whether to use memory,
- * or ExternalBlockStore, whether to drop the RDD to disk if it falls out of memory or
- * ExternalBlockStore, whether to keep the data in memory in a serialized format, and whether
- * to replicate the RDD partitions on multiple nodes.
+ * 用于控制RDD存储的标志。每个StorageLevel记录是否使用内存，还是使用ExternalBlockStore，
+ * 是否将RDD落入磁盘或ExternalBlockStore中，将RDD丢弃到磁盘，是否以串行化格式将数据保留在内存中，
+ * 以及是否在多个节点上复制RDD分区。
  *
  * The [[org.apache.spark.storage.StorageLevel]] singleton object contains some static constants
  * for commonly useful storage levels. To create your own storage level object, use the
@@ -146,8 +145,7 @@ class StorageLevel private(
 
 
 /**
- * Various [[org.apache.spark.storage.StorageLevel]] defined and utility functions for creating
- * new storage levels.
+ * 定义了各种[[org.apache.spark.storage.StorageLevel]]和实用程序功能，用于创建新的存储级别。
  */
 object StorageLevel {
   val NONE = new StorageLevel(false, false, false, false)

@@ -29,7 +29,7 @@ import org.apache.spark.launcher.WorkerCommandBuilder
 import org.apache.spark.util.Utils
 
 /**
- * Utilities for running commands with the spark classpath.
+ * 使用spark类路径运行命令的实用程序。
  */
 private[deploy]
 object CommandUtils extends Logging {
@@ -46,6 +46,7 @@ object CommandUtils extends Logging {
       substituteArguments: String => String,
       classPaths: Seq[String] = Seq.empty,
       env: Map[String, String] = sys.env): ProcessBuilder = {
+    // 将本地环境变量进行赋值
     val localCommand = buildLocalCommand(
       command, securityMgr, substituteArguments, classPaths, env)
     val commandSeq = buildCommandSeq(localCommand, memory, sparkHome)
@@ -65,9 +66,7 @@ object CommandUtils extends Logging {
   }
 
   /**
-   * Build a command based on the given one, taking into account the local environment
-   * of where this command is expected to run, substitute any placeholders, and append
-   * any extra class paths.
+   * 在给定命令的基础上构建命令，并考虑到该命令将在其上运行的本地环境，替换所有占位符，并附加任何其他类路径。
    */
   private def buildLocalCommand(
       command: Command,
@@ -75,8 +74,8 @@ object CommandUtils extends Logging {
       substituteArguments: String => String,
       classPath: Seq[String] = Seq.empty,
       env: Map[String, String]): Command = {
-    val libraryPathName = Utils.libraryPathEnvName
     val libraryPathEntries = command.libraryPathEntries
+    val libraryPathName = Utils.libraryPathEnvName
     val cmdLibraryPath = command.environment.get(libraryPathName)
 
     var newEnvironment = if (libraryPathEntries.nonEmpty && libraryPathName.nonEmpty) {
@@ -101,7 +100,7 @@ object CommandUtils extends Logging {
       command.javaOpts.filterNot(_.startsWith("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF)))
   }
 
-  /** Spawn a thread that will redirect a given stream to a file */
+  /** 产生一个将给定流重定向到文件的线程 */
   def redirectStream(in: InputStream, file: File): Unit = {
     val out = new FileOutputStream(file, true)
     // TODO: It would be nice to add a shutdown hook here that explains why the output is

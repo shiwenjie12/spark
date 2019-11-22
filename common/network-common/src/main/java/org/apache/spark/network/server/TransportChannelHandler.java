@@ -34,8 +34,7 @@ import org.apache.spark.network.protocol.ResponseMessage;
 import static org.apache.spark.network.util.NettyUtils.getRemoteAddress;
 
 /**
- * The single Transport-level Channel handler which is used for delegating requests to the
- * {@link TransportRequestHandler} and responses to the {@link TransportResponseHandler}.
+ * 单个传输级通道处理程序，用于将请求委派给{@link TransportRequestHandler}和对{@link TransportResponseHandler}的响应。
  *
  * All channels created in the transport layer are bidirectional. When the Client initiates a Netty
  * Channel with a RequestMessage (which gets handled by the Server's RequestHandler), the Server

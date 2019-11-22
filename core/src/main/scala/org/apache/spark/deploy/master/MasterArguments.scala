@@ -25,7 +25,7 @@ import org.apache.spark.internal.config.MASTER_UI_PORT
 import org.apache.spark.util.{IntParam, Utils}
 
 /**
- * Command-line parser for the master.
+ * 主服务器的命令行解析器。
  */
 private[master] class MasterArguments(args: Array[String], conf: SparkConf) extends Logging {
   var host = Utils.localHostName()

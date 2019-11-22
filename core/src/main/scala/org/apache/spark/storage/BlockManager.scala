@@ -58,7 +58,7 @@ import org.apache.spark.unsafe.Platform
 import org.apache.spark.util._
 import org.apache.spark.util.io.ChunkedByteBuffer
 
-/* Class for returning a fetched block and associated metrics. */
+/* 用于返回获取的块和相关指标的类。 */
 private[spark] class BlockResult(
     val data: Iterator[Any],
     val readMethod: DataReadMethod.Value,
@@ -114,8 +114,7 @@ private[spark] class ByteBufferBlockData(
 }
 
 /**
- * Manager running on every node (driver and executors) which provides interfaces for putting and
- * retrieving blocks both locally and remotely into various stores (memory, disk, and off-heap).
+ * 在每个节点（驱动程序和执行程序）上运行的管理器，它提供用于在本地和远程将块放入和检索到各种存储区（内存，磁盘和堆外）的接口。
  *
  * Note that [[initialize()]] must be called before the BlockManager is usable.
  */
@@ -725,7 +724,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Get block from local block manager as an iterator of Java objects.
+   * 从本地块管理器获取块作为Java对象的迭代器。
    */
   def getLocalValues(blockId: BlockId): Option[BlockResult] = {
     logDebug(s"Getting local block $blockId")

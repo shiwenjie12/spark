@@ -46,18 +46,16 @@ import org.apache.spark.network.server.TransportChannelHandler;
 import org.apache.spark.network.util.*;
 
 /**
- * Factory for creating {@link TransportClient}s by using createClient.
+ * 用于使用createClient创建{@link TransportClient}的工厂。
  *
- * The factory maintains a connection pool to other hosts and should return the same
- * TransportClient for the same remote host. It also shares a single worker thread pool for
- * all TransportClients.
+ * 工厂维护与其他主机的连接池，并应为同一远程主机返回相同的TransportClient。它还为所有TransportClient共享一个工作线程池。
  *
- * TransportClients will be reused whenever possible. Prior to completing the creation of a new
- * TransportClient, all given {@link TransportClientBootstrap}s will be run.
+ * TransportClients将在可能的情况下被重用。在完成创建新的TransportClient之前，
+ * 将运行所有给定的{@link TransportClientBootstrap}。
  */
 public class TransportClientFactory implements Closeable {
 
-  /** A simple data structure to track the pool of clients between two peer nodes. */
+  /** 一个简单的数据结构，用于跟踪两个对等节点之间的客户端池。 */
   private static class ClientPool {
     TransportClient[] clients;
     Object[] locks;
@@ -78,7 +76,7 @@ public class TransportClientFactory implements Closeable {
   private final List<TransportClientBootstrap> clientBootstraps;
   private final ConcurrentHashMap<SocketAddress, ClientPool> connectionPool;
 
-  /** Random number generator for picking connections between peers. */
+  /** 随机数生成器，用于选择对等体之间的连接。 */
   private final Random rand;
   private final int numConnectionsPerPeer;
 

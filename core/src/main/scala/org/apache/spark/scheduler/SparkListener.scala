@@ -30,6 +30,7 @@ import org.apache.spark.executor.{ExecutorMetrics, TaskMetrics}
 import org.apache.spark.scheduler.cluster.ExecutorInfo
 import org.apache.spark.storage.{BlockManagerId, BlockUpdatedInfo}
 
+// spark监听事件
 @DeveloperApi
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "Event")
 trait SparkListenerEvent {
@@ -208,20 +209,20 @@ case class SparkListenerApplicationEnd(time: Long) extends SparkListenerEvent
 case class SparkListenerLogStart(sparkVersion: String) extends SparkListenerEvent
 
 /**
- * Interface for listening to events from the Spark scheduler. Most applications should probably
- * extend SparkListener or SparkFirehoseListener directly, rather than implementing this class.
+ * 用于侦听来自Spark调度程序的事件的接口。
+ * 大多数应用程序可能应该直接扩展SparkListener或SparkFirehoseListener，而不是实现此类。
  *
  * Note that this is an internal interface which might change in different Spark releases.
  */
 private[spark] trait SparkListenerInterface {
 
   /**
-   * Called when a stage completes successfully or fails, with information on the completed stage.
+   * 在阶段成功完成或失败时调用，并提供有关已完成阶段的信息。
    */
   def onStageCompleted(stageCompleted: SparkListenerStageCompleted): Unit
 
   /**
-   * Called when a stage is submitted
+   * 提交阶段时调用
    */
   def onStageSubmitted(stageSubmitted: SparkListenerStageSubmitted): Unit
 
@@ -353,8 +354,7 @@ private[spark] trait SparkListenerInterface {
 
 /**
  * :: DeveloperApi ::
- * A default implementation for `SparkListenerInterface` that has no-op implementations for
- * all callbacks.
+ * SparkListenerInterface的默认实现，对所有回调均具有无操作实现。
  *
  * Note that this is an internal interface which might change in different Spark releases.
  */

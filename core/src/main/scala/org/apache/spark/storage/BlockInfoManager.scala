@@ -30,17 +30,15 @@ import org.apache.spark.internal.Logging
 
 
 /**
- * Tracks metadata for an individual block.
+ * 跟踪单个块的元数据。
  *
- * Instances of this class are _not_ thread-safe and are protected by locks in the
+ * 此类的实例不是线程安全的，并且受锁中的锁保护。
  * [[BlockInfoManager]].
  *
- * @param level the block's storage level. This is the requested persistence level, not the
- *              effective storage level of the block (i.e. if this is MEMORY_AND_DISK, then this
- *              does not imply that the block is actually resident in memory).
- * @param classTag the block's [[ClassTag]], used to select the serializer
- * @param tellMaster whether state changes for this block should be reported to the master. This
- *                   is true for most blocks, but is false for broadcast blocks.
+ * @param level 块的存储级别。这是请求的持久性级别，而不是块的有效存储级别
+ *              （即，如果这是MEMORY_AND_DISK，则这并不意味着该块实际上位于内存中）。
+ * @param classTag 块的[[ClassTag]]，用于选择序列化器
+ * @param tellMaster 是否应将此块的状态更改报告给主站。对于大多数块而言，这是true，但对于广播块而言，则是false。
  */
 private[storage] class BlockInfo(
     val level: StorageLevel,
@@ -92,13 +90,12 @@ private[storage] class BlockInfo(
 private[storage] object BlockInfo {
 
   /**
-   * Special task attempt id constant used to mark a block's write lock as being unlocked.
+   * 特殊任务尝试ID常数，用于将块的写锁定标记为未锁定。
    */
   val NO_WRITER: Long = -1
 
   /**
-   * Special task attempt id constant used to mark a block's write lock as being held by
-   * a non-task thread (e.g. by a driver thread or by unit test code).
+   * 特殊任务尝试ID常数，用于将块的写锁定标记为非任务线程（例如，驱动程序线程或单元测试代码）持有的代码。
    */
   val NON_TASK_WRITER: Long = -1024
 }
@@ -117,9 +114,8 @@ private[storage] class BlockInfoManager extends Logging {
   private type TaskAttemptId = Long
 
   /**
-   * Used to look up metadata for individual blocks. Entries are added to this map via an atomic
-   * set-if-not-exists operation ([[lockNewBlockForWriting()]]) and are removed
-   * by [[removeBlock()]].
+   * 用于查找单个块的元数据。条目通过原子的“如果不存在则设置”操作
+    * （[[lockNewBlockForWriting()]]添加到此映射，并由[[removeBlock（）]]删除。
    */
   @GuardedBy("this")
   private[this] val infos = new mutable.HashMap[BlockId, BlockInfo]
@@ -166,16 +162,13 @@ private[storage] class BlockInfoManager extends Logging {
   }
 
   /**
-   * Lock a block for reading and return its metadata.
+   * 锁定一个块以读取并返回其元数据。
    *
-   * If another task has already locked this block for reading, then the read lock will be
-   * immediately granted to the calling task and its lock count will be incremented.
+   * 如果另一个任务已经锁定了该块以供读取，则读取锁定将立即授予调用任务，并且其锁定计数将增加。
    *
-   * If another task has locked this block for writing, then this call will block until the write
-   * lock is released or will return immediately if `blocking = false`.
+   * 如果另一个任务锁定了该块进行写操作，则此调用将被阻止直到释放写锁为止，或者如果“ blocking = false”将立即返回
    *
-   * A single task can lock a block multiple times for reading, in which case each lock will need
-   * to be released separately.
+   * 单个任务可以多次锁定一个块以进行读取，在这种情况下，每个锁定将需要分别释放。
    *
    * @param blockId the block to lock.
    * @param blocking if true (default), this call will block until the lock is acquired. If false,

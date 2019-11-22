@@ -28,6 +28,7 @@ import org.apache.spark.{SecurityManager, SparkConf, SparkException}
 import org.apache.spark.internal.Logging
 import org.apache.spark.util.{MutableURLClassLoader, Utils}
 
+// 依赖工具
 private[deploy] object DependencyUtils extends Logging {
 
   def resolveMavenDependencies(

@@ -41,7 +41,7 @@ import org.apache.spark.network.TransportContext;
 import org.apache.spark.network.util.*;
 
 /**
- * Server for the efficient, low-level streaming service.
+ * 用于高效，低级流服务的服务器。
  */
 public class TransportServer implements Closeable {
   private static final Logger logger = LoggerFactory.getLogger(TransportServer.class);
@@ -58,8 +58,8 @@ public class TransportServer implements Closeable {
   private NettyMemoryMetrics metrics;
 
   /**
-   * Creates a TransportServer that binds to the given host and the given port, or to any available
-   * if 0. If you don't want to bind to any special host, set "hostToBind" to null.
+   * 创建一个与给定主机和给定端口或任何可用端口绑定的TransportServer
+   * 如果0。如果你不想绑定到任何特殊的主机，一套“hostToBind”为空。
    * */
   public TransportServer(
       TransportContext context,

@@ -69,8 +69,7 @@ import org.apache.spark.util._
 import org.apache.spark.util.logging.DriverLogger
 
 /**
- * Main entry point for Spark functionality. A SparkContext represents the connection to a Spark
- * cluster, and can be used to create RDDs, accumulators and broadcast variables on that cluster.
+ * Spark功能的主要入口点。 SparkContext表示与Spark集群的连接，可用于在该集群上创建RDD，累加器和广播变量。
  *
  * @note Only one `SparkContext` should be active per JVM. You must `stop()` the
  *   active `SparkContext` before creating a new one.
@@ -79,7 +78,7 @@ import org.apache.spark.util.logging.DriverLogger
  */
 class SparkContext(config: SparkConf) extends Logging {
 
-  // The call site where this SparkContext was constructed.
+  // 构造此SparkContext的呼叫站点。
   private val creationSite: CallSite = Utils.getCallSite()
 
   // In order to prevent multiple SparkContexts from being active at the same time, mark this
@@ -281,7 +280,7 @@ class SparkContext(config: SparkConf) extends Logging {
   private[spark] val addedFiles = new ConcurrentHashMap[String, Long]().asScala
   private[spark] val addedJars = new ConcurrentHashMap[String, Long]().asScala
 
-  // Keeps track of all persisted RDDs
+  // 跟踪所有持久的RDD
   private[spark] val persistentRdds = {
     val map: ConcurrentMap[Int, RDD[_]] = new MapMaker().weakValues().makeMap[Int, RDD[_]]()
     map.asScala
@@ -345,7 +344,7 @@ class SparkContext(config: SparkConf) extends Logging {
 
   private[spark] var checkpointDir: Option[String] = None
 
-  // Thread Local variable that can be used by users to pass information down the stack
+  // 线程局部变量，用户可用于将信息向下传递到堆栈
   protected[spark] val localProperties = new InheritableThreadLocal[Properties] {
     override protected def childValue(parent: Properties): Properties = {
       // Note: make a clone such that changes in the parent properties aren't reflected in
@@ -450,13 +449,12 @@ class SparkContext(config: SparkConf) extends Logging {
 
     _listenerBus = new LiveListenerBus(_conf)
 
-    // Initialize the app status store and listener before SparkEnv is created so that it gets
-    // all events.
+    // 在创建SparkEnv之前初始化应用程序状态存储和侦听器，以获取所有事件。
     val appStatusSource = AppStatusSource.createSource(conf)
     _statusStore = AppStatusStore.createLiveStore(conf, appStatusSource)
     listenerBus.addToStatusQueue(_statusStore.listener.get)
 
-    // Create the Spark execution environment (cache, map output tracker, etc)
+    // 创建Spark执行环境（缓存，map输出跟踪器等）
     _env = createSparkEnv(_conf, isLocal, listenerBus)
     SparkEnv.set(_env)
 
@@ -1813,7 +1811,7 @@ class SparkContext(config: SparkConf) extends Logging {
   }
 
   /**
-   * Adds a JAR dependency for all tasks to be executed on this `SparkContext` in the future.
+   * 为将来要在此“ SparkContext”上执行的所有任务添加JAR依赖关系。
    *
    * If a jar is added during execution, it will not be available until the next TaskSet starts.
    *
@@ -2481,15 +2479,14 @@ class SparkContext(config: SparkConf) extends Logging {
 }
 
 /**
- * The SparkContext object contains a number of implicit conversions and parameters for use with
- * various Spark features.
+ * SparkContext对象包含许多与各种Spark功能一起使用的隐式转换和参数。
  */
 object SparkContext extends Logging {
   private val VALID_LOG_LEVELS =
     Set("ALL", "DEBUG", "ERROR", "FATAL", "INFO", "OFF", "TRACE", "WARN")
 
   /**
-   * Lock that guards access to global variables that track SparkContext construction.
+   * 防止访问跟踪SparkContext构造的全局变量的锁。
    */
   private val SPARK_CONTEXT_CONSTRUCTOR_LOCK = new Object()
 
@@ -2540,9 +2537,8 @@ object SparkContext extends Logging {
   }
 
   /**
-   * This function may be used to get or instantiate a SparkContext and register it as a
-   * singleton object. Because we can only have one active SparkContext per JVM,
-   * this is useful when applications may wish to share a SparkContext.
+   * 此函数可用于获取或实例化SparkContext并将其注册为单例对象。
+    * 因为每个JVM我们只能有一个活动的SparkContext，所以这在应用程序希望共享SparkContext时很有用。
    *
    * @param config `SparkConfig` that will be used for initialisation of the `SparkContext`
    * @return current `SparkContext` (or a new one if it wasn't created before the function call)

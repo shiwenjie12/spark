@@ -39,7 +39,7 @@ import org.apache.spark.util.Utils
 import org.apache.spark.util.io.ChunkedByteBuffer
 
 /**
- * Stores BlockManager blocks on disk.
+ * 在磁盘上存储BlockManager块。
  */
 private[spark] class DiskStore(
     conf: SparkConf,

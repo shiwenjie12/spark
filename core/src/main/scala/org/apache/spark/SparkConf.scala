@@ -34,7 +34,7 @@ import org.apache.spark.serializer.KryoSerializer
 import org.apache.spark.util.Utils
 
 /**
- * Configuration for a Spark application. Used to set various Spark parameters as key-value pairs.
+ * Spark应用程序的配置。用于将各种Spark参数设置为键值对。
  *
  * Most of the time, you would create a SparkConf object with `new SparkConf()`, which will load
  * values from any `spark.*` Java system properties set in your application as well. In this case,
@@ -71,7 +71,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging with Seria
   }
 
   private[spark] def loadFromSystemProperties(silent: Boolean): SparkConf = {
-    // Load any spark.* system properties
+    // 加载所有spark.*系统属性
     for ((key, value) <- Utils.getSystemProperties if key.startsWith("spark.")) {
       set(key, value, silent)
     }
@@ -748,7 +748,7 @@ private[spark] object SparkConf extends Logging {
   }
 
   /**
-   * Logs a warning message if the given config key is deprecated.
+   * 如果不赞成使用给定的配置密钥，则记录警告消息。
    */
   def logDeprecationWarning(key: String): Unit = {
     deprecatedConfigs.get(key).foreach { cfg =>

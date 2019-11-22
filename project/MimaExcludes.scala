@@ -19,18 +19,18 @@ import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
 
 /**
- * Additional excludes for checking of Spark's binary compatibility.
+ * 其他不包括用于检查Spark的二进制兼容性。
  *
- * This acts as an official audit of cases where we excluded other classes. Please use the narrowest
- * possible exclude here. MIMA will usually tell you what exclude to use, e.g.:
+ * 这是对我们排除其他类别的案件的官方审核。请使用最窄的
+ * 可能在这里排除。 MIMA通常会告诉您要排除的内容，例如：
  *
- * ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.rdd.RDD.take")
+ * ProblemFilters.exclude [MissingMethodProblem]（“ org.apache.spark.rdd.RDD.take”）
  *
- * It is also possible to exclude Spark classes and packages. This should be used sparingly:
+ * 也可以排除Spark类和包。应该谨慎使用：
  *
- * MimaBuild.excludeSparkClass("graphx.util.collection.GraphXPrimitiveKeyOpenHashMap")
+ * MimaBuild.excludeSparkClass（“ graphx.util.collection.GraphXPrimitiveKeyOpenHashMap”）
  *
- * For a new Spark version, please update MimaBuild.scala to reflect the previous version.
+ * 对于新的Spark版本，请更新MimaBuild.scala以反映以前的版本。
  */
 object MimaExcludes {
 

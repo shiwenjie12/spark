@@ -26,7 +26,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 
 /**
- * A {@link ManagedBuffer} backed by a Netty {@link ByteBuf}.
+ * 由Netty {@link ByteBuf}支持的{@link ManagedBuffer}。
  */
 public class NettyManagedBuffer extends ManagedBuffer {
   private final ByteBuf buf;

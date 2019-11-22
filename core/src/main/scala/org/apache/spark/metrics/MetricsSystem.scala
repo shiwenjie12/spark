@@ -226,6 +226,9 @@ private[spark] class MetricsSystem private (
   }
 }
 
+/*
+  度量系统
+ */
 private[spark] object MetricsSystem {
   val SINK_REGEX = "^sink\\.(.+)\\.(.+)".r
   val SOURCE_REGEX = "^source\\.(.+)\\.(.+)".r
@@ -246,24 +249,26 @@ private[spark] object MetricsSystem {
     new MetricsSystem(instance, conf, securityMgr)
   }
 }
-
+/*
+  度量实例种类
+ */
 private[spark] object MetricsSystemInstances {
-  // The Spark standalone master process
+  // Spark独立主进程
   val MASTER = "master"
 
-  // A component within the master which reports on various applications
+  // 主数据库中的一个组件，可报告各种应用程序
   val APPLICATIONS = "applications"
 
-  // A Spark standalone worker process
+  // Spark独立工作者进程
   val WORKER = "worker"
 
-  // A Spark executor
+  // spark执行器
   val EXECUTOR = "executor"
 
-  // The Spark driver process (the process in which your SparkContext is created)
+  // Spark驱动程序过程（创建SparkContext的过程）
   val DRIVER = "driver"
 
-  // The Spark shuffle service
+  // Spark随机播放服务
   val SHUFFLE_SERVICE = "shuffleService"
 
   // The Spark ApplicationMaster when running on YARN

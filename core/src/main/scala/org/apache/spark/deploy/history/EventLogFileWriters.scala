@@ -34,13 +34,13 @@ import org.apache.spark.io.CompressionCodec
 import org.apache.spark.util.Utils
 
 /**
- * The base class of writer which will write event logs into file.
+ * writer的基类，它将事件日志写入文件。
  *
- * The following configurable parameters are available to tune the behavior of writing:
- *   spark.eventLog.compress - Whether to compress logged events
- *   spark.eventLog.compression.codec - The codec to compress logged events
- *   spark.eventLog.overwrite - Whether to overwrite any existing files
- *   spark.eventLog.buffer.kb - Buffer size to use when writing to output streams
+ * 以下可配置参数可用于调整写入行为：
+ *   spark.eventLog.compress-是否压缩记录的事件
+ *   spark.eventLog.compression.codec-压缩记录的事件的编解码器
+ *   spark.eventLog.overwrite-是否覆盖任何现有文件
+ *   spark.eventLog.buffer.kb-写入输出流时要使用的缓冲区大小
  *
  * Note that descendant classes can maintain its own parameters: refer the javadoc of each class
  * for more details.
@@ -161,6 +161,7 @@ abstract class EventLogFileWriter(
   def logPath: String
 }
 
+// 时间日志的写入器
 object EventLogFileWriter {
   // Suffix applied to the names of files still being written by applications.
   val IN_PROGRESS = ".inprogress"

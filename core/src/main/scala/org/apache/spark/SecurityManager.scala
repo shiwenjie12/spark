@@ -34,11 +34,10 @@ import org.apache.spark.network.sasl.SecretKeyHolder
 import org.apache.spark.util.Utils
 
 /**
- * Spark class responsible for security.
+ * Spark类负责安全性。
  *
- * In general this class should be instantiated by the SparkEnv and most components
- * should access it from that. There are some cases where the SparkEnv hasn't been
- * initialized yet and this class must be instantiated directly.
+ * 通常，此类应由SparkEnv和大多数组件实例化
+ * 应该从中访问它。在某些情况下，SparkEnv尚未初始化，并且必须直接实例化此类。
  *
  * This class implements all of the configuration related to security features described
  * in the "Security" document. Please refer to that document for specific features implemented
@@ -255,7 +254,7 @@ private[spark] class SecurityManager(
   }
 
   /**
-   * Check to see if authentication for the Spark communication protocols is enabled
+   * 检查是否已启用Spark通信协议的身份验证
    * @return true if authentication is enabled, otherwise false
    */
   def isAuthenticationEnabled(): Boolean = authOn
@@ -303,7 +302,7 @@ private[spark] class SecurityManager(
   }
 
   /**
-   * Initialize the authentication secret.
+   * 初始化身份验证密码。
    *
    * If authentication is disabled, do nothing.
    *

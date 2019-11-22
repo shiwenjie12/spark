@@ -61,7 +61,11 @@ import org.apache.spark.util.random.{BernoulliCellSampler, BernoulliSampler, Poi
  * can be saved as SequenceFiles.
  * All operations are automatically available on any RDD of the right type (e.g. RDD[(Int, Int)])
  * through implicit.
- *
+ * 弹性分布式数据集（RDD），Spark中的基本抽象。表示可以并行操作的元素的不变分区集合。此类包含所有RDD上可用的基本操作，例如“ map”，“ filter”和“ persist”。此外，
+  * [[org.apache.spark.rdd.PairRDDFunctions]]包含仅在键/值对的RDD上可用的操作，例如groupByKey和join。
+  * [[org.apache.spark.rdd.DoubleRDDFunctions]]包含仅在Doubles的RDD上可用的操作；和
+  * [[org.apache.spark.rdd.SequenceFileRDDFunctions]]包含可保存为SequenceFiles的RDD上可用的操作。
+  * 所有操作都可以在任何类型正确的RDD上自动使用（例如RDD [（Int，Int）]） 通过隐式。
  * Internally, each RDD is characterized by five main properties:
  *
  *  - A list of partitions

@@ -33,8 +33,7 @@ import org.apache.spark.util.Utils
 
 /**
  * :: DeveloperApi ::
- * CompressionCodec allows the customization of choosing different compression implementations
- * to be used in block storage.
+ * CompressionCodec允许定制选择要在块存储中使用的不同压缩实现。
  *
  * @note The wire protocol for a codec is not guaranteed compatible across versions of Spark.
  * This is intended for use as an internal compression utility within a single Spark application.

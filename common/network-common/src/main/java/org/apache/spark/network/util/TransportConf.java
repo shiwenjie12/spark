@@ -24,7 +24,7 @@ import com.google.common.primitives.Ints;
 import io.netty.util.NettyRuntime;
 
 /**
- * A central location that tracks all the settings we expose to users.
+ * 跟踪我们向用户公开的所有设置的中央位置。
  */
 public class TransportConf {
 
@@ -168,8 +168,7 @@ public class TransportConf {
   }
 
   /**
-   * Whether to track Netty memory detailed metrics. If true, the detailed metrics of Netty
-   * PoolByteBufAllocator will be gotten, otherwise only general memory usage will be tracked.
+   * 是否跟踪Netty内存的详细指标。如果为true，将获取Netty PoolByteBufAllocator的详细指标，否则将仅跟踪常规内存使用情况。
    */
   public boolean verboseMetrics() {
     return conf.getBoolean(SPARK_NETWORK_VERBOSE_METRICS, false);

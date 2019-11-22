@@ -71,7 +71,7 @@ import org.apache.spark.serializer.{DeserializationStream, SerializationStream, 
 import org.apache.spark.status.api.v1.{StackTrace, ThreadStackTrace}
 import org.apache.spark.util.io.ChunkedByteBufferOutputStream
 
-/** CallSite represents a place in user code. It can have a short and a long form. */
+/** CallSite代表用户代码中的位置。它可以有简短的形式和较长的形式。 */
 private[spark] case class CallSite(shortForm: String, longForm: String)
 
 private[spark] object CallSite {
@@ -290,8 +290,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Create a directory inside the given parent directory. The directory is guaranteed to be
-   * newly created, and is not marked for automatic deletion.
+   * 在给定的父目录内创建一个目录。该目录保证是新创建的，并且未标记为自动删除。
    */
   def createDirectory(root: String, namePrefix: String = "spark"): File = {
     var attempts = 0
@@ -475,10 +474,9 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Download a file or directory to target directory. Supports fetching the file in a variety of
-   * ways, including HTTP, Hadoop-compatible filesystems, and files on a standard filesystem, based
-   * on the URL parameter. Fetching directories is only supported from Hadoop-compatible
-   * filesystems.
+   * 将文件或目录下载到目标目录。支持基于URL参数以多种方式获取文件，
+   * 包括HTTP，兼容Hadoop的文件系统以及标准文件系统上的文件。
+   * 仅从兼容Hadoop的文件系统中支持获取目录。
    *
    * If `useCache` is true, first attempts to fetch the file to a local cache that's shared
    * across executors running the same application. `useCache` is used mainly for
@@ -1013,7 +1011,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Get the local machine's hostname.
+   * 获取本地计算机的主机名。
    */
   def localHostName(): String = {
     customHostname.getOrElse(localIpAddress.getHostAddress)
@@ -1062,7 +1060,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Return the string to tell how long has passed in milliseconds.
+   * 返回字符串以告诉您经过了多长时间（以毫秒为单位）。
    * @param startTimeNs - a timestamp in nanoseconds returned by `System.nanoTime`.
    */
   def getUsedTimeNs(startTimeNs: Long): String = {
@@ -1351,7 +1349,7 @@ private[spark] object Utils extends Logging {
     }
   }
 
-  /** Executes the given block. Log non-fatal errors if any, and only throw fatal errors */
+  /** 执行给定的块。记录非致命错误（如有），仅引发致命错误 */
   def tryLogNonFatalError(block: => Unit): Unit = {
     try {
       block
@@ -1394,9 +1392,8 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Execute a block of code and call the failure callbacks in the catch block. If exceptions occur
-   * in either the catch or the finally block, they are appended to the list of suppressed
-   * exceptions in original exception which is then rethrown.
+   * 执行一个代码块，并在catch块中调用失败回调。如果在catch或finally块中发生异常，
+    * 则将它们添加到原始异常中被抑制的异常列表中，然后将其重新抛出。
    *
    * This is primarily an issue with `catch { abort() }` or `finally { out.close() }` blocks,
    * where the abort/close needs to be called to clean up `out`, but if an exception happened
@@ -1446,7 +1443,7 @@ private[spark] object Utils extends Logging {
     """^org\.apache\.spark(\.api\.java)?(\.util)?(\.rdd)?(\.broadcast)?\.[A-Z]""".r
   private val SPARK_SQL_CLASS_REGEX = """^org\.apache\.spark\.sql.*""".r
 
-  /** Default filtering function for finding call sites using `getCallSite`. */
+  /** 用于使用`getCallSite`查找呼叫站点的默认过滤功能。 */
   private def sparkInternalExclusionFunction(className: String): Boolean = {
     val SCALA_CORE_CLASS_PREFIX = "scala"
     val isSparkClass = SPARK_CORE_CLASS_REGEX.findFirstIn(className).isDefined ||
@@ -1457,9 +1454,8 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * When called inside a class in the spark package, returns the name of the user code class
-   * (outside the spark package) that called into Spark, as well as which Spark method they called.
-   * This is used, for example, to tell users where in their code each RDD got created.
+   * 在spark软件包中的类内部调用时，返回在Spark中调用的用户代码类的名称（在spark软件包外部）以及它们调用的Spark方法。
+    * 例如，它用于告诉用户在其代码中的哪个位置创建了每个RDD。
    *
    * @param skipClass Function that is used to exclude non-user-code classes.
    */
@@ -1996,7 +1992,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Return a well-formed URI for the file described by a user input string.
+   * 返回用户输入字符串描述的文件的格式正确的URI。
    *
    * If the supplied path does not contain a scheme, or is a relative path, it will be
    * converted into an absolute path with a file:// scheme.
@@ -2231,7 +2227,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Maximum number of retries when binding to a port before giving up.
+   * 绑定到端口之前放弃的最大重试次数。
    */
   def portMaxRetries(conf: SparkConf): Int = {
     val maxRetries = conf.getOption("spark.port.maxRetries").map(_.toInt)
@@ -2244,21 +2240,20 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Returns the user port to try when trying to bind a service. Handles wrapping and skipping
-   * privileged ports.
+   * 返回尝试绑定服务时要尝试的用户端口。处理换行和跳过特权端口。
    */
   def userPort(base: Int, offset: Int): Int = {
     (base + offset - 1024) % (65536 - 1024) + 1024
   }
 
   /**
-   * Attempt to start a service on the given port, or fail after a number of attempts.
-   * Each subsequent attempt uses 1 + the port used in the previous attempt (unless the port is 0).
+   * 尝试在给定的端口上启动服务，或在多次尝试后失败。
+   * 每次后续尝试都使用1 +上一次尝试中使用的端口（除非端口为0）。
    *
-   * @param startPort The initial port to start the service on.
-   * @param startService Function to start service on a given port.
-   *                     This is expected to throw java.net.BindException on port collision.
-   * @param conf A SparkConf used to get the maximum number of retries when binding to a port.
+   * @param startPort 用于启动服务的初始端口。
+   * @param startService 在给定端口上启动服务的功能。
+   *                     预计这会在端口冲突时引发java.net.BindException。
+   * @param conf 绑定到端口时，SparkConf用于获取最大重试次数。
    * @param serviceName Name of the service.
    * @return (service: T, port: Int)
    */
@@ -2513,7 +2508,7 @@ private[spark] object Utils extends Logging {
 
   /**
    *
-   * @return whether it is local mode
+   * @return 是否为本地模式
    */
   def isLocalMaster(conf: SparkConf): Boolean = {
     val master = conf.get("spark.master", "")
@@ -2568,7 +2563,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Returns a path of temporary file which is in the same directory with `path`.
+   * 返回与`path`在同一目录中的临时文件的路径。
    */
   def tempFileWith(path: File): File = {
     new File(path.getAbsolutePath + "." + UUID.randomUUID())
@@ -2584,7 +2579,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Returns the pid of this JVM process.
+   * 返回此JVM进程的pid。
    */
   def getProcessId: Int = {
     val PROCESS = "(\\d+)@(.*)".r
@@ -2605,8 +2600,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Utility function that should be called early in `main()` for daemons to set up some common
-   * diagnostic state.
+    * 应该在`main()`的早期调用的实用程序函数，以使守护程序设置一些常见的诊断状态。
    */
   def initDaemon(log: Logger): Unit = {
     log.info(s"Started daemon with process name: ${Utils.getProcessName()}")
@@ -2951,7 +2945,7 @@ private[spark] object Utils extends Logging {
     codec == null || codec.isInstanceOf[SplittableCompressionCodec]
   }
 
-  /** Create a new properties object with the same values as `props` */
+  /** 创建一个与props具有相同值的新属性对象 */
   def cloneProperties(props: Properties): Properties = {
     val resultProps = new Properties()
     props.forEach((k, v) => resultProps.put(k, v))

@@ -23,16 +23,14 @@ import org.apache.spark.SecurityManager
 import org.apache.spark.SparkConf
 
 /**
- * An interface for all the broadcast implementations in Spark (to allow
- * multiple broadcast implementations). SparkContext uses a BroadcastFactory
- * implementation to instantiate a particular broadcast for the entire Spark job.
+ * Spark中所有广播实现的接口（以允许多个广播实现）。 SparkContext使用BroadcastFactory实现实例化整个Spark作业的特定广播。
  */
 private[spark] trait BroadcastFactory {
 
   def initialize(isDriver: Boolean, conf: SparkConf, securityMgr: SecurityManager): Unit
 
   /**
-   * Creates a new broadcast variable.
+   * 创建一个新的广播变量。
    *
    * @param value value to broadcast
    * @param isLocal whether we are in local mode (single JVM process)

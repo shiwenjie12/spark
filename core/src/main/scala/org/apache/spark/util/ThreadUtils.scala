@@ -30,6 +30,9 @@ import scala.util.control.NonFatal
 import org.apache.spark.SparkException
 import org.apache.spark.rpc.RpcAbortException
 
+/*
+  线程工具
+ */
 private[spark] object ThreadUtils {
 
   private val sameThreadExecutionContext =
@@ -59,8 +62,7 @@ private[spark] object ThreadUtils {
   }
 
   /**
-   * Create a cached thread pool whose max number of threads is `maxThreadNumber`. Thread names
-   * are formatted as prefix-ID, where ID is a unique, sequentially assigned integer.
+   * 创建一个最大线程数为“ maxThreadNumber”的缓存线程池。线程名称的格式设置为前缀ID，其中ID是顺序分配的唯一整数。
    */
   def newDaemonCachedThreadPool(
       prefix: String, maxThreadNumber: Int, keepAliveSeconds: Int = 60): ThreadPoolExecutor = {

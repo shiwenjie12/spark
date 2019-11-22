@@ -31,8 +31,7 @@ import org.apache.spark.util.{AccumulatorV2, TaskCompletionListener, TaskFailure
 
 object TaskContext {
   /**
-   * Return the currently active TaskContext. This can be called inside of
-   * user functions to access contextual information about running tasks.
+   * 返回当前活动的TaskContext。可以在用户函数内部调用此函数，以访问有关正在运行的任务的上下文信息。
    */
   def get(): TaskContext = taskContext.get
 
@@ -73,8 +72,7 @@ object TaskContext {
 
 
 /**
- * Contextual information about a task which can be read or mutated during
- * execution. To access the TaskContext for a running task, use:
+ * 关于任务的上下文信息，可以在执行过程中读取或修改。要访问正在运行的任务的TaskContext，请使用：
  * {{{
  *   org.apache.spark.TaskContext.get()
  * }}}
@@ -88,12 +86,12 @@ abstract class TaskContext extends Serializable {
   // Note: getters in this class are defined with parentheses to maintain backward compatibility.
 
   /**
-   * Returns true if the task has completed.
+   * 如果任务已完成，则返回true。
    */
   def isCompleted(): Boolean
 
   /**
-   * Returns true if the task has been killed.
+   * 如果任务已被杀死，则返回true。
    */
   def isInterrupted(): Boolean
 
@@ -166,8 +164,7 @@ abstract class TaskContext extends Serializable {
   def attemptNumber(): Int
 
   /**
-   * An ID that is unique to this task attempt (within the same SparkContext, no two task attempts
-   * will share the same attempt ID).  This is roughly equivalent to Hadoop's TaskAttemptID.
+   * 此任务尝试唯一的ID（在同一SparkContext中，没有两个任务尝试共享同一尝试ID）。这大致相当于Hadoop的TaskAttemptID。
    */
   def taskAttemptId(): Long
 

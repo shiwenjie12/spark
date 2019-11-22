@@ -33,15 +33,13 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.internal.PlatformDependent;
 
 /**
- * Utilities for creating various Netty constructs based on whether we're using EPOLL or NIO.
+ * 用于基于我们使用的是EPOLL还是NIO来创建各种Netty构造的实用程序。
  */
 public class NettyUtils {
 
   /**
-   * Specifies an upper bound on the number of Netty threads that Spark requires by default.
-   * In practice, only 2-4 cores should be required to transfer roughly 10 Gb/s, and each core
-   * that we use will have an initial overhead of roughly 32 MB of off-heap memory, which comes
-   * at a premium.
+   * 指定默认情况下Spark需要的Netty线程数的上限。
+   * 在实践中，仅需要2-4个内核即可传输大约10 Gb/s，我们使用的每个内核的初始开销约为32 MB的堆外内存，这是非常宝贵的。
    *
    * Thus, this value should still retain maximum throughput and reduce wasted off-heap memory
    * allocation. It can be overridden by setting the number of serverThreads and clientThreads
@@ -57,7 +55,7 @@ public class NettyUtils {
     return new DefaultThreadFactory(threadPoolPrefix, true);
   }
 
-  /** Creates a Netty EventLoopGroup based on the IOMode. */
+  /** 根据IOMode创建一个Netty EventLoopGroup。 */
   public static EventLoopGroup createEventLoop(IOMode mode, int numThreads, String threadPrefix) {
     ThreadFactory threadFactory = createThreadFactory(threadPrefix);
 
@@ -126,8 +124,7 @@ public class NettyUtils {
   }
 
   /**
-   * Returns the lazily created shared pooled ByteBuf allocator for the specified allowCache
-   * parameter value.
+   * 返回指定的allowCache参数值的延迟创建的共享池ByteBuf共享分配器。
    */
   public static synchronized PooledByteBufAllocator getSharedPooledByteBufAllocator(
       boolean allowDirectBufs,

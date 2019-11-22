@@ -19,6 +19,7 @@ package org.apache.spark.internal.config
 
 import java.util.concurrent.TimeUnit
 
+// 网络配置
 private[spark] object Network {
 
   private[spark] val NETWORK_CRYPTO_SASL_FALLBACK =

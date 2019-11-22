@@ -25,7 +25,7 @@ import org.apache.spark.ui.{SparkUI, WebUI}
 import org.apache.spark.ui.JettyUtils._
 
 /**
- * Web UI server for the standalone master.
+ * 独立主服务器的Web UI服务器。
  */
 private[master]
 class MasterWebUI(

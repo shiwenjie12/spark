@@ -21,7 +21,7 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 
 /**
- * Reads data from a ByteBuffer.
+ * 从ByteBuffer读取数据。
  */
 private[spark]
 class ByteBufferInputStream(private var buffer: ByteBuffer)

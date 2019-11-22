@@ -35,7 +35,7 @@ import org.apache.spark.network.util.LimitedInputStream;
 import org.apache.spark.network.util.TransportConf;
 
 /**
- * A {@link ManagedBuffer} backed by a segment in a file.
+ * 由文件中的某个片段支持的{@link ManagedBuffer}。
  */
 public final class FileSegmentManagedBuffer extends ManagedBuffer {
   private final TransportConf conf;

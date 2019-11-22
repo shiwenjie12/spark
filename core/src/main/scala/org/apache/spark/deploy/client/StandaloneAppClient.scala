@@ -34,10 +34,9 @@ import org.apache.spark.rpc._
 import org.apache.spark.util.{RpcUtils, ThreadUtils}
 
 /**
- * Interface allowing applications to speak with a Spark standalone cluster manager.
+ * 该界面允许应用程序与Spark独立集群管理器进行通话。
  *
- * Takes a master URL, an app description, and a listener for cluster events, and calls
- * back the listener when various events occur.
+ * 获取主URL，应用程序描述和集群事件的侦听器，并在发生各种事件时回调侦听器。
  *
  * @param masterUrls Each url should look like spark://host:port.
  */
@@ -174,6 +173,7 @@ private[spark] class StandaloneAppClient(
           cores))
         listener.executorAdded(fullId, workerId, hostPort, cores, memory)
 
+      // 执行器更新
       case ExecutorUpdated(id, state, message, exitStatus, workerLost) =>
         val fullId = appId + "/" + id
         val messageText = message.map(s => " (" + s + ")").getOrElse("")

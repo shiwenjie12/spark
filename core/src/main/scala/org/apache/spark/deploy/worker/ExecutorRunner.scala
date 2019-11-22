@@ -37,8 +37,8 @@ import org.apache.spark.util.{ShutdownHookManager, Utils}
 import org.apache.spark.util.logging.FileAppender
 
 /**
- * Manages the execution of one executor process.
- * This is currently only used in standalone mode.
+ * 管理一个执行程序进程的执行。
+ * 当前仅在独立模式下使用。
  */
 private[deploy] class ExecutorRunner(
     val appId: String,
@@ -79,7 +79,7 @@ private[deploy] class ExecutorRunner(
       override def run(): Unit = { fetchAndRunExecutor() }
     }
     workerThread.start()
-    // Shutdown hook that kills actors on shutdown.
+    // 关机挂钩，可在关机时杀死actor。
     shutdownHook = ShutdownHookManager.addShutdownHook { () =>
       // It's possible that we arrive here before calling `fetchAndRunExecutor`, then `state` will
       // be `ExecutorState.LAUNCHING`. In this case, we should set `state` to `FAILED`.
@@ -90,7 +90,7 @@ private[deploy] class ExecutorRunner(
   }
 
   /**
-   * Kill executor process, wait for exit and notify worker to update resource status.
+   * 杀死执行程序进程，等待退出并通知工作程序更新资源状态。
    *
    * @param message the exception message which caused the executor's death
    */
@@ -132,7 +132,7 @@ private[deploy] class ExecutorRunner(
     }
   }
 
-  /** Replace variables such as {{EXECUTOR_ID}} and {{CORES}} in a command argument passed to us */
+  /** 在传递给我们的命令参数中替换变量{{EXECUTOR_ID}}和{{CORES}} */
   private[worker] def substituteVariables(argument: String): String = argument match {
     case "{{WORKER_URL}}" => workerUrl
     case "{{EXECUTOR_ID}}" => execId.toString
@@ -143,12 +143,12 @@ private[deploy] class ExecutorRunner(
   }
 
   /**
-   * Download and run the executor described in our ApplicationDescription
+   * 下载并运行我们的ApplicationDescription中描述的执行程序
    */
   private def fetchAndRunExecutor(): Unit = {
     try {
       val resourceFileOpt = prepareResourcesFile(SPARK_EXECUTOR_PREFIX, resources, executorDir)
-      // Launch the process
+      // 启动进程
       val arguments = appDesc.command.arguments ++ resourceFileOpt.map(f =>
         Seq("--resourcesFile", f.getAbsolutePath)).getOrElse(Seq.empty)
       val subsOpts = appDesc.command.javaOpts.map {

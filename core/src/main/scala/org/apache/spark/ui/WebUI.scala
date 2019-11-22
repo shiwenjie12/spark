@@ -35,7 +35,7 @@ import org.apache.spark.ui.JettyUtils._
 import org.apache.spark.util.Utils
 
 /**
- * The top level component of the UI hierarchy that contains the server.
+ * 包含服务器的UI层次结构的顶级组件。
  *
  * Each WebUI represents a collection of tabs, each of which in turn represents a collection of
  * pages. The use of tabs is optional, however; a WebUI may choose to include pages directly.

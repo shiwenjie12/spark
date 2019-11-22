@@ -26,10 +26,10 @@ import org.apache.spark.SparkException
 import org.apache.spark.annotation.Evolving
 
 /**
- * Class to hold information about a type of Resource. A resource could be a GPU, FPGA, etc.
- * The array of addresses are resource specific and its up to the user to interpret the address.
+ * 用于保存有关资源类型信息的类。资源可以是GPU，FPGA等。
+ * 地址数组是特定于资源的，并且取决于用户解释地址。
  *
- * One example is GPUs, where the addresses would be the indices of the GPUs
+ * 一个示例是GPU，其中地址将是GPU的索引
  *
  * @param name the name of the resource
  * @param addresses an array of strings describing the addresses of the resource

@@ -25,9 +25,9 @@ import scala.collection.JavaConverters._
 import org.apache.spark.deploy.Command
 
 /**
- * This class is used by CommandUtils. It uses some package-private APIs in SparkLauncher, and since
- * Java doesn't have a feature similar to `private[spark]`, and we don't want that class to be
- * public, needs to live in the same package as the rest of the library.
+  * 此类由CommandUtils使用。它在SparkLauncher中使用了一些程序包私有的API，
+  * 并且由于Java不具有类似于`private [spark]`的功能，并且我们不希望该类是公共的，
+  * 因此需要与其余程序一起生活在同一个程序包中库。
  */
 private[spark] class WorkerCommandBuilder(sparkHome: String, memoryMb: Int, command: Command)
     extends AbstractCommandBuilder {

@@ -1031,6 +1031,10 @@
             <groupId>org.apache.directory.api</groupId>
             <artifactId>api-ldap-schema-data</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.apache.directory.jdbm</groupId>
+            <artifactId>apacheds-jdbm1</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -2190,49 +2194,49 @@
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0-M2</version>
-          <executions>
-            <execution>
-              <id>enforce-versions</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <requireMavenVersion>
-                    <version>${maven.version}</version>
-                  </requireMavenVersion>
-                  <requireJavaVersion>
-                    <version>${java.version}</version>
-                  </requireJavaVersion>
-                  <bannedDependencies>
-                    <excludes>
-                      <exclude>org.jboss.netty</exclude>
-                      <exclude>org.codehaus.groovy</exclude>
-                      <exclude>*:*_2.11</exclude>
-                      <exclude>*:*_2.10</exclude>
-                    </excludes>
-                    <searchTransitive>true</searchTransitive>
-                  </bannedDependencies>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>enforce-no-duplicate-dependencies</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <banDuplicatePomDependencyVersions/>
-                </rules>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+        <!--<plugin>-->
+          <!--<groupId>org.apache.maven.plugins</groupId>-->
+          <!--<artifactId>maven-enforcer-plugin</artifactId>-->
+          <!--<version>3.0.0-M2</version>-->
+          <!--<executions>-->
+            <!--<execution>-->
+              <!--<id>enforce-versions</id>-->
+              <!--<goals>-->
+                <!--<goal>enforce</goal>-->
+              <!--</goals>-->
+              <!--<configuration>-->
+                <!--<rules>-->
+                  <!--<requireMavenVersion>-->
+                    <!--<version>${maven.version}</version>-->
+                  <!--</requireMavenVersion>-->
+                  <!--<requireJavaVersion>-->
+                    <!--<version>${java.version}</version>-->
+                  <!--</requireJavaVersion>-->
+                  <!--<bannedDependencies>-->
+                    <!--<excludes>-->
+                      <!--<exclude>org.jboss.netty</exclude>-->
+                      <!--<exclude>org.codehaus.groovy</exclude>-->
+                      <!--<exclude>*:*_2.11</exclude>-->
+                      <!--<exclude>*:*_2.10</exclude>-->
+                    <!--</excludes>-->
+                    <!--<searchTransitive>true</searchTransitive>-->
+                  <!--</bannedDependencies>-->
+                <!--</rules>-->
+              <!--</configuration>-->
+            <!--</execution>-->
+            <!--<execution>-->
+              <!--<id>enforce-no-duplicate-dependencies</id>-->
+              <!--<goals>-->
+                <!--<goal>enforce</goal>-->
+              <!--</goals>-->
+              <!--<configuration>-->
+                <!--<rules>-->
+                  <!--<banDuplicatePomDependencyVersions/>-->
+                <!--</rules>-->
+              <!--</configuration>-->
+            <!--</execution>-->
+          <!--</executions>-->
+        <!--</plugin>-->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
@@ -2704,10 +2708,10 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-enforcer-plugin</artifactId>-->
+      <!--</plugin>-->
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>

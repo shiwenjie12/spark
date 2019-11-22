@@ -23,8 +23,8 @@ import org.apache.spark.SparkException
 import org.apache.spark.util.collection.OpenHashMap
 
 /**
- * Trait used to help executor/worker allocate resources.
- * Please note that this is intended to be used in a single thread.
+ * 特质用于帮助执行者/工人分配资源。
+ * 请注意，此代码只能在单线程中使用。
  */
 trait ResourceAllocator {
 
@@ -32,8 +32,7 @@ trait ResourceAllocator {
   protected def resourceAddresses: Seq[String]
 
   /**
-   * Map from an address to its availability, the value `true` means the address is available,
-   * while value `false` means the address is assigned.
+   * 从地址映射到其可用性，值“ true”表示该地址可用，而值“ false”表示已分配地址。
    * TODO Use [[OpenHashMap]] instead to gain better performance.
    */
   private lazy val addressAvailabilityMap = mutable.HashMap(resourceAddresses.map(_ -> true): _*)
@@ -46,7 +45,7 @@ trait ResourceAllocator {
   }.toSeq
 
   /**
-   * Sequence of currently assigned resource addresses.
+   * 当前分配的资源地址的顺序。
    */
   private[spark] def assignedAddrs: Seq[String] = addressAvailabilityMap
     .flatMap { case (addr, available) =>

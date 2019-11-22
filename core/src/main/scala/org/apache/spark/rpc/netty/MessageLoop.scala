@@ -29,11 +29,11 @@ import org.apache.spark.rpc.{IsolatedRpcEndpoint, RpcEndpoint}
 import org.apache.spark.util.ThreadUtils
 
 /**
- * A message loop used by [[Dispatcher]] to deliver messages to endpoints.
+ * [[Dispatcher]]用于将消息传递到端点的消息循环。
  */
 private sealed abstract class MessageLoop(dispatcher: Dispatcher) extends Logging {
 
-  // List of inboxes with pending messages, to be processed by the message loop.
+  // 带有待处理邮件的收件箱列表，由邮件循环处理。
   private val active = new LinkedBlockingQueue[Inbox]()
 
   // Message loop task; should be run in all threads of the message loop's pool.
@@ -68,7 +68,7 @@ private sealed abstract class MessageLoop(dispatcher: Dispatcher) extends Loggin
         try {
           val inbox = active.take()
           if (inbox == MessageLoop.PoisonPill) {
-            // Put PoisonPill back so that other threads can see it.
+            // 放回PoisonPill，以便其他线程可以看到它。
             setActive(MessageLoop.PoisonPill)
             return
           }
@@ -81,8 +81,7 @@ private sealed abstract class MessageLoop(dispatcher: Dispatcher) extends Loggin
       case _: InterruptedException => // exit
         case t: Throwable =>
           try {
-            // Re-submit a receive task so that message delivery will still work if
-            // UncaughtExceptionHandler decides to not kill JVM.
+            // 重新提交接收任务，以便如果UncaughtExceptionHandler决定不终止JVM，消息传递仍将起作用。
             threadpool.execute(receiveLoopRunnable)
           } finally {
             throw t
@@ -92,12 +91,12 @@ private sealed abstract class MessageLoop(dispatcher: Dispatcher) extends Loggin
 }
 
 private object MessageLoop {
-  /** A poison inbox that indicates the message loop should stop processing messages. */
+  /** 指示消息循环的带毒收件箱应停止处理消息。 */
   val PoisonPill = new Inbox(null, null)
 }
 
 /**
- * A message loop that serves multiple RPC endpoints, using a shared thread pool.
+ * 使用共享线程池为多个RPC端点提供服务的消息循环。
  */
 private class SharedMessageLoop(
     conf: SparkConf,
@@ -154,7 +153,7 @@ private class SharedMessageLoop(
 }
 
 /**
- * A message loop that is dedicated to a single RPC endpoint.
+ * 专用于单个RPC端点的消息循环。
  */
 private class DedicatedMessageLoop(
     name: String,

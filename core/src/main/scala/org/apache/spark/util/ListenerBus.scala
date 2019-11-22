@@ -28,7 +28,7 @@ import com.codahale.metrics.Timer
 import org.apache.spark.internal.Logging
 
 /**
- * An event bus which posts events to its listeners.
+ * 事件总线，将事件发布到其侦听器。
  */
 private[spark] trait ListenerBus[L <: AnyRef, E] extends Logging {
 
@@ -78,8 +78,7 @@ private[spark] trait ListenerBus[L <: AnyRef, E] extends Logging {
 
 
   /**
-   * Post the event to all registered listeners. The `postToAll` caller should guarantee calling
-   * `postToAll` in the same thread for all events.
+   * 将事件发布到所有注册的侦听器。 `postToAll`调用者应保证所有事件在同一线程中调用`postToAll`。
    */
   def postToAll(event: E): Unit = {
     // JavaConverters can create a JIterableWrapper if we use asScala.
@@ -118,8 +117,7 @@ private[spark] trait ListenerBus[L <: AnyRef, E] extends Logging {
   }
 
   /**
-   * Post an event to the specified listener. `onPostEvent` is guaranteed to be called in the same
-   * thread for all listeners.
+   * 将事件发布到指定的侦听器。确保对所有侦听器在同一线程中调用onPostEvent。
    */
   protected def doPostEvent(listener: L, event: E): Unit
 

@@ -35,8 +35,7 @@ import org.apache.spark.network.buffer.ManagedBuffer;
 import org.apache.spark.network.client.TransportClient;
 
 /**
- * StreamManager which allows registration of an Iterator&lt;ManagedBuffer&gt;, which are
- * individually fetched as chunks by the client. Each registered buffer is one chunk.
+ * 允许注册Iterator<ManagedBuffer> 的StreamManager，客户端将其单独作为块获取。每个注册缓冲区是一个块。
  */
 public class OneForOneStreamManager extends StreamManager {
   private static final Logger logger = LoggerFactory.getLogger(OneForOneStreamManager.class);
@@ -49,14 +48,14 @@ public class OneForOneStreamManager extends StreamManager {
     final String appId;
     final Iterator<ManagedBuffer> buffers;
 
-    // The channel associated to the stream
+    // 与流关联的频道
     final Channel associatedChannel;
 
     // Used to keep track of the index of the buffer that the user has retrieved, just to ensure
     // that the caller only requests each chunk one at a time, in order.
     int curChunk = 0;
 
-    // Used to keep track of the number of chunks being transferred and not finished yet.
+    // 用于跟踪正在传输但尚未完成的块的数量。
     volatile long chunksBeingTransferred = 0L;
 
     StreamState(String appId, Iterator<ManagedBuffer> buffers, Channel channel) {

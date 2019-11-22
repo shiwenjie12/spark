@@ -92,8 +92,8 @@ public class JavaUtils {
   }
 
   /**
-   * Delete a file or directory and its contents recursively.
-   * Don't follow directories if they are symlinks.
+   * 递归删除文件或目录及其内容。
+   * 如果它们是符号链接，则不要遵循目录。
    *
    * @param file Input file / dir to be deleted
    * @param filter A filename filter that make sure only files / dirs with the satisfied filenames
@@ -222,8 +222,8 @@ public class JavaUtils {
       .build();
 
   /**
-   * Convert a passed time string (e.g. 50s, 100ms, or 250us) to a time count in the given unit.
-   * The unit is also considered the default if the given string does not specify a unit.
+   * 将传递的时间字符串（例如50s，100ms或250us）转换为给定单位的时间计数。
+   * 如果给定的字符串未指定单位，则该单位也被视为默认单位。
    */
   public static long timeStringAs(String str, TimeUnit unit) {
     String lower = str.toLowerCase(Locale.ROOT).trim();

@@ -26,11 +26,9 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.util.Utils
 
 /**
- * A broadcast variable. Broadcast variables allow the programmer to keep a read-only variable
- * cached on each machine rather than shipping a copy of it with tasks. They can be used, for
- * example, to give every node a copy of a large input dataset in an efficient manner. Spark also
- * attempts to distribute broadcast variables using efficient broadcast algorithms to reduce
- * communication cost.
+ * 广播变量。广播变量使程序员可以在每台计算机上保留一个只读变量，而不用随任务一起发送它的副本。
+ * 例如，可以使用它们以高效的方式为每个节点提供大型输入数据集的副本。
+ * Spark还尝试使用有效的广播算法分配广播变量，以降低通信成本。
  *
  * Broadcast variables are created from a variable `v` by calling
  * [[org.apache.spark.SparkContext#broadcast]].
@@ -119,8 +117,7 @@ abstract class Broadcast[T: ClassTag](val id: Long) extends Serializable with Lo
   }
 
   /**
-   * Actually get the broadcasted value. Concrete implementations of Broadcast class must
-   * define their own way to get the value.
+   * 实际获得广播值。 Broadcast类的具体实现必须定义自己的获取值的方式。
    */
   protected def getValue(): T
 

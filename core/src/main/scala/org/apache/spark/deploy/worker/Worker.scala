@@ -148,7 +148,7 @@ private[deploy] class Worker(
   val retainedExecutors = conf.get(WORKER_UI_RETAINED_EXECUTORS)
   val retainedDrivers = conf.get(WORKER_UI_RETAINED_DRIVERS)
 
-  // The shuffle service is not actually started unless configured.
+  // 除非已配置，否则洗牌服务实际上不会启动。
   private val shuffleService = if (externalShuffleServiceSupplier != null) {
     externalShuffleServiceSupplier.get()
   } else {
@@ -177,7 +177,7 @@ private[deploy] class Worker(
   // time so that we can register with all masters.
   private val registerMasterThreadPool = ThreadUtils.newDaemonCachedThreadPool(
     "worker-register-master-threadpool",
-    masterRpcAddresses.length // Make sure we can register with all masters at the same time
+    masterRpcAddresses.length // 确保我们可以同时向所有master注册
   )
 
   // visible for tests
@@ -220,8 +220,7 @@ private[deploy] class Worker(
   }
 
   /**
-   * Used to catch the TERM signal from sbin/stop-slave.sh and
-   * release resources before Worker exits
+   * 用于从 sbin/stop-slave.sh 捕获TERM信号并在Worker退出之前释放资源
    */
   private def releaseResourcesOnInterrupt(): Unit = {
     SignalUtils.register("TERM") {
@@ -230,6 +229,7 @@ private[deploy] class Worker(
     }
   }
 
+  // 安装worker资源
   private def setupWorkerResources(): Unit = {
     try {
       val allResources = getOrDiscoverAllResources(conf, SPARK_WORKER_PREFIX, resourceFileOpt)
@@ -261,7 +261,7 @@ private[deploy] class Worker(
   }
 
   /**
-   * Change to use the new master.
+   * 更改为使用新的master。
    *
    * @param masterRef the new master ref
    * @param uiUrl the new master Web UI address
@@ -283,7 +283,7 @@ private[deploy] class Worker(
     cancelLastRegistrationRetry()
   }
 
-  private def tryRegisterAllMasters(): Array[JFuture[_]] = {
+  private def tryRegisterAllMasters(): Array[JFuture[_]] = {// 向所有的master注册
     masterRpcAddresses.map { masterAddress =>
       registerMasterThreadPool.submit(new Runnable {
         override def run(): Unit = {
@@ -411,6 +411,9 @@ private[deploy] class Worker(
     }
   }
 
+  /*
+   启动shuffe服务
+    */
   private def startExternalShuffleService(): Unit = {
     try {
       shuffleService.startIfEnabled()
@@ -434,8 +437,9 @@ private[deploy] class Worker(
       resources))
   }
 
-  private def handleRegisterResponse(msg: RegisterWorkerResponse): Unit = synchronized {
+  private def handleRegisterResponse(msg: RegisterWorkerResponse): Unit = synchronized {// 处理注册响应
     msg match {
+      // 注册worker成功
       case RegisteredWorker(masterRef, masterWebUiUrl, masterAddress, duplicate) =>
         val preferredMasterAddress = if (preferConfiguredMasterAddress) {
           masterAddress.toSparkURL
@@ -468,7 +472,7 @@ private[deploy] class Worker(
           new ExecutorDescription(e.appId, e.execId, e.cores, e.state)
         }
         masterRef.send(WorkerLatestState(workerId, execs.toList, drivers.keys.toSeq))
-
+      // 注册worker失败
       case RegisterWorkerFailed(message) =>
         if (!registered) {
           logError("Worker registration failed: " + message)
@@ -477,7 +481,7 @@ private[deploy] class Worker(
         }
 
       case MasterInStandby =>
-        // Ignore. Master not yet ready.
+        // 忽视，master还没准备好。
     }
   }
 
@@ -485,6 +489,7 @@ private[deploy] class Worker(
     case msg: RegisterWorkerResponse =>
       handleRegisterResponse(msg)
 
+    // 发送心跳请求
     case SendHeartbeat =>
       if (connected) { sendToMaster(Heartbeat(workerId, self)) }
 
@@ -529,6 +534,7 @@ private[deploy] class Worker(
           logWarning("Failed to cleanup work dir as executor pool was shutdown")
       }
 
+    // 跟换master
     case MasterChanged(masterRef, masterWebUiUrl) =>
       logInfo("Master has changed, new master is at " + masterRef.address.toSparkURL)
       changeMaster(masterRef, masterWebUiUrl, masterRef.address)
@@ -539,6 +545,7 @@ private[deploy] class Worker(
       }
       val driverResponses = drivers.keys.map { id =>
         WorkerDriverStateResponse(id, drivers(id).resources)}
+      // 向新的master发送worker调度状态
       masterRef.send(WorkerSchedulerStateResponse(
         workerId, executorResponses.toList, driverResponses.toSeq))
 
@@ -546,6 +553,7 @@ private[deploy] class Worker(
       logInfo(s"Master with url $masterUrl requested this worker to reconnect.")
       registerWithMaster()
 
+     // 开始执行器
     case LaunchExecutor(masterUrl, appId, execId, appDesc, cores_, memory_, resources_) =>
       if (masterUrl != activeMasterUrl) {
         logWarning("Invalid Master (" + masterUrl + ") attempted to launch executor.")
@@ -553,7 +561,7 @@ private[deploy] class Worker(
         try {
           logInfo("Asked to launch executor %s/%d for %s".format(appId, execId, appDesc.name))
 
-          // Create the executor's working directory
+          // 创建执行者的工作目录
           val executorDir = new File(workDir, appId + "/" + execId)
           if (!executorDir.mkdirs()) {
             throw new IOException("Failed to create directory " + executorDir)
@@ -581,6 +589,7 @@ private[deploy] class Worker(
             }
             dirs
           })
+          // app的本地目录
           appDirectories(appId) = appLocalDirs
           val manager = new ExecutorRunner(
             appId,

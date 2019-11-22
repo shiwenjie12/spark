@@ -30,8 +30,7 @@ import org.apache.spark.storage._
 import org.apache.spark.util.io.{ChunkedByteBuffer, ChunkedByteBufferOutputStream}
 
 /**
- * Component which configures serialization, compression and encryption for various Spark
- * components, including automatic selection of which [[Serializer]] to use for shuffles.
+ * 为各种Spark组件配置序列化，压缩和加密的组件，包括自动选择要用于shuffles的[[Serializer]]。
  */
 private[spark] class SerializerManager(
     defaultSerializer: Serializer,
@@ -63,7 +62,7 @@ private[spark] class SerializerManager(
     primitiveClassTags ++ arrayClassTags
   }
 
-  // Whether to compress broadcast variables that are stored
+  // 是否压缩存储的广播变量
   private[this] val compressBroadcast = conf.get(config.BROADCAST_COMPRESS)
   // Whether to compress shuffle output that are stored
   private[this] val compressShuffle = conf.get(config.SHUFFLE_COMPRESS)

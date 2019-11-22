@@ -205,10 +205,10 @@ private[spark] class SparkSubmit extends Logging {
   }
 
   /**
-   * Prepare the environment for submitting an application.
+   * 准备提交申请的环境。
    *
-   * @param args the parsed SparkSubmitArguments used for environment preparation.
-   * @param conf the Hadoop Configuration, this argument will only be set in unit test.
+   * @param args 用于环境准备的已解析的SparkSubmitArguments。
+   * @param conf 在Hadoop配置中，仅在单元测试中设置此参数。
    * @return a 4-tuple:
    *        (1) the arguments for the child process,
    *        (2) a list of classpath entries for the child,

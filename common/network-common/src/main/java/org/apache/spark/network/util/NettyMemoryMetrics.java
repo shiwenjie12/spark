@@ -31,7 +31,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocatorMetric;
 
 /**
- * A Netty memory metrics class to collect metrics from Netty PooledByteBufAllocator.
+ * Netty内存指标类，用于从Netty PooledByteBufAllocator收集指标。
  */
 public class NettyMemoryMetrics implements MetricSet {
 
@@ -100,6 +100,7 @@ public class NettyMemoryMetrics implements MetricSet {
     }
   }
 
+  // 反射调用
   private void registerArenaMetric(PoolArenaMetric arenaMetric, String arenaName) {
     for (String methodName : VERBOSE_METRICS) {
       Method m;

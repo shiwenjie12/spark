@@ -20,13 +20,11 @@ package org.apache.spark.network.client;
 import io.netty.channel.Channel;
 
 /**
- * A bootstrap which is executed on a TransportClient before it is returned to the user.
- * This enables an initial exchange of information (e.g., SASL authentication tokens) on a once-per-
- * connection basis.
+ * 在将其返回给用户之前在TransportClient上执行的引导程序。
+ * 这使得能够在每个连接一次的基础上初始交换信息（例如，SASL认证令牌）。
  *
- * Since connections (and TransportClients) are reused as much as possible, it is generally
- * reasonable to perform an expensive bootstrapping operation, as they often share a lifespan with
- * the JVM itself.
+ *
+ * 由于连接（和TransportClients）被尽可能多地重用，因此执行昂贵的自举操作通常是合理的，因为它们通常与JVM本身共享寿命。
  */
 public interface TransportClientBootstrap {
   /** Performs the bootstrapping operation, throwing an exception on failure. */

@@ -37,9 +37,9 @@ import com.google.common.base.Preconditions;
 import org.apache.spark.annotation.Private;
 
 /**
- * Implementation of KVStore that keeps data deserialized in memory. This store does not index
- * data; instead, whenever iterating over an indexed field, the stored data is copied and sorted
- * according to the index. This saves memory but makes iteration more expensive.
+ * KVStore的实现将数据反序列化在内存中。该存储区不索引数据；
+ * 取而代之的是，无论何时遍历索引字段，都将根据索引对存储的数据进行复制和排序。
+ * 这样可以节省内存，但会使迭代更加昂贵。
  */
 @Private
 public class InMemoryStore implements KVStore {
@@ -140,8 +140,7 @@ public class InMemoryStore implements KVStore {
   }
 
   /**
-   * Encapsulates ConcurrentHashMap so that the typing in and out of the map strictly maps a
-   * class of type T to an InstanceList of type T.
+   * 封装ConcurrentHashMap，以便在地图的输入和输出中严格将T类型的类映射到T类型的InstanceList。
    */
   private static class InMemoryLists {
     private final ConcurrentMap<Class<?>, InstanceList<?>> data = new ConcurrentHashMap<>();

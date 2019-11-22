@@ -28,9 +28,8 @@ import org.apache.spark.rpc.{RpcCallContext, RpcEnv, ThreadSafeRpcEndpoint}
 import org.apache.spark.scheduler.{LiveListenerBus, SparkListener, SparkListenerStageCompleted}
 
 /**
- * For each barrier stage attempt, only at most one barrier() call can be active at any time, thus
- * we can use (stageId, stageAttemptId) to identify the stage attempt where the barrier() call is
- * from.
+ * 对于每个屏障阶段尝试，在任何时候最多只能激活一个barrier（）调用，
+  * 因此我们可以使用（stageId，stageAttemptId）来标识barrier（）调用来自的阶段尝试。
  */
 private case class ContextBarrierId(stageId: Int, stageAttemptId: Int) {
   override def toString: String = s"Stage $stageId (Attempt $stageAttemptId)"

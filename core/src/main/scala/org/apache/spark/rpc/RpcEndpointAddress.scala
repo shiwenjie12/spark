@@ -20,7 +20,7 @@ package org.apache.spark.rpc
 import org.apache.spark.SparkException
 
 /**
- * An address identifier for an RPC endpoint.
+ * RPC端点的地址标识符。
  *
  * The `rpcAddress` may be null, in which case the endpoint is registered via a client-only
  * connection and can only be reached via the client that sent the endpoint reference.

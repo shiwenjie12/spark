@@ -91,6 +91,7 @@ private object JavaDeserializationStream {
   )
 }
 
+// java序列化实例
 private[spark] class JavaSerializerInstance(
     counterReset: Int, extraDebugInfo: Boolean, defaultClassLoader: ClassLoader)
   extends SerializerInstance {
@@ -129,7 +130,7 @@ private[spark] class JavaSerializerInstance(
 }
 
 /**
- * :: DeveloperApi ::
+ * java序列化器
  * A Spark serializer that uses Java's built-in serialization.
  *
  * @note This serializer is not guaranteed to be wire-compatible across different versions of

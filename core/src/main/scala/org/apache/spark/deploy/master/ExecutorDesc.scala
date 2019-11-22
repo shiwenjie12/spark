@@ -20,6 +20,7 @@ package org.apache.spark.deploy.master
 import org.apache.spark.deploy.{ExecutorDescription, ExecutorState}
 import org.apache.spark.resource.ResourceInformation
 
+// 执行器的描述
 private[master] class ExecutorDesc(
     val id: Int,
     val application: ApplicationInfo,

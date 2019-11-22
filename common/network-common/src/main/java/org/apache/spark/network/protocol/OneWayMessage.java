@@ -24,7 +24,7 @@ import org.apache.spark.network.buffer.ManagedBuffer;
 import org.apache.spark.network.buffer.NettyManagedBuffer;
 
 /**
- * A RPC that does not expect a reply, which is handled by a remote
+ * 一个不希望得到答复的RPC，由远程服务器处理
  * {@link org.apache.spark.network.server.RpcHandler}.
  */
 public final class OneWayMessage extends AbstractMessage implements RequestMessage {

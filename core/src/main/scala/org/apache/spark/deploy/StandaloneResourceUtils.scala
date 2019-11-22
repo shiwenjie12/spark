@@ -87,8 +87,7 @@ private[spark] object StandaloneResourceUtils extends Logging {
   }
 
   /**
-   * Assigns (if coordinate needed) resources to workers/drivers from the same host to avoid
-   * address conflict.
+   * 为同一主机的工作人员/驱动程序分配（如果需要协调）资源，以避免地址冲突。
    *
    * This function works in three steps. First, acquiring the lock on RESOURCES_LOCK_FILE
    * to achieve synchronization among workers and drivers. Second, getting all allocated
@@ -221,8 +220,7 @@ private[spark] object StandaloneResourceUtils extends Logging {
   }
 
   /**
-   * Frees (if coordinate needed) all the resources a worker/driver (pid) has in one shot
-   * to make those resources be available for other workers/drivers on the same host.
+   * 一次释放（如果需要协调，则）工作者/驱动程序（pid）拥有的所有资源，以使这些资源可用于同一主机上的其他工作者/驱动程序。
    * @param conf SparkConf
    * @param componentName spark.driver / spark.worker
    * @param toRelease the resources expected to release
@@ -303,7 +301,7 @@ private[spark] object StandaloneResourceUtils extends Logging {
     }
   }
 
-  private def getOrCreateResourcesDir(conf: SparkConf): File = {
+  private def getOrCreateResourcesDir(conf: SparkConf): File = {// 获取资源目录
     val coordinateDir = new File(conf.get(SPARK_RESOURCES_DIR).getOrElse {
       val sparkHome = if (Utils.isTesting) {
         assert(sys.props.contains("spark.test.home") ||
@@ -330,12 +328,11 @@ private[spark] object StandaloneResourceUtils extends Logging {
   }
 
   /**
-   * Save the allocated resources of driver(cluster only) or executor into a JSON formatted
-   * resources file. Used in Standalone only.
+   * 将分配的驱动程序（仅群集）或执行程序的资源保存到JSON格式的资源文件中。仅在独立版本中使用。
    * @param componentName spark.driver / spark.executor
-   * @param resources allocated resources for driver(cluster only) or executor
-   * @param dir the target directory used to place the resources file
-   * @return None if resources is empty or Some(file) which represents the resources file
+   * @param resources 为驱动程序（仅集群）或执行程序分配的资源
+   * @param dir 用于放置资源文件的目标目录
+   * @return 如果资源为空或表示资源文件的Some（file）则为None
    */
   def prepareResourcesFile(
       componentName: String,
@@ -372,7 +369,7 @@ private[spark] object StandaloneResourceUtils extends Logging {
     Files.write(jsonFile.toPath, compact(render(allocationJson)).getBytes())
   }
 
-  /** Whether needs to coordinate resources among workers and drivers for user */
+  /** 是否需要为用户协调工人和驱动程序之间的资源 */
   def needCoordinate(conf: SparkConf): Boolean = {
     conf.get(SPARK_RESOURCES_COORDINATE)
   }

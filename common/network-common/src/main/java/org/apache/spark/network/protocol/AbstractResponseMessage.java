@@ -20,7 +20,7 @@ package org.apache.spark.network.protocol;
 import org.apache.spark.network.buffer.ManagedBuffer;
 
 /**
- * Abstract class for response messages.
+ * 响应消息的抽象类。
  */
 public abstract class AbstractResponseMessage extends AbstractMessage implements ResponseMessage {
 

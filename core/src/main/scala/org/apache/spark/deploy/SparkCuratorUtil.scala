@@ -27,6 +27,9 @@ import org.apache.spark.SparkConf
 import org.apache.spark.internal.Logging
 import org.apache.spark.internal.config.Deploy.ZOOKEEPER_URL
 
+/*
+  spark zk工具
+ */
 private[spark] object SparkCuratorUtil extends Logging {
 
   private val ZK_CONNECTION_TIMEOUT_MILLIS = 15000

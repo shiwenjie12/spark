@@ -26,6 +26,7 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.rpc.{RpcAddress, RpcEndpoint, ThreadSafeRpcEndpoint}
 
 
+// 收件箱消息的基类
 private[netty] sealed trait InboxMessage
 
 private[netty] case class OneWayMessage(
@@ -41,10 +42,10 @@ private[netty] case object OnStart extends InboxMessage
 
 private[netty] case object OnStop extends InboxMessage
 
-/** A message to tell all endpoints that a remote process has connected. */
+/** 一条消息，告诉所有端点远程进程已连接。 */
 private[netty] case class RemoteProcessConnected(remoteAddress: RpcAddress) extends InboxMessage
 
-/** A message to tell all endpoints that a remote process has disconnected. */
+/** 一条消息，告诉所有端点远程进程已断开连接。 */
 private[netty] case class RemoteProcessDisconnected(remoteAddress: RpcAddress) extends InboxMessage
 
 /** A message to tell all endpoints that a network error has happened. */
@@ -52,12 +53,12 @@ private[netty] case class RemoteProcessConnectionError(cause: Throwable, remoteA
   extends InboxMessage
 
 /**
- * An inbox that stores messages for an [[RpcEndpoint]] and posts messages to it thread-safely.
+ * 一个收件箱，用于存储[[RpcEndpoint]]的消息并以线程安全的方式向其发布消息。
  */
 private[netty] class Inbox(val endpointName: String, val endpoint: RpcEndpoint)
   extends Logging {
 
-  inbox =>  // Give this an alias so we can use it more clearly in closures.
+  inbox =>  // 给它起一个别名，这样我们就可以在闭包中更清楚地使用它。
 
   @GuardedBy("this")
   protected val messages = new java.util.LinkedList[InboxMessage]()
@@ -74,13 +75,13 @@ private[netty] class Inbox(val endpointName: String, val endpoint: RpcEndpoint)
   @GuardedBy("this")
   private var numActiveThreads = 0
 
-  // OnStart should be the first message to process
+  // OnStart应该是要处理的第一条消息
   inbox.synchronized {
     messages.add(OnStart)
   }
 
   /**
-   * Process stored messages.
+   * 处理存储的消息。
    */
   def process(dispatcher: Dispatcher): Unit = {
     var message: InboxMessage = null
@@ -189,15 +190,14 @@ private[netty] class Inbox(val endpointName: String, val endpoint: RpcEndpoint)
   def isEmpty: Boolean = inbox.synchronized { messages.isEmpty }
 
   /**
-   * Called when we are dropping a message. Test cases override this to test message dropping.
-   * Exposed for testing.
+   * 在我们删除消息时调用。测试用例覆盖此内容以测试消息丢弃。暴露试验。
    */
   protected def onDrop(message: InboxMessage): Unit = {
     logWarning(s"Drop $message because endpoint $endpointName is stopped")
   }
 
   /**
-   * Calls action closure, and calls the endpoint's onError function in the case of exceptions.
+   * 调用动作闭包，并在发生异常的情况下调用端点的onError函数。
    */
   private def safelyCall(endpoint: RpcEndpoint)(action: => Unit): Unit = {
     try action catch {

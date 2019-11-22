@@ -27,7 +27,7 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.internal.Logging
 
 /**
- * Various utility methods used by Spark.
+ * Spark使用的各种实用程序方法。
  */
 private[spark] object ShutdownHookManager extends Logging {
   val DEFAULT_SHUTDOWN_PRIORITY = 100
@@ -57,8 +57,7 @@ private[spark] object ShutdownHookManager extends Logging {
   logDebug("Adding shutdown hook") // force eager creation of logger
   addShutdownHook(TEMP_DIR_SHUTDOWN_PRIORITY) { () =>
     logInfo("Shutdown hook called")
-    // we need to materialize the paths to delete because deleteRecursively removes items from
-    // shutdownDeletePaths as we are traversing through it.
+    // 我们需要具体化要删除的路径，因为deleteRecursive会在遍历它时从shutdownDeletePaths中删除项目。
     shutdownDeletePaths.toArray.foreach { dirPath =>
       try {
         logInfo("Deleting directory " + dirPath)

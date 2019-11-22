@@ -35,11 +35,11 @@ import org.apache.spark.metrics.MetricsSystem
 import org.apache.spark.metrics.source.Source
 
 /**
- * Asynchronously passes SparkListenerEvents to registered SparkListeners.
+ * 异步将SparkListenerEvents传递给已注册的SparkListeners。
  *
- * Until `start()` is called, all posted events are only buffered. Only after this listener bus
- * has started will events be actually propagated to all attached listeners. This listener bus
- * is stopped when `stop()` is called, and it will drop further events after stopping.
+ * 在调用“ start()”之前，所有已发布的事件仅被缓冲。
+  * 仅在此侦听器总线启动之后，事件才会实际传播到所有连接的侦听器。
+  * 调用`stop()`时，此侦听器总线将停止，并且停止后它将丢弃其他事件。
  */
 private[spark] class LiveListenerBus(conf: SparkConf) {
 
@@ -75,7 +75,7 @@ private[spark] class LiveListenerBus(conf: SparkConf) {
     addToQueue(listener, EXECUTOR_MANAGEMENT_QUEUE)
   }
 
-  /** Add a listener to the application status queue. */
+  /** 将侦听器添加到应用程序状态队列。 */
   def addToStatusQueue(listener: SparkListenerInterface): Unit = {
     addToQueue(listener, APP_STATUS_QUEUE)
   }
@@ -126,7 +126,7 @@ private[spark] class LiveListenerBus(conf: SparkConf) {
       }
   }
 
-  /** Post an event to all queues. */
+  /** 将事件发布到所有队列。 */
   def post(event: SparkListenerEvent): Unit = {
     if (stopped.get()) {
       return
@@ -134,16 +134,14 @@ private[spark] class LiveListenerBus(conf: SparkConf) {
 
     metrics.numEventsPosted.inc()
 
-    // If the event buffer is null, it means the bus has been started and we can avoid
-    // synchronization and post events directly to the queues. This should be the most
-    // common case during the life of the bus.
+    // 如果事件缓冲区为null，则表示总线已启动，我们可以避免同步并将事件直接发布到队列中。
+    // 这应该是总线生命周期中最常见的情况。
     if (queuedEvents == null) {
       postToQueues(event)
       return
     }
 
-    // Otherwise, need to synchronize to check whether the bus is started, to make sure the thread
-    // calling start() picks up the new event.
+    // 否则，需要进行同步以检查总线是否已启动，以确保调用start（）的线程接收到新事件。
     synchronized {
       if (!started.get()) {
         queuedEvents += event
@@ -151,8 +149,7 @@ private[spark] class LiveListenerBus(conf: SparkConf) {
       }
     }
 
-    // If the bus was already started when the check above was made, just post directly to the
-    // queues.
+    // 如果进行上述检查时总线已经启动，则直接将其发布到队列中。
     postToQueues(event)
   }
 
@@ -164,11 +161,10 @@ private[spark] class LiveListenerBus(conf: SparkConf) {
   }
 
   /**
-   * Start sending events to attached listeners.
+   * 开始向附加的侦听器发送事件。
    *
-   * This first sends out all buffered events posted before this listener bus has started, then
-   * listens for any additional events asynchronously while the listener bus is still running.
-   * This should only be called once.
+   * 它首先发送所有在此侦听器总线启动之前发布的缓冲事件，然后在侦听器总线仍在运行时异步侦听任何其他事件。
+   * 这仅应调用一次。
    *
    * @param sc Used to stop the SparkContext in case the listener thread dies.
    */

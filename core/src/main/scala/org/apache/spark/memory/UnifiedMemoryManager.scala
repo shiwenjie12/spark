@@ -23,13 +23,11 @@ import org.apache.spark.internal.config.Tests._
 import org.apache.spark.storage.BlockId
 
 /**
- * A [[MemoryManager]] that enforces a soft boundary between execution and storage such that
- * either side can borrow memory from the other.
+ * [[MemoryManager]]强制执行和存储之间的软边界，以便任何一方都可以从另一方借用内存。
  *
- * The region shared between execution and storage is a fraction of (the total heap space - 300MB)
- * configurable through `spark.memory.fraction` (default 0.6). The position of the boundary
- * within this space is further determined by `spark.memory.storageFraction` (default 0.5).
- * This means the size of the storage region is 0.6 * 0.5 = 0.3 of the heap space by default.
+ * 执行和存储之间共享的区域是（总堆空间-300MB）的一小部分，可通过`spark.memory.fraction'（默认值为0.6）进行配置。
+ * 边界在该空间内的位置进一步由“ spark.memory.storageFraction”（默认值为0.5）确定。
+ * 这意味着默认情况下，存储区域的大小为堆空间的0.6 * 0.5 = 0.3。
  *
  * Storage can borrow as much execution memory as is free until execution reclaims its space.
  * When this happens, cached blocks will be evicted from memory until sufficient borrowed

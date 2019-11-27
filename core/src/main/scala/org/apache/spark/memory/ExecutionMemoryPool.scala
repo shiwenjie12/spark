@@ -24,10 +24,9 @@ import scala.collection.mutable
 import org.apache.spark.internal.Logging
 
 /**
- * Implements policies and bookkeeping for sharing an adjustable-sized pool of memory between tasks.
+ * 实施策略和簿记，以在任务之间共享大小可调的内存池。
  *
- * Tries to ensure that each task gets a reasonable share of memory, instead of some task ramping up
- * to a large amount first and then causing others to spill to disk repeatedly.
+ * 尝试确保每个任务都获得合理的内存份额，而不是先执行某些任务以先增加大量内存然后再将其他任务重复溢出到磁盘上。
  *
  * If there are N tasks, it ensures that each task can acquire at least 1 / 2N of the memory
  * before it has to spill, and at most 1 / N. Because N varies dynamically, we keep track of the

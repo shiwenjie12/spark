@@ -29,15 +29,14 @@ import org.apache.spark.storage.BlockManagerId
 import org.apache.spark.util.Utils
 
 /**
- * Result returned by a ShuffleMapTask to a scheduler. Includes the block manager address that the
- * task ran on as well as the sizes of outputs for each reducer, for passing on to the reduce tasks.
+ * ShuffleMapTask返回给调度程序的结果。包括任务运行所在的块管理器地址，以及每个化简器的输出大小，以传递到化简任务。
  */
 private[spark] sealed trait MapStatus {
-  /** Location where this task was run. */
+  /** 运行此任务的位置。 */
   def location: BlockManagerId
 
   /**
-   * Estimated size for the reduce block, in bytes.
+   * reduce块的估计大小，以字节为单位。
    *
    * If a block is non-empty, then this method MUST return a non-zero size.  This invariant is
    * necessary for correctness, since block fetchers are allowed to skip zero-size blocks.
@@ -45,8 +44,7 @@ private[spark] sealed trait MapStatus {
   def getSizeForBlock(reduceId: Int): Long
 
   /**
-   * The unique ID of this shuffle map task, if spark.shuffle.useOldFetchProtocol enabled we use
-   * partitionId of the task or taskContext.taskAttemptId is used.
+   * 如果启用了spark.shuffle.useOldFetchProtocol，则此混洗映射任务的唯一ID，我们将使用任务的partitionId或使用taskContext.taskAttemptId。
    */
   def mapId: Long
 }
@@ -104,12 +102,11 @@ private[spark] object MapStatus {
 
 
 /**
- * A [[MapStatus]] implementation that tracks the size of each block. Size for each block is
- * represented using a single byte.
+ * 一个[[MapStatus]]实现，用于跟踪每个块的大小。每个块的大小使用单个字节表示。
  *
- * @param loc location where the task is being executed.
- * @param compressedSizes size of the blocks, indexed by reduce partition id.
- * @param _mapTaskId unique task id for the task
+ * @param loc 执行任务的位置。
+ * @param compressedSizes 块的大小，由reduce partition id索引。
+ * @param _mapTaskId 任务的唯一任务ID
  */
 private[spark] class CompressedMapStatus(
     private[this] var loc: BlockManagerId,

@@ -29,19 +29,17 @@ import org.apache.spark.util.Utils
 import org.apache.spark.util.collection.OpenHashSet
 
 /**
- * In sort-based shuffle, incoming records are sorted according to their target partition ids, then
- * written to a single map output file. Reducers fetch contiguous regions of this file in order to
- * read their portion of the map output. In cases where the map output data is too large to fit in
- * memory, sorted subsets of the output can be spilled to disk and those on-disk files are merged
- * to produce the final output file.
+ * 在基于排序的shuffle中，传入记录根据其目标分区ID进行排序，然后写入单个映射输出文件。
+ * 精简器获取此文件的连续区域，以读取其映射输出的一部分。
+ * 如果地图输出数据太大而无法容纳在内存中，则可以将输出的排序子集溢出到磁盘，
+ * 然后将那些磁盘上的文件合并以生成最终的输出文件。
  *
- * Sort-based shuffle has two different write paths for producing its map output files:
+ * 基于排序的随机播放具有两种不同的写入路径来生成其映射输出文件：
  *
- *  - Serialized sorting: used when all three of the following conditions hold:
- *    1. The shuffle dependency specifies no map-side combine.
- *    2. The shuffle serializer supports relocation of serialized values (this is currently
- *       supported by KryoSerializer and Spark SQL's custom serializers).
- *    3. The shuffle produces fewer than or equal to 16777216 output partitions.
+ *  - 序列化排序：在以下三个条件均满足时使用：
+ *    1. 随机播放依赖项未指定地图端合并。
+ *    2. 随机播放序列化程序支持重定位序列化的值（KryoSerializer和Spark SQL的自定义序列化程序当前支持此功能）。
+ *    3. 随机播放产生少于或等于16777216的输出分区。
  *  - Deserialized sorting: used to handle all other cases.
  *
  * -----------------------

@@ -65,8 +65,7 @@ private[spark] class BlockResult(
     val bytes: Long)
 
 /**
- * Abstracts away how blocks are stored and provides different ways to read the underlying block
- * data. Callers should call [[dispose()]] when they're done with the block.
+ * 摘要了如何存储块，并提供了不同的方式来读取基础块数据。调用者在完成该块后应调用[[dispose()]]。
  */
 private[spark] trait BlockData {
 
@@ -141,7 +140,7 @@ private[spark] class BlockManager(
   private[spark] val subDirsPerLocalDir = conf.get(config.DISKSTORE_SUB_DIRECTORIES)
 
   val diskBlockManager = {
-    // Only perform cleanup if an external service is not serving our shuffle files.
+    // 仅当外部服务不提供我们的随机文件时才执行清理。
     val deleteFilesOnStop =
       !externalShuffleServiceEnabled || executorId == SparkContext.DRIVER_IDENTIFIER
     new DiskBlockManager(conf, deleteFilesOnStop)
@@ -387,13 +386,10 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Initializes the BlockManager with the given appId. This is not performed in the constructor as
-   * the appId may not be known at BlockManager instantiation time (in particular for the driver,
-   * where it is only learned after registration with the TaskScheduler).
-   *
-   * This method initializes the BlockTransferService and BlockStoreClient, registers with the
-   * BlockManagerMaster, starts the BlockManagerWorker endpoint, and registers with a local shuffle
-   * service if configured.
+   * 使用给定的appId初始化BlockManager。在构造函数中不执行此操作，
+   * 因为appId在BlockManager实例化时可能未知（尤其是对于驱动程序，仅在向TaskScheduler注册后才能获知）。
+   * 此方法初始化BlockTransferService和BlockStoreClient，向BlockManagerMaster注册，
+   * 启动BlockManagerWorker端点，并向本地shuffle服务注册（如果已配置）。
    */
   def initialize(appId: String): Unit = {
     blockTransferService.init(this)
@@ -713,8 +709,8 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Cleanup code run in response to a failed local read.
-   * Must be called while holding a read lock on the block.
+   * 运行清除代码以响应失败的本地读取。
+   * 必须在保持块读取锁定的同时调用它。
    */
   private def handleLocalReadFailure(blockId: BlockId): Nothing = {
     releaseLock(blockId)
@@ -730,6 +726,7 @@ private[spark] class BlockManager(
     logDebug(s"Getting local block $blockId")
     blockInfoManager.lockForReading(blockId) match {
       case None =>
+        // 本地没有数据
         logDebug(s"Block $blockId was not found")
         None
       case Some(info) =>
@@ -743,9 +740,8 @@ private[spark] class BlockManager(
             serializerManager.dataDeserializeStream(
               blockId, memoryStore.getBytes(blockId).get.toInputStream())(info.classTag)
           }
-          // We need to capture the current taskId in case the iterator completion is triggered
-          // from a different thread which does not have TaskContext set; see SPARK-18406 for
-          // discussion.
+          // 如果迭代器完成是从另一个未设置TaskContext的线程触发的，则我们需要捕获当前的taskId。请参阅SPARK-18406
+          //讨论。
           val ci = CompletionIterator[Any, Iterator[Any]](iter, {
             releaseLock(blockId, taskContext)
           })
@@ -776,7 +772,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Get block from the local block manager as serialized bytes.
+   * 从本地块管理器获取块作为序列化字节。
    */
   def getLocalBytes(blockId: BlockId): Option[BlockData] = {
     logDebug(s"Getting local block $blockId as bytes")
@@ -785,10 +781,10 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Get block from the local block manager as serialized bytes.
+   * 从本地块管理器获取块作为序列化字节。
    *
-   * Must be called while holding a read lock on the block.
-   * Releases the read lock upon exception; keeps the read lock upon successful return.
+   * 必须在保持块读取锁定的同时调用它。
+   * 发生异常时释放读取锁定；成功返回后保持读取锁定。
    */
   private def doGetLocalBytes(blockId: BlockId, info: BlockInfo): BlockData = {
     val level = info.level
@@ -839,18 +835,14 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Get the remote block and transform it to the provided data type.
+   * 获取远程块并将其转换为提供的数据类型。
    *
-   * If the block is persisted to the disk and stored at an executor running on the same host then
-   * first it is tried to be accessed using the local directories of the other executor directly.
-   * If the file is successfully identified then tried to be transformed by the provided
-   * transformation function which expected to open the file. If there is any exception during this
-   * transformation then block access falls back to fetching it from the remote executor via the
-   * network.
+   * 如果该块保留在磁盘上并存储在同一主机上运行的执行程序中，则首先尝试直接使用其他执行程序的本地目录对其进行访问。
+   * 如果文件被成功识别，则尝试使用提供的转换功能来转换文件，该功能会打开文件。
+   * 如果在此转换过程中存在任何异常，则块访问将回退到通过网络从远程执行器获取它。
    *
-   * @param blockId identifies the block to get
-   * @param bufferTransformer this transformer expected to open the file if the block is backed by a
-   *                          file by this it is guaranteed the whole content can be loaded
+   * @param blockId 识别要获取的块
+   * @param bufferTransformer 如果此块由文件支持，则此转换器将打开文件，这样可以确保可以加载整个内容
    * @tparam T result type
    */
   private[spark] def getRemoteBlock[T](
@@ -1020,7 +1012,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Get block from remote block managers as serialized bytes.
+   * 从远程块管理器获取块作为序列化字节。
    */
   def getRemoteBytes(blockId: BlockId): Option[ChunkedByteBuffer] = {
     getRemoteBlock(blockId, (data: ManagedBuffer) => {
@@ -1064,10 +1056,8 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Release a lock on the given block with explicit TaskContext.
-   * The param `taskContext` should be passed in case we can't get the correct TaskContext,
-   * for example, the input iterator of a cached RDD iterates to the end in a child
-   * thread.
+   * 使用显式TaskContext释放给定块的锁。
+   * 如果无法获得正确的TaskContext，则应传递参数taskContext，例如，缓存的RDD的输入迭代器在子线程中迭代到末尾。
    */
   def releaseLock(blockId: BlockId, taskContext: Option[TaskContext] = None): Unit = {
     val taskAttemptId = taskContext.map(_.taskAttemptId())

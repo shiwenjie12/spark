@@ -196,8 +196,7 @@ private[spark] class SerializerManager(
   }
 
   /**
-   * Deserializes an InputStream into an iterator of values and disposes of it when the end of
-   * the iterator is reached.
+   * 将InputStream反序列化为值的迭代器，并在到达迭代器的末尾时将其处理。
    */
   def dataDeserializeStream[T](
       blockId: BlockId,

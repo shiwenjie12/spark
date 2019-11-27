@@ -26,8 +26,7 @@ import org.apache.spark.internal.{config, Logging}
 import org.apache.spark.util.{ShutdownHookManager, Utils}
 
 /**
- * Creates and maintains the logical mapping between logical blocks and physical on-disk
- * locations. One block is mapped to one file with a name given by its BlockId.
+ * 创建并维护逻辑块与物理磁盘位置之间的逻辑映射。一个块以其BlockId给出的名称映射到一个文件。
  *
  * Block files are hashed among the directories listed in spark.local.dir (or in
  * SPARK_LOCAL_DIRS, if it's set).
@@ -53,7 +52,7 @@ private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolea
 
   private val shutdownHook = addShutdownHook()
 
-  /** Looks up a file by hashing it into one of our local subdirectories. */
+  /** 通过将文件散列到我们的本地子目录之一中来查找文件。 */
   // This method should be kept in sync with
   // org.apache.spark.network.shuffle.ExecutorDiskUtils#getFile().
   def getFile(filename: String): File = {
@@ -134,9 +133,8 @@ private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolea
   }
 
   /**
-   * Create local directories for storing block data. These directories are
-   * located inside configured local directories and won't
-   * be deleted on JVM exit when using the external shuffle service.
+   * 创建用于存储块数据的本地目录。这些目录位于已配置的本地目录中，
+   * 使用外部随机播放服务时，不会在JVM退出时将其删除。
    */
   private def createLocalDirs(conf: SparkConf): Array[File] = {
     Utils.getConfiguredLocalDirs(conf).flatMap { rootDir =>

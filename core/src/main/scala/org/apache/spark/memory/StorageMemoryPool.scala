@@ -24,8 +24,7 @@ import org.apache.spark.storage.BlockId
 import org.apache.spark.storage.memory.MemoryStore
 
 /**
- * Performs bookkeeping for managing an adjustable-size pool of memory that is used for storage
- * (caching).
+ * 执行簿记，以管理用于存储（缓存）的大小可调的内存池。
  *
  * @param lock a [[MemoryManager]] instance to synchronize on
  * @param memoryMode the type of memory tracked by this pool (on- or off-heap)
@@ -64,7 +63,7 @@ private[memory] class StorageMemoryPool(
   }
 
   /**
-   * Acquire N bytes of memory to cache the given block, evicting existing ones if necessary.
+   * 获取N个字节的内存以缓存给定的块，如有必要，驱逐现有的块。
    *
    * @return whether all N bytes were successfully granted.
    */
@@ -74,12 +73,12 @@ private[memory] class StorageMemoryPool(
   }
 
   /**
-   * Acquire N bytes of storage memory for the given block, evicting existing ones if necessary.
+   * 为给定的块获取N字节的存储内存，必要时驱逐现有的字节。
    *
-   * @param blockId the ID of the block we are acquiring storage memory for
-   * @param numBytesToAcquire the size of this block
-   * @param numBytesToFree the amount of space to be freed through evicting blocks
-   * @return whether all N bytes were successfully granted.
+   * @param blockId 我们正在获取存储内存的块的ID
+   * @param numBytesToAcquire 该块的大小
+   * @param numBytesToFree 通过驱逐块释放的空间量
+   * @return 是否已成功授予所有N个字节。
    */
   def acquireMemory(
       blockId: BlockId,

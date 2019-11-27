@@ -2711,7 +2711,7 @@ object SparkContext extends Logging {
   }
 
   /**
-   * The number of cores available to the driver to use for tasks such as I/O with Netty
+   * 驱动程序可用于诸如Netty的I/O之类的任务的可用内核数
    */
   private[spark] def numDriverCores(master: String, conf: SparkConf): Int = {
     def convertToInt(threads: String): Int = {

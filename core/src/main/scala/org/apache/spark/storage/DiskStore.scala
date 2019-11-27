@@ -154,6 +154,7 @@ private[spark] class DiskStore(
 
 }
 
+// 磁盘块数据
 private class DiskBlockData(
     minMemoryMapBytes: Long,
     maxMemoryMapBytes: Long,

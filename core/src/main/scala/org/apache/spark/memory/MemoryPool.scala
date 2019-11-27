@@ -20,8 +20,7 @@ package org.apache.spark.memory
 import javax.annotation.concurrent.GuardedBy
 
 /**
- * Manages bookkeeping for an adjustable-sized region of memory. This class is internal to
- * the [[MemoryManager]]. See subclasses for more details.
+ * 管理簿记以调整大小的内存区域。此类在[[MemoryManager]]内部。有关更多详细信息，请参见子类。
  *
  * @param lock a [[MemoryManager]] instance, used for synchronization. We purposely erase the type
  *             to `Object` to avoid programming errors, since this object should only be used for
@@ -40,7 +39,7 @@ private[memory] abstract class MemoryPool(lock: Object) {
   }
 
   /**
-   * Returns the amount of free memory in the pool, in bytes.
+   * 以字节为单位返回池中的可用内存量。
    */
   final def memoryFree: Long = lock.synchronized {
     _poolSize - memoryUsed
@@ -65,7 +64,7 @@ private[memory] abstract class MemoryPool(lock: Object) {
   }
 
   /**
-   * Returns the amount of used memory in this pool (in bytes).
+   * 返回此池中已使用的内存量（以字节为单位）。
    */
   def memoryUsed: Long
 }

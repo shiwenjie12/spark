@@ -20,9 +20,9 @@ package org.apache.spark.shuffle
 import org.apache.spark.{ShuffleDependency, TaskContext}
 
 /**
- * Pluggable interface for shuffle systems. A ShuffleManager is created in SparkEnv on the driver
- * and on each executor, based on the spark.shuffle.manager setting. The driver registers shuffles
- * with it, and executors (or tasks running locally in the driver) can ask to read and write data.
+ * 随机播放系统的可插拔接口。根据spark.shuffle.manager设置，
+ * 在SparkEnv中的驱动程序和每个执行程序上创建一个ShuffleManager。
+ * 驱动程序向其中注册洗牌，执行程序（或驱动程序本地运行的任务）可以要求读取和写入数据。
  *
  * NOTE: this will be instantiated by SparkEnv so its constructor can take a SparkConf and
  * boolean isDriver as parameters.
@@ -30,13 +30,13 @@ import org.apache.spark.{ShuffleDependency, TaskContext}
 private[spark] trait ShuffleManager {
 
   /**
-   * Register a shuffle with the manager and obtain a handle for it to pass to tasks.
+   * 向管理员注册洗牌并获取一个句柄，以将其传递给任务。
    */
   def registerShuffle[K, V, C](
       shuffleId: Int,
       dependency: ShuffleDependency[K, V, C]): ShuffleHandle
 
-  /** Get a writer for a given partition. Called on executors by map tasks. */
+  /** 获取给定分区的作家。地图任务调用执行程序。 */
   def getWriter[K, V](
       handle: ShuffleHandle,
       mapId: Long,
@@ -44,8 +44,8 @@ private[spark] trait ShuffleManager {
       metrics: ShuffleWriteMetricsReporter): ShuffleWriter[K, V]
 
   /**
-   * Get a reader for a range of reduce partitions (startPartition to endPartition-1, inclusive).
-   * Called on executors by reduce tasks.
+   * 获取有关一系列精简分区（包括startPartition到endPartition-1，包括首尾）的读者。
+   * 通过减少任务来调用执行程序。
    */
   def getReader[K, C](
       handle: ShuffleHandle,
@@ -55,8 +55,8 @@ private[spark] trait ShuffleManager {
       metrics: ShuffleReadMetricsReporter): ShuffleReader[K, C]
 
   /**
-   * Get a reader for a range of reduce partitions (startPartition to endPartition-1, inclusive)
-   * that are produced by one specific mapper. Called on executors by reduce tasks.
+   * 获取有关一个特定映射器生成的一系列reduce分区（包括startPartition至endPartition-1，包括其中）的reader。
+   * 通过减少任务来调用执行程序。
    */
   def getReaderForOneMapper[K, C](
       handle: ShuffleHandle,
@@ -67,13 +67,13 @@ private[spark] trait ShuffleManager {
       metrics: ShuffleReadMetricsReporter): ShuffleReader[K, C]
 
   /**
-   * Remove a shuffle's metadata from the ShuffleManager.
+   * 从ShuffleManager中删除随机播放的元数据。
    * @return true if the metadata removed successfully, otherwise false.
    */
   def unregisterShuffle(shuffleId: Int): Boolean
 
   /**
-   * Return a resolver capable of retrieving shuffle block data based on block coordinates.
+   * 返回一个能够基于块坐标检索混洗块数据的解析器。
    */
   def shuffleBlockResolver: ShuffleBlockResolver
 

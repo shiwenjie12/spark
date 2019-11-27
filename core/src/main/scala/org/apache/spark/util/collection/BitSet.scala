@@ -20,8 +20,7 @@ package org.apache.spark.util.collection
 import java.util.Arrays
 
 /**
- * A simple, fixed-size bit set implementation. This implementation is fast because it avoids
- * safety/bound checking.
+ * 一个简单的固定大小的位集实现。该实现是快速的，因为它避免了安全/绑定检查。
  */
 class BitSet(numBits: Int) extends Serializable {
 

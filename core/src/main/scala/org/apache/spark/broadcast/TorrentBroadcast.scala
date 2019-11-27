@@ -230,7 +230,6 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
               if (x != null) {
                 broadcastCache.put(broadcastId, x)
               }
-
               x
             } else {
               throw new SparkException(s"Failed to get locally stored broadcast data: $broadcastId")

@@ -29,11 +29,10 @@ import org.apache.spark.unsafe.array.ByteArrayMethods
 import org.apache.spark.unsafe.memory.MemoryAllocator
 
 /**
- * An abstract memory manager that enforces how memory is shared between execution and storage.
+ * 一个抽象内存管理器，用于强制执行和存储之间共享内存。
  *
- * In this context, execution memory refers to that used for computation in shuffles, joins,
- * sorts and aggregations, while storage memory refers to that used for caching and propagating
- * internal data across the cluster. There exists one MemoryManager per JVM.
+ * 在这种情况下，执行内存是指用于洗牌，联接，排序和聚合中的计算的内存，
+ * 而存储内存是指用于在集群中缓存和传播内部数据的内存。每个JVM有一个MemoryManager。
  */
 private[spark] abstract class MemoryManager(
     conf: SparkConf,

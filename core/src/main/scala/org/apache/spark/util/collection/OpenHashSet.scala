@@ -24,13 +24,10 @@ import com.google.common.hash.Hashing
 import org.apache.spark.annotation.Private
 
 /**
- * A simple, fast hash set optimized for non-null insertion-only use case, where keys are never
- * removed.
+ * 一个简单，快速的哈希集，针对非空仅插入用例进行了优化，该情况永远不会删除键。
  *
- * The underlying implementation uses Scala compiler's specialization to generate optimized
- * storage for four primitive types (Long, Int, Double, and Float). It is much faster than Java's
- * standard HashSet while incurring much less memory overhead. This can serve as building blocks
- * for higher level data structures such as an optimized HashMap.
+ * 基础实现使用Scala编译器的专业知识为四种基本类型（Long，Int，Double和Float）生成优化的存储。
+ * 它比Java的标准HashSet快得多，同时减少了内存开销。这可以用作高级数据结构（例如优化的HashMap）的构建块。
  *
  * This OpenHashSet is designed to serve as building blocks for higher level data structures
  * such as an optimized hash map. Compared with standard hash set implementations, this class
@@ -294,8 +291,7 @@ object OpenHashSet {
   val POSITION_MASK = (1 << 31) - 1
 
   /**
-   * A set of specialized hash function implementation to avoid boxing hash code computation
-   * in the specialized implementation of OpenHashSet.
+   * 一组专用哈希函数实现，以避免在OpenHashSet的专用实现中进行装箱哈希码计算。
    */
   sealed class Hasher[@specialized(Long, Int, Double, Float) T] extends Serializable {
     def hash(o: T): Int = o.hashCode()

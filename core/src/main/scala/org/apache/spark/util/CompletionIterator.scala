@@ -18,8 +18,7 @@
 package org.apache.spark.util
 
 /**
- * Wrapper around an iterator which calls a completion method after it successfully iterates
- * through all the elements.
+ * 成功遍历所有元素后，调用完成方法的迭代器周围的包装器。
  */
 private[spark]
 abstract class CompletionIterator[ +A, +I <: Iterator[A]](sub: I) extends Iterator[A] {
@@ -31,7 +30,7 @@ abstract class CompletionIterator[ +A, +I <: Iterator[A]](sub: I) extends Iterat
     val r = iter.hasNext
     if (!r && !completed) {
       completed = true
-      // reassign to release resources of highly resource consuming iterators early
+      // 重新分配以尽早释放高度资源消耗的迭代器的资源
       iter = Iterator.empty.asInstanceOf[I]
       completion()
     }

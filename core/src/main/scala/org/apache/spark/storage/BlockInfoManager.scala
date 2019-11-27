@@ -163,11 +163,8 @@ private[storage] class BlockInfoManager extends Logging {
 
   /**
    * 锁定一个块以读取并返回其元数据。
-   *
    * 如果另一个任务已经锁定了该块以供读取，则读取锁定将立即授予调用任务，并且其锁定计数将增加。
-   *
    * 如果另一个任务锁定了该块进行写操作，则此调用将被阻止直到释放写锁为止，或者如果“ blocking = false”将立即返回
-   *
    * 单个任务可以多次锁定一个块以进行读取，在这种情况下，每个锁定将需要分别释放。
    *
    * @param blockId the block to lock.
@@ -199,10 +196,9 @@ private[storage] class BlockInfoManager extends Logging {
   }
 
   /**
-   * Lock a block for writing and return its metadata.
+   * 锁定要写入的块并返回其元数据。
    *
-   * If another task has already locked this block for either reading or writing, then this call
-   * will block until the other locks are released or will return immediately if `blocking = false`.
+   * 如果另一个任务已经锁定了该块以进行读取或写入，则此调用将被阻塞直到释放其他锁为止，或者如果`blocking = false`将立即返回。
    *
    * @param blockId the block to lock.
    * @param blocking if true (default), this call will block until the lock is acquired. If false,
@@ -259,7 +255,7 @@ private[storage] class BlockInfoManager extends Logging {
   }
 
   /**
-   * Downgrades an exclusive write lock to a shared read lock.
+   * 将排他的写锁降级为共享的读锁。
    */
   def downgradeLock(blockId: BlockId): Unit = synchronized {
     logTrace(s"Task $currentTaskAttemptId downgrading write lock for $blockId")
@@ -273,9 +269,8 @@ private[storage] class BlockInfoManager extends Logging {
   }
 
   /**
-   * Release a lock on the given block.
-   * In case a TaskContext is not propagated properly to all child threads for the task, we fail to
-   * get the TID from TaskContext, so we have to explicitly pass the TID value to release the lock.
+   * 释放给定块上的锁。
+   * 如果没有将TaskContext正确传播到该任务的所有子线程，则无法从TaskContext获取TID，因此必须显式传递TID值以释放锁。
    *
    * See SPARK-18406 for more discussion of this issue.
    */

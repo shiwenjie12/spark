@@ -75,8 +75,7 @@ private[storage] trait BlockEvictionHandler {
 }
 
 /**
- * Stores blocks in memory, either as Arrays of deserialized Java objects or as
- * serialized ByteBuffers.
+ * 将块以反序列化Java对象数组或序列化ByteBuffer的形式存储在内存中。
  */
 private[spark] class MemoryStore(
     conf: SparkConf,
@@ -414,17 +413,16 @@ private[spark] class MemoryStore(
   }
 
   /**
-   * Return the RDD ID that a given block ID is from, or None if it is not an RDD block.
+   * 返回给定块ID的RDD ID，如果不是RDD块，则返回None。
    */
   private def getRddId(blockId: BlockId): Option[Int] = {
     blockId.asRDDId.map(_.rddId)
   }
 
   /**
-   * Try to evict blocks to free up a given amount of space to store a particular block.
-   * Can fail if either the block is bigger than our memory or it would require replacing
-   * another block from the same RDD (which leads to a wasteful cyclic replacement pattern for
-   * RDDs that don't fit into memory that we want to avoid).
+   * 尝试逐出块以释放给定数量的空间来存储特定块。
+   * 如果该块大于我们的内存，或者需要从同一RDD中替换另一个块，则可能会失败
+   * （这将导致浪费性的RDD循环替换模式，而这些RDD不能放入我们要避免的内存中）。
    *
    * @param blockId the ID of the block we are freeing space for, if any
    * @param space the size of this block
@@ -440,6 +438,7 @@ private[spark] class MemoryStore(
       var freedMemory = 0L
       val rddToAdd = blockId.flatMap(getRddId)
       val selectedBlocks = new ArrayBuffer[BlockId]
+      // block是否是可删除
       def blockIsEvictable(blockId: BlockId, entry: MemoryEntry[_]): Boolean = {
         entry.memoryMode == memoryMode && (rddToAdd.isEmpty || rddToAdd != getRddId(blockId))
       }
@@ -452,6 +451,7 @@ private[spark] class MemoryStore(
           val pair = iterator.next()
           val blockId = pair.getKey
           val entry = pair.getValue
+          // 可以驱赶block
           if (blockIsEvictable(blockId, entry)) {
             // We don't want to evict blocks which are currently being read, so we need to obtain
             // an exclusive write lock on blocks which are candidates for eviction. We perform a
@@ -487,7 +487,7 @@ private[spark] class MemoryStore(
         try {
           logInfo(s"${selectedBlocks.size} blocks selected for dropping " +
             s"(${Utils.bytesToString(freedMemory)} bytes)")
-          (0 until selectedBlocks.size).foreach { idx =>
+          selectedBlocks.indices.foreach { idx =>
             val blockId = selectedBlocks(idx)
             val entry = entries.synchronized {
               entries.get(blockId)
@@ -516,6 +516,7 @@ private[spark] class MemoryStore(
           }
         }
       } else {
+        // 如果不够则释放内存
         blockId.foreach { id =>
           logInfo(s"Will not store $id")
         }

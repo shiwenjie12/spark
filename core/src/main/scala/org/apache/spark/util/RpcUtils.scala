@@ -57,7 +57,7 @@ private[spark] object RpcUtils {
 
   private val MAX_MESSAGE_SIZE_IN_MB = Int.MaxValue / 1024 / 1024
 
-  /** Returns the configured max message size for messages in bytes. */
+  /** 返回已配置的最大消息大小，以字节为单位。 */
   def maxMessageSizeBytes(conf: SparkConf): Int = {
     val maxSizeInMB = conf.get(RPC_MESSAGE_MAX_SIZE)
     if (maxSizeInMB > MAX_MESSAGE_SIZE_IN_MB) {

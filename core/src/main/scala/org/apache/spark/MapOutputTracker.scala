@@ -41,11 +41,9 @@ import org.apache.spark.storage.{BlockId, BlockManagerId, ShuffleBlockId}
 import org.apache.spark.util._
 
 /**
- * Helper class used by the [[MapOutputTrackerMaster]] to perform bookkeeping for a single
- * ShuffleMapStage.
+ * [[MapOutputTrackerMaster]]用于为单个ShuffleMapStage执行簿记的Helper类。
  *
- * This class maintains a mapping from map index to `MapStatus`. It also maintains a cache of
- * serialized map statuses in order to speed up tasks' requests for map output statuses.
+ * 此类维护从地图索引到MapStatus的映射。它还可以维护序列化地图状态的缓存，以加快任务对地图输出状态的请求。
  *
  * All public methods of this class are thread-safe.
  */
@@ -103,15 +101,13 @@ private class ShuffleStatus(numPartitions: Int) {
   private[this] var cachedSerializedBroadcast: Broadcast[Array[Byte]] = _
 
   /**
-   * Counter tracking the number of partitions that have output. This is a performance optimization
-   * to avoid having to count the number of non-null entries in the `mapStatuses` array and should
-   * be equivalent to`mapStatuses.count(_ ne null)`.
+   * 计数器跟踪已输出的分区数。这是一种性能优化，以避免必须计算mapStatuses数组中非空条目的数量，
+   * 并且应该等效于mapStatuses.count（_ ne null）。
    */
   private[this] var _numAvailableOutputs: Int = 0
 
   /**
-   * Register a map output. If there is already a registered location for the map output then it
-   * will be replaced by the new location.
+   * 注册地图输出。如果已经有地图输出的注册位置，则它将被新位置替换。
    */
   def addMapOutput(mapIndex: Int, status: MapStatus): Unit = withWriteLock {
     if (mapStatuses(mapIndex) == null) {
@@ -255,7 +251,7 @@ private[spark] case object StopMapOutputTracker extends MapOutputTrackerMessage
 
 private[spark] case class GetMapOutputMessage(shuffleId: Int, context: RpcCallContext)
 
-/** RpcEndpoint class for MapOutputTrackerMaster */
+/** MapOutputTrackerMaster的RpcEndpoint类 */
 private[spark] class MapOutputTrackerMasterEndpoint(
     override val rpcEnv: RpcEnv, tracker: MapOutputTrackerMaster, conf: SparkConf)
   extends RpcEndpoint with Logging {
@@ -276,29 +272,25 @@ private[spark] class MapOutputTrackerMasterEndpoint(
 }
 
 /**
- * Class that keeps track of the location of the map output of a stage. This is abstract because the
- * driver and executor have different versions of the MapOutputTracker. In principle the driver-
- * and executor-side classes don't need to share a common base class; the current shared base class
- * is maintained primarily for backwards-compatibility in order to avoid having to update existing
- * test code.
+ * 跟踪舞台地图输出位置的类。
+ * 这是抽象的，因为驱动程序和执行程序的MapOutputTracker版本不同。
+ * 原则上，驱动程序和执行程序端的类不需要共享公共的基类。
+ * 当前保留的共享基类主要是为了向后兼容，以避免必须更新现有的测试代码。
 */
 private[spark] abstract class MapOutputTracker(conf: SparkConf) extends Logging {
   /** Set to the MapOutputTrackerMasterEndpoint living on the driver. */
   var trackerEndpoint: RpcEndpointRef = _
 
   /**
-   * The driver-side counter is incremented every time that a map output is lost. This value is sent
-   * to executors as part of tasks, where executors compare the new epoch number to the highest
-   * epoch number that they received in the past. If the new epoch number is higher then executors
-   * will clear their local caches of map output statuses and will re-fetch (possibly updated)
-   * statuses from the driver.
+   * 每当映射输出丢失时，驱动器侧计数器就会增加。
+   * 此值作为任务的一部分发送给执行者，执行者将新的纪元编号与他们过去收到的最高纪元编号进行比较。
+   * 如果新的纪元编号更高，则执行者将清除其本地的映射输出状态缓存，并将从驱动程序重新获取（可能已更新）状态。
    */
   protected var epoch: Long = 0
   protected val epochLock = new AnyRef
 
   /**
-   * Send a message to the trackerEndpoint and get its result within a default timeout, or
-   * throw a SparkException if this fails.
+   * 将消息发送到trackerEndpoint并在默认超时内获取其结果，如果失败则抛出SparkException。
    */
   protected def askTracker[T: ClassTag](message: Any): T = {
     try {
@@ -364,13 +356,9 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf) extends Logging 
 }
 
 /**
- * Driver-side class that keeps track of the location of the map output of a stage.
- *
- * The DAGScheduler uses this class to (de)register map output statuses and to look up statistics
- * for performing locality-aware reduce task scheduling.
- *
- * ShuffleMapStage uses this class for tracking available / missing outputs in order to determine
- * which tasks need to be run.
+ * 跟踪一个阶段的地图输出位置的驱动程序侧类。
+ * DAGScheduler使用此类来（取消）注册地图输出状态，并查找统计信息以执行本地感知的简化任务调度。
+ * ShuffleMapStage使用此类跟踪可用/缺少的输出，以确定需要运行的任务。
  */
 private[spark] class MapOutputTrackerMaster(
     conf: SparkConf,

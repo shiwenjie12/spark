@@ -115,7 +115,7 @@ private[spark] class ByteBufferBlockData(
 /**
  * 在每个节点（驱动程序和执行程序）上运行的管理器，它提供用于在本地和远程将块放入和检索到各种存储区（内存，磁盘和堆外）的接口。
  *
- * Note that [[initialize()]] must be called before the BlockManager is usable.
+ * 请注意，必须先调用[[initialize()]]，然后才能使用BlockManager。
  */
 private[spark] class BlockManager(
     executorId: String,
@@ -634,9 +634,8 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Tell the master about the current storage status of a block. This will send a block update
-   * message reflecting the current status, *not* the desired storage level in its block info.
-   * For example, a block with MEMORY_AND_DISK set might have fallen out to be only on disk.
+   * 告知主块当前的存储状态。这将发送一个块更新消息，以反映当前状态，而不是其块信息中的所需存储级别。
+   * 例如，设置了MEMORY_AND_DISK的块可能已掉到仅在磁盘上。
    *
    * droppedMemorySize exists to account for when the block is dropped from memory to disk (so
    * it is still valid). This ensures that update in master will compensate for the increase in
@@ -1471,7 +1470,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Called for pro-active replenishment of blocks lost due to executor failures
+   * 要求对由于执行者失败而丢失的区块进行主动补充
    *
    * @param blockId blockId being replicate
    * @param existingReplicas existing block managers that have a replica
@@ -1503,8 +1502,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Replicate block to another node. Note that this is a blocking call that returns after
-   * the block has been replicated.
+   * 将块复制到另一个节点。请注意，这是一个阻塞调用，在块被复制之后返回。
    */
   private def replicate(
       blockId: BlockId,
@@ -1612,13 +1610,11 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Drop a block from memory, possibly putting it on disk if applicable. Called when the memory
-   * store reaches its limit and needs to free up space.
+   * 从内存中删除一个块，可能的话将其放在磁盘上。当内存存储达到其极限并需要释放空间时调用。
+   * 如果`data`没有放在磁盘上，则不会创建它。
    *
-   * If `data` is not put on disk, it won't be created.
-   *
-   * The caller of this method must hold a write lock on the block before calling this method.
-   * This method does not release the write lock.
+   * 调用此方法之前，此方法的调用者必须在块上持有写锁。
+   * 此方法不释放写锁定。
    *
    * @return the block's new effective StorageLevel.
    */
@@ -1630,7 +1626,7 @@ private[spark] class BlockManager(
     var blockIsUpdated = false
     val level = info.level
 
-    // Drop to disk, if storage level requires
+    // 如果需要存储级别，请放到磁盘上
     if (level.useDisk && !diskStore.contains(blockId)) {
       logInfo(s"Writing block $blockId to disk")
       data() match {
@@ -1648,7 +1644,7 @@ private[spark] class BlockManager(
       blockIsUpdated = true
     }
 
-    // Actually drop from memory store
+    // 实际上是从内存存储中删除
     val droppedMemorySize =
       if (memoryStore.contains(blockId)) memoryStore.getSize(blockId) else 0L
     val blockIsRemoved = memoryStore.remove(blockId)

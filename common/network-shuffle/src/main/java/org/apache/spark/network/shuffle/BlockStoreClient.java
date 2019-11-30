@@ -23,8 +23,7 @@ import java.util.Collections;
 import com.codahale.metrics.MetricSet;
 
 /**
- * Provides an interface for reading both shuffle files and RDD blocks, either from an Executor
- * or external service.
+ * 提供一个接口，用于从执行程序或外部服务读取随机文件和RDD块。
  */
 public abstract class BlockStoreClient implements Closeable {
 

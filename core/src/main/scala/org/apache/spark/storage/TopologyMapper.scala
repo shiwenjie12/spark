@@ -24,31 +24,27 @@ import org.apache.spark.util.Utils
 
 /**
  * ::DeveloperApi::
- * TopologyMapper provides topology information for a given host
- * @param conf SparkConf to get required properties, if needed
+ * TopologyMapper提供给定主机的拓扑信息
+ * @param conf SparkConf获取所需的属性（如果需要）
  */
 @DeveloperApi
 abstract class TopologyMapper(conf: SparkConf) {
   /**
-   * Gets the topology information given the host name
+   * 在给定主机名的情况下获取拓扑信息
    *
    * @param hostname Hostname
-   * @return topology information for the given hostname. One can use a 'topology delimiter'
-   *         to make this topology information nested.
-   *         For example : ‘/myrack/myhost’, where ‘/’ is the topology delimiter,
-   *         ‘myrack’ is the topology identifier, and ‘myhost’ is the individual host.
-   *         This function only returns the topology information without the hostname.
-   *         This information can be used when choosing executors for block replication
-   *         to discern executors from a different rack than a candidate executor, for example.
+   * @return 给定主机名的拓扑信息。可以使用“拓扑定界符”来嵌套此拓扑信息。
+   *         例如：“ /myrack/myhost”，其中“ /”是拓扑分隔符，“ myrack”是拓扑标识符，“ myhost”是单个主机。
+   *         该函数仅返回不包含主机名的拓扑信息。
+   *         例如，当选择执行程序块进行块复制时，可以使用此信息来区分与候选执行程序不同的机架中的执行程序。
    *
-   *         An implementation can choose to use empty strings or None in case topology info
-   *         is not available. This would imply that all such executors belong to the same rack.
+   *         如果拓扑信息不可用，实现可以选择使用空字符串或“无”。这意味着所有这些执行者都属于同一机架。
    */
   def getTopologyForHost(hostname: String): Option[String]
 }
 
 /**
- * A TopologyMapper that assumes all nodes are in the same rack
+ * 假设所有节点都在同一机架中的拓扑映射器
  */
 @DeveloperApi
 class DefaultTopologyMapper(conf: SparkConf) extends TopologyMapper(conf) with Logging {

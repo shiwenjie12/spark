@@ -79,7 +79,7 @@ private[spark] abstract class RpcEnv(conf: SparkConf) {
   private[rpc] def endpointRef(endpoint: RpcEndpoint): RpcEndpointRef
 
   /**
-   * Return the address that [[RpcEnv]] is listening to.
+   * 返回[[RpcEnv]]正在收听的地址。
    */
   def address: RpcAddress
 

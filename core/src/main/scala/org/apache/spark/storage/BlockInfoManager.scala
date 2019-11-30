@@ -229,8 +229,8 @@ private[storage] class BlockInfoManager extends Logging {
   }
 
   /**
-   * Throws an exception if the current task does not hold a write lock on the given block.
-   * Otherwise, returns the block's BlockInfo.
+   * 如果当前任务未在给定块上持有写锁，则抛出异常。
+   * 否则，返回块的BlockInfo。
    */
   def assertBlockIsLockedForWriting(blockId: BlockId): BlockInfo = synchronized {
     infos.get(blockId) match {

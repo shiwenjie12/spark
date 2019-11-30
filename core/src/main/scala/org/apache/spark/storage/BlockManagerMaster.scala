@@ -36,14 +36,14 @@ class BlockManagerMaster(
 
   val timeout = RpcUtils.askRpcTimeout(conf)
 
-  /** Remove a dead executor from the driver endpoint. This is only called on the driver side. */
+  /** 从驱动程序端点中删除无效的执行程序。这仅在驱动程序端调用。 */
   def removeExecutor(execId: String): Unit = {
     tell(RemoveExecutor(execId))
     logInfo("Removed " + execId + " successfully in removeExecutor")
   }
 
-  /** Request removal of a dead executor from the driver endpoint.
-   *  This is only called on the driver side. Non-blocking
+  /** 请求从驱动程序端点中删除无效的执行程序。
+   *  这仅在驱动程序端调用。不阻塞
    */
   def removeExecutorAsync(execId: String): Unit = {
     driverEndpoint.ask[Boolean](RemoveExecutor(execId))
@@ -51,9 +51,8 @@ class BlockManagerMaster(
   }
 
   /**
-   * Register the BlockManager's id with the driver. The input BlockManagerId does not contain
-   * topology information. This information is obtained from the master and we respond with an
-   * updated BlockManagerId fleshed out with this information.
+   * 向驱动程序注册BlockManager的ID。输入的BlockManagerId不包含拓扑信息。
+   * 此信息是从主服务器获取的，我们将以充实的此信息充实更新的BlockManagerId作为响应。
    */
   def registerBlockManager(
       id: BlockManagerId,
@@ -80,12 +79,12 @@ class BlockManagerMaster(
     res
   }
 
-  /** Get locations of the blockId from the driver */
+  /** 从驱动程序获取blockId的位置 */
   def getLocations(blockId: BlockId): Seq[BlockManagerId] = {
     driverEndpoint.askSync[Seq[BlockManagerId]](GetLocations(blockId))
   }
 
-  /** Get locations as well as status of the blockId from the driver */
+  /** 从驱动程序获取位置以及blockId的状态 */
   def getLocationsAndStatus(
       blockId: BlockId,
       requesterHost: String): Option[BlockLocationsAndStatus] = {
@@ -225,7 +224,7 @@ class BlockManagerMaster(
     timeout.awaitResult(future)
   }
 
-  /** Stop the driver endpoint, called only on the Spark driver node */
+  /** 停止仅在Spark驱动程序节点上调用的驱动程序端点 */
   def stop(): Unit = {
     if (driverEndpoint != null && isDriver) {
       tell(StopBlockManagerMaster)
@@ -234,7 +233,7 @@ class BlockManagerMaster(
     }
   }
 
-  /** Send a one-way message to the master endpoint, to which we expect it to reply with true. */
+  /** 向主端点发送单向消息，我们希望它以true答复。 */
   private def tell(message: Any): Unit = {
     if (!driverEndpoint.askSync[Boolean](message)) {
       throw new SparkException("BlockManagerMasterEndpoint returned false, expected true.")

@@ -189,8 +189,8 @@ object SparkEnv extends Logging {
   }
 
   /**
-   * Create a SparkEnv for an executor.
-   * In coarse-grained mode, the executor provides an RpcEnv that is already instantiated.
+   * 为执行程序创建一个SparkEnv。
+   * 在粗粒度模式下，执行程序提供一个已实例化的RpcEnv。
    */
   private[spark] def createExecutorEnv(
       conf: SparkConf,
@@ -340,6 +340,7 @@ object SparkEnv extends Logging {
       None
     }
 
+    // 块管理master
     val blockManagerMaster = new BlockManagerMaster(registerOrLookupEndpoint(
       BlockManagerMaster.DRIVER_ENDPOINT_NAME,
       new BlockManagerMasterEndpoint(
@@ -354,11 +355,12 @@ object SparkEnv extends Logging {
         })),
       conf, isDriver)
 
+    // 块传输服务
     val blockTransferService =
       new NettyBlockTransferService(conf, securityManager, bindAddress, advertiseAddress,
         blockManagerPort, numUsableCores, blockManagerMaster.driverEndpoint)
 
-    // NB: blockManager is not valid until initialize() is called later.
+    // NB: 在稍后调用initialize()之前，blockManager无效。
     val blockManager = new BlockManager(
       executorId,
       rpcEnv,

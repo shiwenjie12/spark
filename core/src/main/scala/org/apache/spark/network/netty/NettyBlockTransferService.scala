@@ -46,7 +46,7 @@ import org.apache.spark.storage.BlockManagerMessages.IsExecutorAlive
 import org.apache.spark.util.Utils
 
 /**
- * A BlockTransferService that uses Netty to fetch a set of blocks at time.
+ * 使用Netty一次获取一组块的BlockTransferService。
  */
 private[spark] class NettyBlockTransferService(
     conf: SparkConf,

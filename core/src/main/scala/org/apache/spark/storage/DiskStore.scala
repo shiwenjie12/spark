@@ -53,9 +53,9 @@ private[spark] class DiskStore(
   def getSize(blockId: BlockId): Long = blockSizes.get(blockId)
 
   /**
-   * Invokes the provided callback function to write the specific block.
+   * 调用提供的回调函数以写入特定块。
    *
-   * @throws IllegalStateException if the block already exists in the disk store.
+   * @throws IllegalStateException 如果该块已经存在于磁盘存储中。
    */
   def put(blockId: BlockId)(writeFunc: WritableByteChannel => Unit): Unit = {
     if (contains(blockId)) {
@@ -139,7 +139,7 @@ private[spark] class DiskStore(
   }
 
   private def openForWrite(file: File): WritableByteChannel = {
-    val out = new FileOutputStream(file).getChannel()
+    val out = new FileOutputStream(file).getChannel
     try {
       securityManager.getIOEncryptionKey().map { key =>
         CryptoStreamUtils.createWritableChannel(out, conf, key)

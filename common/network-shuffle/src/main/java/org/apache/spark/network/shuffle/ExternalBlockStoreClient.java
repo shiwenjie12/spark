@@ -41,9 +41,8 @@ import org.apache.spark.network.server.NoOpRpcHandler;
 import org.apache.spark.network.util.TransportConf;
 
 /**
- * Client for reading both RDD blocks and shuffle blocks which points to an external
- * (outside of executor) server. This is instead of reading blocks directly from other executors
- * (via BlockTransferService), which has the downside of losing the data if we lose the executors.
+ * 用于读取RDD块和随机播放块的客户端，它们均指向外部（执行器外部）服务器。
+ * 这不是直接从其他执行程序读取块（通过BlockTransferService），如果我们丢失了执行程序，这样做的缺点是会丢失数据。
  */
 public class ExternalBlockStoreClient extends BlockStoreClient {
   private static final Logger logger = LoggerFactory.getLogger(ExternalBlockStoreClient.class);
@@ -57,8 +56,7 @@ public class ExternalBlockStoreClient extends BlockStoreClient {
   protected String appId;
 
   /**
-   * Creates an external shuffle client, with SASL optionally enabled. If SASL is not enabled,
-   * then secretKeyHolder may be null.
+   * 创建一个外部shuffle客户端，并选择启用SASL。如果未启用SASL，则secretKeyHolder可以为null。
    */
   public ExternalBlockStoreClient(
       TransportConf conf,
@@ -76,8 +74,8 @@ public class ExternalBlockStoreClient extends BlockStoreClient {
   }
 
   /**
-   * Initializes the BlockStoreClient, specifying this Executor's appId.
-   * Must be called before any other method on the BlockStoreClient.
+   * 初始化BlockStoreClient，指定此执行器的appId。
+   * 必须在BlockStoreClient上的任何其他方法之前调用。
    */
   public void init(String appId) {
     this.appId = appId;

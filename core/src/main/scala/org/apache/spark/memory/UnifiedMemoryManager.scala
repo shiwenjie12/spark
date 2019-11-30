@@ -39,10 +39,9 @@ import org.apache.spark.storage.BlockId
  * up most of the storage space, in which case the new blocks will be evicted immediately
  * according to their respective storage levels.
  *
- * @param onHeapStorageRegionSize Size of the storage region, in bytes.
- *                          This region is not statically reserved; execution can borrow from
- *                          it if necessary. Cached blocks can be evicted only if actual
- *                          storage memory usage exceeds this region.
+ * @param onHeapStorageRegionSize 存储区域的大小，以字节为单位。
+ *                                该区域不是静态保留的。如有必要，执行可以从中借用。
+ *                                仅当实际存储内存使用量超出此区域时，才可以驱逐缓存的块。
  */
 private[spark] class UnifiedMemoryManager(
     conf: SparkConf,
@@ -100,7 +99,7 @@ private[spark] class UnifiedMemoryManager(
     }
 
     /**
-     * Grow the execution pool by evicting cached blocks, thereby shrinking the storage pool.
+     * 通过逐出缓存的块来扩大执行池，从而缩小存储池。
      *
      * When acquiring memory for a task, the execution pool may need to make multiple
      * attempts. Each attempt must be able to evict storage in case another task jumps in
@@ -126,7 +125,7 @@ private[spark] class UnifiedMemoryManager(
     }
 
     /**
-     * The size the execution pool would have after evicting storage memory.
+     * 退出存储内存后，执行池的大小。
      *
      * The execution memory pool divides this quantity among the active tasks evenly to cap
      * the execution memory allocation for each task. It is important to keep this greater
@@ -189,10 +188,9 @@ private[spark] class UnifiedMemoryManager(
 
 object UnifiedMemoryManager {
 
-  // Set aside a fixed amount of memory for non-storage, non-execution purposes.
-  // This serves a function similar to `spark.memory.fraction`, but guarantees that we reserve
-  // sufficient memory for the system even for small heaps. E.g. if we have a 1GB JVM, then
-  // the memory used for execution and storage will be (1024 - 300) * 0.6 = 434MB by default.
+  // 为非存储，非执行目的预留一定数量的内存。
+  // 这个功能类似于`spark.memory.fraction`，但是保证我们即使是很小的堆也为系统保留足够的内存。
+  // 例如。如果我们有一个1GB的JVM，那么默认情况下，用于执行和存储的内存将为（1024-300）* 0.6 = 434MB。
   private val RESERVED_SYSTEM_MEMORY_BYTES = 300 * 1024 * 1024
 
   def apply(conf: SparkConf, numCores: Int): UnifiedMemoryManager = {
@@ -206,12 +204,14 @@ object UnifiedMemoryManager {
   }
 
   /**
-   * Return the total amount of memory shared between execution and storage, in bytes.
+   * 返回执行和存储之间共享的内存总量（以字节为单位）。
    */
   private def getMaxMemory(conf: SparkConf): Long = {
     val systemMemory = conf.get(TEST_MEMORY)
+    // 保留内存
     val reservedMemory = conf.getLong(TEST_RESERVED_MEMORY.key,
       if (conf.contains(IS_TESTING)) 0 else RESERVED_SYSTEM_MEMORY_BYTES)
+    // 最小系统内存
     val minSystemMemory = (reservedMemory * 1.5).ceil.toLong
     if (systemMemory < minSystemMemory) {
       throw new IllegalArgumentException(s"System memory $systemMemory must " +
@@ -227,6 +227,7 @@ object UnifiedMemoryManager {
           s"--executor-memory option or ${config.EXECUTOR_MEMORY.key} in Spark configuration.")
       }
     }
+    // 可用内存
     val usableMemory = systemMemory - reservedMemory
     val memoryFraction = conf.get(config.MEMORY_FRACTION)
     (usableMemory * memoryFraction).toLong

@@ -35,24 +35,23 @@ import org.apache.spark.util.ThreadUtils
 private[spark] abstract class BlockTransferService extends BlockStoreClient with Logging {
 
   /**
-   * Initialize the transfer service by giving it the BlockDataManager that can be used to fetch
-   * local blocks or put local blocks. The fetchBlocks method in [[BlockStoreClient]] also
-   * available only after this is invoked.
+   * 通过为其提供BlockDataManager初始化传输服务，该服务可用于获取本地块或放置本地块。
+   * [[BlockStoreClient]]中的fetchBlocks方法也仅在调用后才可用。
    */
   def init(blockDataManager: BlockDataManager): Unit
 
   /**
-   * Port number the service is listening on, available only after [[init]] is invoked.
+   * 服务正在监听的端口号，仅在调用[[init]]之后可用。
    */
   def port: Int
 
   /**
-   * Host name the service is listening on, available only after [[init]] is invoked.
+   * 服务正在侦听的主机名，仅在调用[[init]]后可用。
    */
   def hostName: String
 
   /**
-   * Upload a single block to a remote node, available only after [[init]] is invoked.
+   * 将单个块上载到远程节点，仅在调用[[init]]后可用。
    */
   def uploadBlock(
       hostname: String,
@@ -103,10 +102,9 @@ private[spark] abstract class BlockTransferService extends BlockStoreClient with
   }
 
   /**
-   * Upload a single block to a remote node, available only after [[init]] is invoked.
+   * 将单个块上载到远程节点，仅在调用[[init]]后可用。
    *
-   * This method is similar to [[uploadBlock]], except this one blocks the thread
-   * until the upload finishes.
+   * 此方法类似于[[uploadBlock]]，但此方法会阻塞线程，直到上传完成。
    */
   def uploadBlockSync(
       hostname: String,

@@ -27,12 +27,10 @@ import org.apache.spark.util.Utils
 
 /**
  * :: DeveloperApi ::
- * This class represent a unique identifier for a BlockManager.
+ * 此类表示BlockManager的唯一标识符。
  *
- * The first 2 constructors of this class are made private to ensure that BlockManagerId objects
- * can be created only using the apply method in the companion object. This allows de-duplication
- * of ID objects. Also, constructor parameters are private to ensure that parameters cannot be
- * modified from outside this class.
+ * 此类的前2个构造函数被设为私有，以确保只能使用伴随对象中的apply方法来创建BlockManagerId对象。
+ * 这允许对ID对象进行重复数据删除。同样，构造函数参数是私有的，以确保不能从此类外部修改参数。
  */
 @DeveloperApi
 class BlockManagerId private (
@@ -108,14 +106,13 @@ class BlockManagerId private (
 private[spark] object BlockManagerId {
 
   /**
-   * Returns a [[org.apache.spark.storage.BlockManagerId]] for the given configuration.
+   * 返回给定配置的[[org.apache.spark.storage.BlockManagerId]]。
    *
-   * @param execId ID of the executor.
-   * @param host Host name of the block manager.
-   * @param port Port of the block manager.
-   * @param topologyInfo topology information for the blockmanager, if available
-   *                     This can be network topology information for use while choosing peers
-   *                     while replicating data blocks. More information available here:
+   * @param execId 执行者的ID。
+   * @param host 块管理器的主机名。
+   * @param port 块管理器的端口。
+   * @param topologyInfo 块管理器的拓扑信息（如果有）
+   *                     这可以是网络拓扑信息，供复制数据块时选择对等方时使用。此处提供更多信息：
    *                     [[org.apache.spark.storage.TopologyMapper]]
    * @return A new [[org.apache.spark.storage.BlockManagerId]].
    */
@@ -133,8 +130,7 @@ private[spark] object BlockManagerId {
   }
 
   /**
-   * The max cache size is hardcoded to 10000, since the size of a BlockManagerId
-   * object is about 48B, the total memory cost should be below 1MB which is feasible.
+   * 最大高速缓存大小被硬编码为10000，因为BlockManagerId对象的大小约为48B，所以总内存成本应低于1MB，这是可行的。
    */
   val blockManagerIdCache = CacheBuilder.newBuilder()
     .maximumSize(10000)

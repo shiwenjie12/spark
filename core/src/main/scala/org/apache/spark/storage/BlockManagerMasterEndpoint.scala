@@ -36,8 +36,7 @@ import org.apache.spark.storage.BlockManagerMessages._
 import org.apache.spark.util.{RpcUtils, ThreadUtils, Utils}
 
 /**
- * BlockManagerMasterEndpoint is an [[ThreadSafeRpcEndpoint]] on the master node to track statuses
- * of all slaves' block managers.
+ * BlockManagerMasterEndpoint是主节点上的[[ThreadSafeRpcEndpoint]]，用于跟踪所有从属的块管理器的状态。
  */
 private[spark]
 class BlockManagerMasterEndpoint(
@@ -48,17 +47,17 @@ class BlockManagerMasterEndpoint(
     externalBlockStoreClient: Option[ExternalBlockStoreClient])
   extends IsolatedRpcEndpoint with Logging {
 
-  // Mapping from block manager id to the block manager's information.
+  // 从块管理器ID映射到块管理器的信息。
   private val blockManagerInfo = new mutable.HashMap[BlockManagerId, BlockManagerInfo]
 
-  // Mapping from external shuffle service block manager id to the block statuses.
+  // 从外部洗牌服务块管理器ID映射到块状态。
   private val blockStatusByShuffleService =
     new mutable.HashMap[BlockManagerId, JHashMap[BlockId, BlockStatus]]
 
-  // Mapping from executor ID to block manager ID.
+  // 从执行者ID到块管理者ID的映射。
   private val blockManagerIdByExecutor = new mutable.HashMap[String, BlockManagerId]
 
-  // Mapping from block id to the set of block managers that have the block.
+  // 从块ID映射到具有该块的块管理器集合。
   private val blockLocations = new JHashMap[BlockId, mutable.HashSet[BlockManagerId]]
 
   private val askThreadPool =
@@ -246,10 +245,10 @@ class BlockManagerMasterEndpoint(
   private def removeBlockManager(blockManagerId: BlockManagerId): Unit = {
     val info = blockManagerInfo(blockManagerId)
 
-    // Remove the block manager from blockManagerIdByExecutor.
+    // 从blockManagerIdByExecutor中删除块管理器。
     blockManagerIdByExecutor -= blockManagerId.executorId
 
-    // Remove it from blockManagerInfo and remove all the blocks.
+    // 从blockManagerInfo中删除它并删除所有块。
     blockManagerInfo.remove(blockManagerId)
 
     val iterator = info.blocks.keySet.iterator
@@ -266,8 +265,7 @@ class BlockManagerMasterEndpoint(
         blockLocations.remove(blockId)
         logWarning(s"No more replicas available for $blockId !")
       } else if (proactivelyReplicate && (blockId.isRDD || blockId.isInstanceOf[TestBlockId])) {
-        // As a heursitic, assume single executor failure to find out the number of replicas that
-        // existed before failure
+        // 作为试探，假设单个执行者失败以找出失败之前存在的副本数
         val maxReplicas = locations.size + 1
         val i = (new Random(blockId.hashCode)).nextInt(locations.size)
         val blockLocations = locations.toSeq
@@ -285,6 +283,7 @@ class BlockManagerMasterEndpoint(
 
   }
 
+  // 移除执行器的块
   private def removeExecutor(execId: String): Unit = {
     logInfo("Trying to remove executor " + execId + " from BlockManagerMaster.")
     blockManagerIdByExecutor.get(execId).foreach(removeBlockManager)

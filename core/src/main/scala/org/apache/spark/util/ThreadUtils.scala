@@ -200,7 +200,7 @@ private[spark] object ThreadUtils {
 
   // scalastyle:off awaitresult
   /**
-   * Preferred alternative to `Await.result()`.
+   * Await.result()的首选替代方法。
    *
    * This method wraps and re-throws any exceptions thrown by the underlying `Await` call, ensuring
    * that this thread's stack trace appears in logs.

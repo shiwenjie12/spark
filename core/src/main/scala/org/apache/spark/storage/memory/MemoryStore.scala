@@ -57,15 +57,13 @@ private case class SerializedMemoryEntry[T](
   def size: Long = buffer.size
 }
 
+// block驱逐处理器
 private[storage] trait BlockEvictionHandler {
   /**
-   * Drop a block from memory, possibly putting it on disk if applicable. Called when the memory
-   * store reaches its limit and needs to free up space.
-   *
-   * If `data` is not put on disk, it won't be created.
-   *
-   * The caller of this method must hold a write lock on the block before calling this method.
-   * This method does not release the write lock.
+   * 从内存中删除一个块，可能的话将其放在磁盘上。当内存存储达到其极限并需要释放空间时调用。
+   * 如果`data`没有放在磁盘上，则不会创建它。
+   * 调用此方法之前，此方法的调用者必须在块上持有写锁。
+   * 此方法不释放写锁定。
    *
    * @return the block's new effective StorageLevel.
    */
@@ -464,6 +462,7 @@ private[spark] class MemoryStore(
         }
       }
 
+      // 删除块
       def dropBlock[T](blockId: BlockId, entry: MemoryEntry[T]): Unit = {
         val data = entry match {
           case DeserializedMemoryEntry(values, _, _) => Left(values)
@@ -492,9 +491,7 @@ private[spark] class MemoryStore(
             val entry = entries.synchronized {
               entries.get(blockId)
             }
-            // This should never be null as only one task should be dropping
-            // blocks and removing entries. However the check is still here for
-            // future safety.
+            // 这绝不能为null，因为只有一项任务是删除块并删除条目。但是，仍在检查中，以确保将来的安全。
             if (entry != null) {
               dropBlock(blockId, entry)
               afterDropAction(blockId)
@@ -505,10 +502,9 @@ private[spark] class MemoryStore(
             s"free memory is ${Utils.bytesToString(maxMemory - blocksMemoryUsed)}")
           freedMemory
         } finally {
-          // like BlockManager.doPut, we use a finally rather than a catch to avoid having to deal
-          // with InterruptedException
+          // 像BlockManager.doPut一样，我们使用finally而不是catch来避免必须处理InterruptedException
           if (lastSuccessfulBlock != selectedBlocks.size - 1) {
-            // the blocks we didn't process successfully are still locked, so we have to unlock them
+            // 我们未成功处理的块仍处于锁定状态，因此我们必须将其解锁
             (lastSuccessfulBlock + 1 until selectedBlocks.size).foreach { idx =>
               val blockId = selectedBlocks(idx)
               blockInfoManager.unlock(blockId)

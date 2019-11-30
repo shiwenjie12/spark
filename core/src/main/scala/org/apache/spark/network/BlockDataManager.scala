@@ -28,16 +28,14 @@ private[spark]
 trait BlockDataManager {
 
   /**
-   * Interface to get local block data. Throws an exception if the block cannot be found or
-   * cannot be read successfully.
+   * 获取本地块数据的接口。如果找不到或无法成功读取该块，则引发异常。
    */
   def getBlockData(blockId: BlockId): ManagedBuffer
 
   /**
-   * Put the block locally, using the given storage level.
+   * 使用给定的存储级别将块本地放置。
    *
-   * Returns true if the block was stored and false if the put operation failed or the block
-   * already existed.
+   * 如果存储了该块，则返回true；如果放置操作失败或该块已存在，则返回false。
    */
   def putBlockData(
       blockId: BlockId,
@@ -46,10 +44,9 @@ trait BlockDataManager {
       classTag: ClassTag[_]): Boolean
 
   /**
-   * Put the given block that will be received as a stream.
+   * 将给定的块作为流接收。
    *
-   * When this method is called, the block data itself is not available -- it will be passed to the
-   * returned StreamCallbackWithID.
+   * 调用此方法时，块数据本身不可用-它将传递给返回的StreamCallbackWithID。
    */
   def putBlockDataAsStream(
       blockId: BlockId,
@@ -57,7 +54,7 @@ trait BlockDataManager {
       classTag: ClassTag[_]): StreamCallbackWithID
 
   /**
-   * Release locks acquired by [[putBlockData()]] and [[getBlockData()]].
+   * 释放由[[putBlockData()]]和[[getBlockData()]]获取的锁。
    */
   def releaseLock(blockId: BlockId, taskContext: Option[TaskContext]): Unit
 }

@@ -34,7 +34,7 @@ import org.apache.spark.scheduler._
 import org.apache.spark.util.Utils
 
 /**
- * A [[SchedulerBackend]] implementation for Spark's standalone cluster manager.
+ * Spark的独立集群管理器的[[SchedulerBackend]]实现。
  */
 private[spark] class StandaloneSchedulerBackend(
     scheduler: TaskSchedulerImpl,

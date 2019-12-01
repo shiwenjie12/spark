@@ -32,7 +32,7 @@ import org.apache.spark.ui.jobs.{JobsTab, StagesTab}
 import org.apache.spark.ui.storage.StorageTab
 
 /**
- * Top level user interface for a Spark application.
+ * Spark应用程序的顶级用户界面。
  */
 private[spark] class SparkUI private (
     val store: AppStatusStore,
@@ -163,7 +163,7 @@ private[spark] object SparkUI {
   }
 
   /**
-   * Create a new UI backed by an AppStatusStore.
+   * 创建一个由AppStatusStore支持的新UI。
    */
   def create(
       sc: Option[SparkContext],

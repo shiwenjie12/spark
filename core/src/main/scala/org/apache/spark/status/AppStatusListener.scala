@@ -891,8 +891,7 @@ private[spark] class AppStatusListener(
   }
 
   /**
-   * Shortcut to get active stages quickly in a live application, for use by the console
-   * progress bar.
+   * 快捷方式可在实时应用程序中快速获得活动阶段，以供控制台进度条使用。
    */
   def activeStages(): Seq[v1.StageData] = {
     liveStages.values.asScala

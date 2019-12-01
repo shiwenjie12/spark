@@ -25,10 +25,9 @@ import org.apache.spark.internal.config.UI._
 import org.apache.spark.status.api.v1.StageData
 
 /**
- * ConsoleProgressBar shows the progress of stages in the next line of the console. It poll the
- * status of active stages from the app state store periodically, the progress bar will be showed
- * up after the stage has ran at least 500ms. If multiple stages run in the same time, the status
- * of them will be combined together, showed in one line.
+ * ConsoleProgressBar在控制台的下一行显示阶段的进度。
+ * 它会定期从应用程序状态存储中轮询活动阶段的状态，并且在阶段运行了至少500毫秒后才会显示进度条。
+ * 如果多个阶段同时运行，则它们的状态将合并在一起，显示在一行中。
  */
 private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
   // Carriage return
@@ -54,7 +53,7 @@ private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
   }, firstDelayMSec, updatePeriodMSec)
 
   /**
-   * Try to refresh the progress bar in every cycle
+   * 尝试在每个周期刷新进度条
    */
   private def refresh(): Unit = synchronized {
     val now = System.currentTimeMillis()

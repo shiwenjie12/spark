@@ -39,7 +39,7 @@ class StageInfo(
     val taskMetrics: TaskMetrics = null,
     private[spark] val taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq.empty,
     private[spark] val shuffleDepId: Option[Int] = None) {
-  /** When this stage was submitted from the DAGScheduler to a TaskScheduler. */
+  /** 当此阶段从DAGScheduler提交到TaskScheduler时。 */
   var submissionTime: Option[Long] = None
   /** Time when all tasks in the stage completed or when the stage was cancelled. */
   var completionTime: Option[Long] = None

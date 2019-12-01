@@ -133,8 +133,7 @@ private[spark] abstract class RpcEnv(conf: SparkConf) {
   def deserialize[T](deserializationAction: () => T): T
 
   /**
-   * Return the instance of the file server used to serve files. This may be `null` if the
-   * RpcEnv is not operating in server mode.
+   * 返回用于提供文件的文件服务器的实例。 如果RpcEnv不在服务器模式下运行，则该值为“ null”。
    */
   def fileServer: RpcEnvFileServer
 

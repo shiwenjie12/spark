@@ -23,8 +23,7 @@ import org.apache.spark.shuffle.api.ShuffleDriverComponents;
 import org.apache.spark.shuffle.api.ShuffleExecutorComponents;
 
 /**
- * Implementation of the {@link ShuffleDataIO} plugin system that replicates the local shuffle
- * storage and index file functionality that has historically been used from Spark 2.4 and earlier.
+ * {@link ShuffleDataIO}插件系统的实现，该系统复制了本地Spark存储器和索引文件功能，这些功能过去一直是Spark 2.4和更早版本使用的功能。
  */
 public class LocalDiskShuffleDataIO implements ShuffleDataIO {
 

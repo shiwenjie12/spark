@@ -79,8 +79,7 @@ private[spark] class AppStatusStore(
   }
 
   /**
-   * This is used by ConsoleProgressBar to quickly fetch active stages for drawing the progress
-   * bar. It will only return anything useful when called from a live application.
+   * ConsoleProgressBar使用它来快速获取活动阶段以绘制进度条。 从实时应用程序调用时，它只会返回有用的任何东西。
    */
   def activeStages(): Seq[v1.StageData] = {
     listener.map(_.activeStages()).getOrElse(Nil)
@@ -585,7 +584,7 @@ private[spark] object AppStatusStore {
   val CURRENT_VERSION = 1L
 
   /**
-   * Create an in-memory store for a live application.
+   * 为实时应用程序创建内存存储。
    */
   def createLiveStore(
       conf: SparkConf,

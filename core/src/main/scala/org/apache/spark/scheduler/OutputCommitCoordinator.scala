@@ -34,12 +34,11 @@ private case class AskPermissionToCommitOutput(
     attemptNumber: Int)
 
 /**
- * Authority that decides whether tasks can commit output to HDFS. Uses a "first committer wins"
- * policy.
+ * 决定任务是否可以将输出提交到HDFS的权限。 使用“第一位提交者获胜”策略。
  *
- * OutputCommitCoordinator is instantiated in both the drivers and executors. On executors, it is
- * configured with a reference to the driver's OutputCommitCoordinatorEndpoint, so requests to
- * commit output will be forwarded to the driver's OutputCommitCoordinator.
+ * 在驱动程序和执行程序中都实例化了OutputCommitCoordinator。
+ * 在执行程序上，它配置有对驱动程序的OutputCommitCoordinatorEndpoint的引用，
+ * 因此提交输出的请求将转发到驱动程序的OutputCommitCoordinator。
  *
  * This class was introduced in SPARK-4879; see that JIRA issue (and the associated pull requests)
  * for an extensive design discussion.
@@ -61,14 +60,10 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
   }
 
   /**
-   * Map from active stages's id => authorized task attempts for each partition id, which hold an
-   * exclusive lock on committing task output for that partition, as well as any known failed
-   * attempts in the stage.
+   * 从活动阶段的ID =>映射每个分区ID的授权任务尝试，该ID对该分区的提交任务输出以及该阶段中任何已知的失败尝试拥有排他锁。
+   * 在阶段开始时将条目添加到顶级地图，并在阶段结束时将它们删除（成功或不成功）。
    *
-   * Entries are added to the top-level map when stages start and are removed they finish
-   * (either successfully or unsuccessfully).
-   *
-   * Access to this map should be guarded by synchronizing on the OutputCommitCoordinator instance.
+   * 应通过在OutputCommitCoordinator实例上进行同步来保护对此映射的访问。
    */
   private val stageStates = mutable.Map[Int, StageState]()
 
@@ -80,11 +75,9 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
   }
 
   /**
-   * Called by tasks to ask whether they can commit their output to HDFS.
+   * 由任务调用以询问它们是否可以将其输出提交给HDFS。
    *
-   * If a task attempt has been authorized to commit, then all other attempts to commit the same
-   * task will be denied.  If the authorized task attempt fails (e.g. due to its executor being
-   * lost), then a subsequent task attempt may be authorized to commit its output.
+   * 如果已授权任务尝试提交，则将拒绝所有其他提交同一任务的尝试。 如果授权的任务尝试失败（例如，由于其执行程序丢失），则可以授权后续的任务尝试提交其输出。
    *
    * @param stage the stage number
    * @param partition the partition number
@@ -110,12 +103,10 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
   }
 
   /**
-   * Called by the DAGScheduler when a stage starts. Initializes the stage's state if it hasn't
-   * yet been initialized.
+   * stage开始时，由DAGScheduler调用。 如果尚未初始化阶段，请初始化它的状态。
    *
    * @param stage the stage id.
-   * @param maxPartitionId the maximum partition id that could appear in this stage's tasks (i.e.
-   *                       the maximum possible value of `context.partitionId`).
+   * @param maxPartitionId 在此阶段的任务中可能出现的最大分区ID（即，“ context.partitionId”的最大可能值）。
    */
   private[scheduler] def stageStart(stage: Int, maxPartitionId: Int): Unit = synchronized {
     stageStates.get(stage) match {

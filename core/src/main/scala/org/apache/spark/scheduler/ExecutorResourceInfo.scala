@@ -20,9 +20,8 @@ package org.apache.spark.scheduler
 import org.apache.spark.resource.{ResourceAllocator, ResourceInformation}
 
 /**
- * Class to hold information about a type of Resource on an Executor. This information is managed
- * by SchedulerBackend, and TaskScheduler shall schedule tasks on idle Executors based on the
- * information.
+ * 用于在执行程序上保存有关资源类型信息的类。
+ * 此信息由SchedulerBackend管理，TaskScheduler应根据该信息在空闲的执行器上调度任务。
  * @param name Resource name
  * @param addresses Resource addresses provided by the executor
  */

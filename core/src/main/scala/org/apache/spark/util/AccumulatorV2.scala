@@ -34,8 +34,7 @@ private[spark] case class AccumulatorMetadata(
 
 
 /**
- * The base class for accumulators, that can accumulate inputs of type `IN`, and produce output of
- * type `OUT`.
+ * 累加器的基类，可以累加“ IN”类型的输入，并产生“ OUT”类型的输出。
  *
  * `OUT` should be a type that can be read atomically (e.g., Int, Long), or thread-safely
  * (e.g., synchronized collections) because it will be read from other threads.
@@ -212,7 +211,7 @@ abstract class AccumulatorV2[IN, OUT] extends Serializable {
 
 
 /**
- * An internal class used to track accumulators by Spark itself.
+ * 内部类，Spark本身用于跟踪累加器。
  */
 private[spark] object AccumulatorContext extends Logging {
 
@@ -227,7 +226,7 @@ private[spark] object AccumulatorContext extends Logging {
   private[this] val nextId = new AtomicLong(0L)
 
   /**
-   * Returns a globally unique ID for a new [[AccumulatorV2]].
+   * 返回新的[[AccumulatorV2]]的全局唯一ID。
    * Note: Once you copy the [[AccumulatorV2]] the ID is no longer unique.
    */
   def newId(): Long = nextId.getAndIncrement

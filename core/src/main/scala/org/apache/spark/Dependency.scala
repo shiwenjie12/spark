@@ -26,7 +26,7 @@ import org.apache.spark.shuffle.{ShuffleHandle, ShuffleWriteProcessor}
 
 /**
  * :: DeveloperApi ::
- * Base class for dependencies.
+ * 依赖关系的基类。
  */
 @DeveloperApi
 abstract class Dependency[T] extends Serializable {
@@ -36,13 +36,12 @@ abstract class Dependency[T] extends Serializable {
 
 /**
  * :: DeveloperApi ::
- * Base class for dependencies where each partition of the child RDD depends on a small number
- * of partitions of the parent RDD. Narrow dependencies allow for pipelined execution.
+ * 子RDD的每个分区都依赖于父RDD的少数分区的依赖关系基类。狭窄的依赖关系允许流水线执行。
  */
 @DeveloperApi
 abstract class NarrowDependency[T](_rdd: RDD[T]) extends Dependency[T] {
   /**
-   * Get the parent partitions for a child partition.
+   * 获取子分区的父分区。
    * @param partitionId a partition of the child RDD
    * @return the partitions of the parent RDD that the child partition depends upon
    */
@@ -54,8 +53,7 @@ abstract class NarrowDependency[T](_rdd: RDD[T]) extends Dependency[T] {
 
 /**
  * :: DeveloperApi ::
- * Represents a dependency on the output of a shuffle stage. Note that in the case of shuffle,
- * the RDD is transient since we don't need it on the executor side.
+ * 表示对shuffle阶段的输出的依赖性。请注意，在随机播放的情况下，RDD是瞬态的，因为在执行器端不需要它。
  *
  * @param _rdd the parent RDD
  * @param partitioner partitioner used to partition the shuffle output

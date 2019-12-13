@@ -46,10 +46,8 @@ import static org.apache.spark.network.util.NettyUtils.getRemoteAddress;
 /**
  * 用于获取预协商流的连续块的客户端。该API旨在允许高效传输大量数据，将其分成大小范围从数百KB到几MB的数据块。
  *
- * Note that while this client deals with the fetching of chunks from a stream (i.e., data plane),
- * the actual setup of the streams is done outside the scope of the transport layer. The convenience
- * method "sendRPC" is provided to enable control plane communication between the client and server
- * to perform this setup.
+ * 请注意，虽然此客户端处理从流（即数据平面）中获取块的操作，但流的实际设置是在传输层范围之外进行的。
+ * 提供了方便的方法“ sendRPC”来启用客户端和服务器之间的控制平面通信以执行此设置。
  *
  * For example, a typical workflow might be:
  * client.sendRPC(new OpenFile("/foo")) --&gt; returns StreamId = 100

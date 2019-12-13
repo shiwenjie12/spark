@@ -24,14 +24,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * In-process launcher for Spark applications.
+ * 用于Spark应用程序的进程内启动器。
  * <p>
- * Use this class to start Spark applications programmatically. Applications launched using this
- * class will run in the same process as the caller.
+ * 使用此类以编程方式启动Spark应用程序。使用此类启动的应用程序将以与调用者相同的过程运行。
  * <p>
- * Because Spark only supports a single active instance of <code>SparkContext</code> per JVM, code
- * that uses this class should be careful about which applications are launched. It's recommended
- * that this launcher only be used to launch applications in cluster mode.
+ * 由于Spark每个JVM仅支持<code> SparkContext </ code>的单个活动实例，因此使用此类的代码应谨慎启动哪些应用程序。
+ * 建议仅将此启动器用于以群集模式启动应用程序。
  * <p>
  * Also note that, when running applications in client mode, JVM-related configurations (like
  * driver memory or configs which modify the driver's class path) do not take effect. Logging

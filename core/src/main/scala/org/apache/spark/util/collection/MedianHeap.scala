@@ -20,9 +20,9 @@ package org.apache.spark.util.collection
 import scala.collection.mutable.PriorityQueue
 
 /**
- * MedianHeap is designed to be used to quickly track the median of a group of numbers
- * that may contain duplicates. Inserting a new number has O(log n) time complexity and
- * determining the median has O(1) time complexity.
+ * MedianHeap旨在用于快速跟踪可能包含重复项的一组数字的中位数。
+ * 插入新数字的时间复杂度为O（log n），确定中位数的时间复杂度为O（1）。
+ *
  * The basic idea is to maintain two heaps: a smallerHalf and a largerHalf. The smallerHalf
  * stores the smaller half of all numbers while the largerHalf stores the larger half.
  * The sizes of two heaps need to be balanced each time when a new number is inserted so

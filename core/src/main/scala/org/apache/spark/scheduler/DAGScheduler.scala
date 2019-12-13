@@ -44,20 +44,15 @@ import org.apache.spark.storage.BlockManagerMessages.BlockManagerHeartbeat
 import org.apache.spark.util._
 
 /**
- * The high-level scheduling layer that implements stage-oriented scheduling. It computes a DAG of
- * stages for each job, keeps track of which RDDs and stage outputs are materialized, and finds a
- * minimal schedule to run the job. It then submits stages as TaskSets to an underlying
- * TaskScheduler implementation that runs them on the cluster. A TaskSet contains fully independent
- * tasks that can run right away based on the data that's already on the cluster (e.g. map output
- * files from previous stages), though it may fail if this data becomes unavailable.
+ * 实现面向阶段的调度的高级调度层。
+ * 它为每个作业计算阶段的DAG，跟踪实现了哪些RDD和阶段输出，并找到运行该作业的最小计划。
+ * 然后，它将阶段作为TaskSet提交给在群集上运行它们的基础TaskScheduler实现。
+ * TaskSet包含完全独立的任务，这些任务可以基于集群中已经存在的数据（例如，先前阶段的映射输出文件）立即运行，
+ * 但是如果此数据不可用则可能会失败。
  *
- * Spark stages are created by breaking the RDD graph at shuffle boundaries. RDD operations with
- * "narrow" dependencies, like map() and filter(), are pipelined together into one set of tasks
- * in each stage, but operations with shuffle dependencies require multiple stages (one to write a
- * set of map output files, and another to read those files after a barrier). In the end, every
- * stage will have only shuffle dependencies on other stages, and may compute multiple operations
- * inside it. The actual pipelining of these operations happens in the RDD.compute() functions of
- * various RDDs
+ * 通过在随机边界处打破RDD图来创建火花级。
+ * 具有“狭窄”依赖关系的RDD操作（例如map（）和filter（））在每个阶段都流水线化为一组任务，
+ * 但是具有随机依赖项的操作需要多个阶段（一个阶段编写一组地图输出文件，另一个阶段在障碍后读取这些文件）。最后，每个阶段将仅具有对其他阶段的混洗依赖性，并且可以在其中计算多个操作。这些操作的实际流水线发生在各种RDD的RDD.compute（）函数中
  *
  * In addition to coming up with a DAG of stages, the DAGScheduler also determines the preferred
  * locations to run each task on, based on the current cache status, and passes these to the
@@ -65,12 +60,17 @@ import org.apache.spark.util._
  * lost, in which case old stages may need to be resubmitted. Failures *within* a stage that are
  * not caused by shuffle file loss are handled by the TaskScheduler, which will retry each task
  * a small number of times before cancelling the whole stage.
+ * 除了提出阶段的DAG之外，DAGScheduler还根据当前缓存状态确定运行每个任务的首选位置，并将这些位置传递给低级TaskScheduler。
+ * 此外，它可以处理由于混洗输出文件丢失而导致的故障，在这种情况下，可能需要重新提交旧阶段。
+ * TaskScheduler处理*阶段内*不是由随机文件丢失引起的故障，TaskScheduler会在取消整个阶段之前重试每个任务几次。
  *
- * When looking through this code, there are several key concepts:
+ * 浏览此代码时，有几个关键概念：
  *
  *  - Jobs (represented by [[ActiveJob]]) are the top-level work items submitted to the scheduler.
  *    For example, when the user calls an action, like count(), a job will be submitted through
  *    submitJob. Each Job may require the execution of multiple stages to build intermediate data.
+ *  - 作业（由[[ActiveJob]]表示）是提交给计划程序的顶级工作项。
+ *   例如，当用户调用诸如count()之类的动作时，将通过SubmitJob提交作业。每个作业可能需要执行多个阶段才能构建中间数据。
  *
  *  - Stages ([[Stage]]) are sets of tasks that compute intermediate results in jobs, where each
  *    task computes the same function on partitions of the same RDD. Stages are separated at shuffle
@@ -78,18 +78,25 @@ import org.apache.spark.util._
  *    fetch outputs). There are two types of stages: [[ResultStage]], for the final stage that
  *    executes an action, and [[ShuffleMapStage]], which writes map output files for a shuffle.
  *    Stages are often shared across multiple jobs, if these jobs reuse the same RDDs.
+ *  - 阶段（[[Stage]]）是计算作业中中间结果的任务集，其中每个任务在相同RDD的分区上计算相同功能。
+ *    阶段在混洗边界处分离，这会引入障碍（在这里我们必须等待上一个阶段完成才能获取输出）。
+ *    有两种类型的阶段：[[ResultStage]]，用于执行动作的最后阶段，以及[[ShuffleMapStage]]，用于编写映射的输出文件。
+ *   如果这些作业重复使用相同的RDD，则阶段通常在多个作业之间共享。
  *
  *  - Tasks are individual units of work, each sent to one machine.
+ *  - 任务是各个工作单元，每个任务发送到一台机器。
  *
  *  - Cache tracking: the DAGScheduler figures out which RDDs are cached to avoid recomputing them
  *    and likewise remembers which shuffle map stages have already produced output files to avoid
  *    redoing the map side of a shuffle.
+ *  - 缓存跟踪：DAGScheduler会找出缓存了哪些RDD以避免重新计算它们，
+ *    并且同样会记住哪些shuffle映射阶段已经生成了输出文件，以避免重做shuffle的映射方面。
  *
  *  - Preferred locations: the DAGScheduler also computes where to run each task in a stage based
  *    on the preferred locations of its underlying RDDs, or the location of cached or shuffle data.
+ *  - 首选位置：DAGScheduler还会根据其基础RDD的首选位置，或缓存或混洗数据的位置，计算阶段中每个任务的运行位置。
  *
- *  - Cleanup: all data structures are cleared when the running jobs that depend on them finish,
- *    to prevent memory leaks in a long-running application.
+ *  - 清除：所有数据结构（取决于它们的正在运行的作业）完成后都会被清除，以防止长时间运行的应用程序中的内存泄漏。
  *
  * To recover from failures, the same stage might need to run multiple times, which are called
  * "attempts". If the TaskScheduler reports that a task failed because a map output file from a
@@ -140,21 +147,20 @@ private[spark] class DAGScheduler(
   private[scheduler] val jobIdToStageIds = new HashMap[Int, HashSet[Int]]
   private[scheduler] val stageIdToStage = new HashMap[Int, Stage]
   /**
-   * Mapping from shuffle dependency ID to the ShuffleMapStage that will generate the data for
-   * that dependency. Only includes stages that are part of currently running job (when the job(s)
-   * that require the shuffle stage complete, the mapping will be removed, and the only record of
-   * the shuffle data will be in the MapOutputTracker).
+   * 从shuffle依赖项ID映射到ShuffleMapStage，它将为该依赖项生成数据。
+   * 仅包括属于当前正在运行的作业的阶段(当要求完成混洗阶段的作业完成时，将删除映射，
+   * 并且混洗数据的唯一记录将在MapOutputTracker中)。
    */
   private[scheduler] val shuffleIdToMapStage = new HashMap[Int, ShuffleMapStage]
   private[scheduler] val jobIdToActiveJob = new HashMap[Int, ActiveJob]
 
-  // Stages we need to run whose parents aren't done
+  // 我们需要运行父母未完成的阶段
   private[scheduler] val waitingStages = new HashSet[Stage]
 
-  // Stages we are running right now
+  // 我们现在正在运行的阶段
   private[scheduler] val runningStages = new HashSet[Stage]
 
-  // Stages that must be resubmitted due to fetch failures
+  // 由于获取失败而必须重新提交的阶段
   private[scheduler] val failedStages = new HashSet[Stage]
 
   private[scheduler] val activeJobs = new HashSet[ActiveJob]
@@ -201,7 +207,7 @@ private[spark] class DAGScheduler(
       DAGScheduler.DEFAULT_MAX_CONSECUTIVE_STAGE_ATTEMPTS)
 
   /**
-   * Number of max concurrent tasks check failures for each barrier job.
+   * 每个屏障作业的最大并发任务检查失败数。
    */
   private[scheduler] val barrierJobIdToNumTasksCheckFailures = new ConcurrentHashMap[Int, Int]
 
@@ -212,8 +218,7 @@ private[spark] class DAGScheduler(
     .get(config.BARRIER_MAX_CONCURRENT_TASKS_CHECK_INTERVAL)
 
   /**
-   * Max number of max concurrent tasks check failures allowed for a job before fail the job
-   * submission.
+   * 在提交作业失败之前，允许作业执行的最大并发任务检查失败的最大数量。
    */
   private val maxFailureNumTasksCheck = sc.getConf
     .get(config.BARRIER_MAX_CONCURRENT_TASKS_CHECK_MAX_FAILURES)
@@ -225,7 +230,7 @@ private[spark] class DAGScheduler(
   taskScheduler.setDAGScheduler(this)
 
   /**
-   * Called by the TaskSetManager to report task's starting.
+   * 由TaskSetManager调用以报告任务的开始。
    */
   def taskStarted(task: Task[_], taskInfo: TaskInfo): Unit = {
     eventProcessLoop.post(BeginEvent(task, taskInfo))
@@ -240,7 +245,7 @@ private[spark] class DAGScheduler(
   }
 
   /**
-   * Called by the TaskSetManager to report task completions or failures.
+   * 由TaskSetManager调用以报告任务完成或失败。
    */
   def taskEnded(
       task: Task[_],
@@ -293,8 +298,7 @@ private[spark] class DAGScheduler(
   }
 
   /**
-   * Called by the TaskSetManager to cancel an entire TaskSet due to either repeated failures or
-   * cancellation of the job itself.
+   * 由于重复失败或取消作业本身，由TaskSetManager调用以取消整个TaskSet。
    */
   def taskSetFailed(taskSet: TaskSet, reason: String, exception: Option[Throwable]): Unit = {
     eventProcessLoop.post(TaskSetFailed(taskSet, reason, exception))
@@ -440,7 +444,7 @@ private[spark] class DAGScheduler(
   }
 
   /**
-   * Create a ResultStage associated with the provided jobId.
+   * 创建与提供的jobId关联的ResultStage。
    */
   private def createResultStage(
       rdd: RDD[_],
@@ -555,8 +559,7 @@ private[spark] class DAGScheduler(
   private def getMissingParentStages(stage: Stage): List[Stage] = {
     val missing = new HashSet[Stage]
     val visited = new HashSet[RDD[_]]
-    // We are manually maintaining a stack here to prevent StackOverflowError
-    // caused by recursively visiting
+    // 我们在此处手动维护堆栈，以防止递归访问引起的StackOverflowError
     val waitingForVisit = new ListBuffer[RDD[_]]
     waitingForVisit += stage.rdd
     def visit(rdd: RDD[_]): Unit = {
@@ -585,6 +588,7 @@ private[spark] class DAGScheduler(
   }
 
   /**
+   * 在需要给定阶段以及该阶段的所有祖先的作业中注册给定的jobId。
    * Registers the given jobId among the jobs that need the given stage and
    * all of that stage's ancestors.
    */
@@ -685,7 +689,7 @@ private[spark] class DAGScheduler(
       callSite: CallSite,
       resultHandler: (Int, U) => Unit,
       properties: Properties): JobWaiter[U] = {
-    // Check to make sure we are not launching a task on a partition that does not exist.
+    // 检查以确保我们没有在不存在的分区上启动任务。
     val maxPartitions = rdd.partitions.length
     partitions.find(p => p >= maxPartitions || p < 0).foreach { p =>
       throw new IllegalArgumentException(
@@ -695,6 +699,7 @@ private[spark] class DAGScheduler(
 
     val jobId = nextJobId.getAndIncrement()
     if (partitions.isEmpty) {
+      // 如果分区为空，则马上推送事件
       val time = clock.getTimeMillis()
       listenerBus.post(
         SparkListenerJobStart(jobId, time, Seq[StageInfo](), Utils.cloneProperties(properties)))
@@ -714,14 +719,12 @@ private[spark] class DAGScheduler(
   }
 
   /**
-   * Run an action job on the given RDD and pass all the results to the resultHandler function as
-   * they arrive.
+   * 在给定的RDD上运行操作作业，并将所有结果在到达时传递给resultHandler函数。
    *
-   * @param rdd target RDD to run tasks on
-   * @param func a function to run on each partition of the RDD
-   * @param partitions set of partitions to run on; some jobs may not want to compute on all
-   *   partitions of the target RDD, e.g. for operations like first()
-   * @param callSite where in the user program this job was called
+   * @param rdd 目标RDD以在其上运行任务
+   * @param func 在RDD的每个分区上运行的功能
+   * @param partitions 一组要运行的分区；一些作业可能不希望在目标RDD的所有分区上进行计算，例如用于first()之类的操作
+   * @param callSite 在用户程序中该作业的位置
    * @param resultHandler callback to pass each result to
    * @param properties scheduler properties to attach to this job, e.g. fair scheduler pool name
    *
@@ -1267,14 +1270,11 @@ private[spark] class DAGScheduler(
   }
 
   /**
-   * Merge local values from a task into the corresponding accumulators previously registered
-   * here on the driver.
+   * 将任务的本地值合并到先前在驱动程序上注册的相应累加器中。
    *
-   * Although accumulators themselves are not thread-safe, this method is called only from one
-   * thread, the one that runs the scheduling loop. This means we only handle one task
-   * completion event at a time so we don't need to worry about locking the accumulators.
-   * This still doesn't stop the caller from updating the accumulator outside the scheduler,
-   * but that's not our problem since there's nothing we can do about that.
+   * 尽管累加器本身不是线程安全的，但是只能从一个线程（运行调度循环的一个线程）中调用此方法。
+   * 这意味着我们一次只处理一个任务完成事件，因此我们不必担心锁定累加器。
+   * 这仍然不能阻止调用者在调度程序外部更新累加器，但这不是我们的问题，因为我们对此无能为力。
    */
   private def updateAccumulators(event: CompletionEvent): Unit = {
     val task = event.task
@@ -1283,14 +1283,14 @@ private[spark] class DAGScheduler(
     event.accumUpdates.foreach { updates =>
       val id = updates.id
       try {
-        // Find the corresponding accumulator on the driver and update it
+        // 在驱动程序上找到相应的累加器并进行更新
         val acc: AccumulatorV2[Any, Any] = AccumulatorContext.get(id) match {
           case Some(accum) => accum.asInstanceOf[AccumulatorV2[Any, Any]]
           case None =>
             throw new SparkException(s"attempted to access non-existent accumulator $id")
         }
         acc.merge(updates.asInstanceOf[AccumulatorV2[Any, Any]])
-        // To avoid UI cruft, ignore cases where value wasn't updated
+        // 为避免UI崩溃，请忽略未更新值的情况
         if (acc.name.isDefined && !updates.isZero) {
           stage.latestInfo.accumulables(id) = acc.toInfo(None, Some(acc.value))
           event.taskInfo.setAccumulables(
@@ -1314,6 +1314,7 @@ private[spark] class DAGScheduler(
     val taskMetrics: TaskMetrics =
       if (event.accumUpdates.nonEmpty) {
         try {
+          // 计算内部度量
           TaskMetrics.fromAccumulators(event.accumUpdates)
         } catch {
           case NonFatal(e) =>
@@ -1325,6 +1326,7 @@ private[spark] class DAGScheduler(
         null
       }
 
+    // 发送spark监听任务结束任务
     listenerBus.post(SparkListenerTaskEnd(event.task.stageId, event.task.stageAttemptId,
       Utils.getFormattedClassName(event.task), event.reason, event.taskInfo,
       new ExecutorMetrics(event.metricPeaks), taskMetrics))
@@ -1352,8 +1354,8 @@ private[spark] class DAGScheduler(
   }
 
   /**
-   * Responds to a task finishing. This is called inside the event loop so it assumes that it can
-   * modify the scheduler's internal state. Use taskEnded() to post a task end event from outside.
+   * 响应任务完成。这在事件循环内部被调用，因此它假定它可以修改调度程序的内部状态。
+   * 使用taskEnded()从外部发布任务结束事件。
    */
   private[scheduler] def handleTaskCompletion(event: CompletionEvent): Unit = {
     val task = event.task
@@ -1367,22 +1369,19 @@ private[spark] class DAGScheduler(
       event.reason)
 
     if (!stageIdToStage.contains(task.stageId)) {
-      // The stage may have already finished when we get this event -- eg. maybe it was a
-      // speculative task. It is important that we send the TaskEnd event in any case, so listeners
-      // are properly notified and can chose to handle it. For instance, some listeners are
-      // doing their own accounting and if they don't get the task end event they think
-      // tasks are still running when they really aren't.
+      // 当我们收到此事件时，该阶段可能已经结束-例如也许这是一个投机任务。
+      // 无论如何，我们都必须发送TaskEnd事件，这一点很重要，因此可以正确通知侦听器并选择处理它。
+      // 例如，一些侦听器正在做自己的记帐，如果他们没有收到任务结束事件，他们就会认为任务在实际上没有运行时仍在运行。
       postTaskEnd(event)
 
-      // Skip all the actions if the stage has been cancelled.
+      // 如果阶段已取消，请跳过所有动作。
       return
     }
 
     val stage = stageIdToStage(task.stageId)
 
-    // Make sure the task's accumulators are updated before any other processing happens, so that
-    // we can post a task end event before any jobs or stages are updated. The accumulators are
-    // only updated in certain cases.
+    // 确保在进行任何其他处理之前更新任务的累加器，以便我们可以在更新任何作业或阶段之前发布任务结束事件。
+    // 仅在某些情况下才更新累加器。
     event.reason match {
       case Success =>
         task match {
@@ -1406,10 +1405,9 @@ private[spark] class DAGScheduler(
 
     event.reason match {
       case Success =>
-        // An earlier attempt of a stage (which is zombie) may still have running tasks. If these
-        // tasks complete, they still count and we can mark the corresponding partitions as
-        // finished. Here we notify the task scheduler to skip running tasks for the same partition,
-        // to save resource.
+        // 一个阶段的早期尝试（僵尸）可能仍具有正在运行的任务。
+        // 如果这些任务完成了，它们仍然算在内，我们可以将相应的分区标记为已完成。
+        // 在这里，我们通知任务计划程序跳过同一分区上正在运行的任务，以节省资源。
         if (task.stageAttemptId < stage.latestInfo.attemptNumber()) {
           taskScheduler.notifyPartitionCompletion(stageId, task.partitionId)
         }
@@ -2131,6 +2129,7 @@ private[spark] class DAGScheduler(
   eventProcessLoop.start()
 }
 
+// dag调度事件处理器
 private[scheduler] class DAGSchedulerEventProcessLoop(dagScheduler: DAGScheduler)
   extends EventLoop[DAGSchedulerEvent]("dag-scheduler-event-loop") with Logging {
 

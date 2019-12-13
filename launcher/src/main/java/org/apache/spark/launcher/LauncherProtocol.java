@@ -20,22 +20,20 @@ package org.apache.spark.launcher;
 import java.io.Serializable;
 
 /**
- * Message definitions for the launcher communication protocol. These messages must remain
- * backwards-compatible, so that the launcher can talk to older versions of Spark that support
- * the protocol.
+ * 启动器通信协议的消息定义。这些消息必须保持向后兼容，以便启动程序可以与支持该协议的较旧版本的Spark对话。
  */
 final class LauncherProtocol {
 
-  /** Environment variable where the server port is stored. */
+  /** 服务器端口所在的环境变量。 */
   static final String ENV_LAUNCHER_PORT = "_SPARK_LAUNCHER_PORT";
 
-  /** Environment variable where the secret for connecting back to the server is stored. */
+  /** 环境变量，用于存储连接回服务器的机密。 */
   static final String ENV_LAUNCHER_SECRET = "_SPARK_LAUNCHER_SECRET";
 
-  /** Spark conf key used to propagate the server port for in-process launches. */
+  /** Spark conf密钥，用于传播服务器端口以进行进程内启动。 */
   static final String CONF_LAUNCHER_PORT = "spark.launcher.port";
 
-  /** Spark conf key used to propagate the app secret for in-process launches. */
+  /** Spark conf密钥，用于传播进程内启动的应用程序密钥。 */
   static final String CONF_LAUNCHER_SECRET = "spark.launcher.secret";
 
   static class Message implements Serializable {

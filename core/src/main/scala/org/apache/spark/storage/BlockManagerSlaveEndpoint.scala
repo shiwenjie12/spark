@@ -26,8 +26,7 @@ import org.apache.spark.storage.BlockManagerMessages._
 import org.apache.spark.util.{ThreadUtils, Utils}
 
 /**
- * An RpcEndpoint to take commands from the master to execute options. For example,
- * this is used to remove blocks from the slave's BlockManager.
+ * 一个RpcEndpoint，用于接收来自主机的命令以执行选项。例如，这用于从从站的BlockManager中删除块。
  */
 private[storage]
 class BlockManagerSlaveEndpoint(

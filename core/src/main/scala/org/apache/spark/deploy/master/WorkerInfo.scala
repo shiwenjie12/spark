@@ -23,6 +23,7 @@ import org.apache.spark.resource.{ResourceAllocator, ResourceInformation, Resour
 import org.apache.spark.rpc.RpcEndpointRef
 import org.apache.spark.util.Utils
 
+// worker资源信息
 private[spark] case class WorkerResourceInfo(name: String, addresses: Seq[String])
   extends ResourceAllocator { // worker资源信息
 

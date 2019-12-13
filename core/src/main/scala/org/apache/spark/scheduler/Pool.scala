@@ -26,7 +26,7 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.scheduler.SchedulingMode.SchedulingMode
 
 /**
- * A Schedulable entity that represents collection of Pools or TaskSetManagers
+ * 可调度实体，表示池或TaskSetManagers的集合
  */
 private[spark] class Pool(
     val poolName: String,
@@ -47,6 +47,7 @@ private[spark] class Pool(
   val name = poolName
   var parent: Pool = null
 
+  // taskSet调度算法
   private val taskSetSchedulingAlgorithm: SchedulingAlgorithm = {
     schedulingMode match {
       case SchedulingMode.FAIR =>
@@ -96,6 +97,7 @@ private[spark] class Pool(
     shouldRevive
   }
 
+  // 递归排序处理
   override def getSortedTaskSetQueue: ArrayBuffer[TaskSetManager] = {
     val sortedTaskSetQueue = new ArrayBuffer[TaskSetManager]
     val sortedSchedulableQueue =

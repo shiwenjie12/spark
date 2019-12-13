@@ -33,15 +33,13 @@ private[spark] object ShutdownHookManager extends Logging {
   val DEFAULT_SHUTDOWN_PRIORITY = 100
 
   /**
-   * The shutdown priority of the SparkContext instance. This is lower than the default
-   * priority, so that by default hooks are run before the context is shut down.
+   * SparkContext实例的关闭优先级。这低于默认优先级，因此默认情况下，在关闭上下文之前运行挂接。
    */
   val SPARK_CONTEXT_SHUTDOWN_PRIORITY = 50
 
   /**
-   * The shutdown priority of temp directory must be lower than the SparkContext shutdown
-   * priority. Otherwise cleaning the temp directories while Spark jobs are running can
-   * throw undesirable errors at the time of shutdown.
+   * 临时目录的关闭优先级必须低于SparkContext的关闭优先级。
+   * 否则，在Spark作业运行时清理临时目录可能会在关机时引发意外错误。
    */
   val TEMP_DIR_SHUTDOWN_PRIORITY = 25
 
@@ -142,8 +140,7 @@ private[spark] object ShutdownHookManager extends Logging {
   }
 
   /**
-   * Adds a shutdown hook with the given priority. Hooks with higher priority values run
-   * first.
+   * 添加具有给定优先级的关机钩子。具有较高优先级值的挂钩首先运行。
    *
    * @param hook The code to run during shutdown.
    * @return A handle that can be used to unregister the shutdown hook.
@@ -170,7 +167,7 @@ private [util] class SparkShutdownHookManager {
   @volatile private var shuttingDown = false
 
   /**
-   * Install a hook to run at shutdown and run all registered hooks in order.
+   * 安装一个在关机时运行的钩子，并依次运行所有已注册的钩子。
    */
   def install(): Unit = {
     val hookTask = new Runnable() {

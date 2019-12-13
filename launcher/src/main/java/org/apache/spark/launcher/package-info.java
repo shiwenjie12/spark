@@ -16,10 +16,10 @@
  */
 
 /**
- * Library for launching Spark applications programmatically.
+ * 用于以编程方式启动Spark应用程序的库。
  *
  * <p>
- * There are two ways to start applications with this library: as a child process, using
+ * 有两种方法可以使用此库启动应用程序：作为子进程，using
  * {@link org.apache.spark.launcher.SparkLauncher}, or in-process, using
  * {@link org.apache.spark.launcher.InProcessLauncher}.
  * </p>

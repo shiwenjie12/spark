@@ -21,7 +21,7 @@ import org.apache.spark.annotation.Private;
 
 /**
  * :: Private ::
- * An interface for plugging in modules for storing and reading temporary shuffle data.
+ * 用于插入用于存储和读取临时随机数据的模块的接口。
  * <p>
  * This is the root of a plugin system for storing shuffle bytes to arbitrary storage
  * backends in the sort-based shuffle algorithm implemented by the
@@ -42,14 +42,12 @@ import org.apache.spark.annotation.Private;
 public interface ShuffleDataIO {
 
   /**
-   * Called once on executor processes to bootstrap the shuffle data storage modules that
-   * are only invoked on the executors.
+   * 在执行程序进程上调用一次以引导仅在执行程序上调用的随机数据存储模块。
    */
   ShuffleExecutorComponents executor();
 
   /**
-   * Called once on driver process to bootstrap the shuffle metadata modules that
-   * are maintained by the driver.
+   * 在驱动程序进程中调用一次以引导由驱动程序维护的随机元数据模块。
    */
   ShuffleDriverComponents driver();
 }

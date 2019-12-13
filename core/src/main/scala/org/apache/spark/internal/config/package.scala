@@ -954,6 +954,7 @@ package object config {
       .checkValue(v => v > 0, "The threshold should be positive.")
       .createWithDefault(10000000)
 
+  // driver端接收的最大结果大小，默认1GB，最小1MB，设置0为无限。
   private[spark] val MAX_RESULT_SIZE = ConfigBuilder("spark.driver.maxResultSize")
     .doc("Size limit for results.")
     .bytesConf(ByteUnit.BYTE)

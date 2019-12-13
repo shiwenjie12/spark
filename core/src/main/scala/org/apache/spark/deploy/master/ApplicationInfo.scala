@@ -53,6 +53,7 @@ private[spark] class ApplicationInfo(
 
   @transient private var nextExecutorId: Int = _
 
+  // 初始化应用信息
   init()
 
   private def readObject(in: java.io.ObjectInputStream): Unit = Utils.tryOrIOException {

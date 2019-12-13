@@ -393,7 +393,7 @@ class BlockManagerMasterEndpoint(
   }
 
   /**
-   * Returns the BlockManagerId with topology information populated, if available.
+   * 返回已填充拓扑信息的BlockManagerId（如果有）。
    */
   private def register(
       idWithoutTopologyInfo: BlockManagerId,

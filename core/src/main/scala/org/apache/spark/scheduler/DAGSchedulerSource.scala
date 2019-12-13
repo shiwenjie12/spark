@@ -21,6 +21,7 @@ import com.codahale.metrics.{Gauge, MetricRegistry, Timer}
 
 import org.apache.spark.metrics.source.Source
 
+// DAG调度源
 private[scheduler] class DAGSchedulerSource(val dagScheduler: DAGScheduler)
     extends Source {
   override val metricRegistry = new MetricRegistry()

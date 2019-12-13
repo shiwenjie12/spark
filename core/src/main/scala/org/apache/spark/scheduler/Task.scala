@@ -30,29 +30,27 @@ import org.apache.spark.resource.ResourceInformation
 import org.apache.spark.util._
 
 /**
- * A unit of execution. We have two kinds of Task's in Spark:
+ * 执行单位。 Spark中有两种Task：
  *
  *  - [[org.apache.spark.scheduler.ShuffleMapTask]]
  *  - [[org.apache.spark.scheduler.ResultTask]]
  *
- * A Spark job consists of one or more stages. The very last stage in a job consists of multiple
- * ResultTasks, while earlier stages consist of ShuffleMapTasks. A ResultTask executes the task
- * and sends the task output back to the driver application. A ShuffleMapTask executes the task
- * and divides the task output to multiple buckets (based on the task's partitioner).
+ * Spark作业包含一个或多个阶段。作业的最后阶段由多个ResultTasks组成，而较早的阶段由ShuffleMapTasks组成。
+ * ResultTask执行任务，并将任务输出发送回驱动程序应用程序。
+ * ShuffleMapTask执行任务并将任务输出分为多个存储区（基于任务的分区程序）。
  *
- * @param stageId id of the stage this task belongs to
- * @param stageAttemptId attempt id of the stage this task belongs to
- * @param partitionId index of the number in the RDD
- * @param localProperties copy of thread-local properties set by the user on the driver side.
+ * @param stageId 此任务所属的阶段的ID
+ * @param stageAttemptId 此任务所属阶段的尝试ID
+ * @param partitionId RDD中数字的索引
+ * @param localProperties 用户在驱动程序侧设置的线程局部属性的副本。
  * @param serializedTaskMetrics a `TaskMetrics` that is created and serialized on the driver side
  *                              and sent to executor side.
  *
- * The parameters below are optional:
- * @param jobId id of the job this task belongs to
- * @param appId id of the app this task belongs to
- * @param appAttemptId attempt id of the app this task belongs to
- * @param isBarrier whether this task belongs to a barrier stage. Spark must launch all the tasks
- *                  at the same time for a barrier stage.
+ * 以下参数是可选的：
+ * @param jobId 此任务所属的工作的ID
+ * @param appId 此任务所属的应用的ID
+ * @param appAttemptId 此任务所属的应用的尝试ID
+ * @param isBarrier 此任务是否属于障碍阶段。 Spark必须在屏障阶段同时启动所有任务。
  */
 private[spark] abstract class Task[T](
     val stageId: Int,

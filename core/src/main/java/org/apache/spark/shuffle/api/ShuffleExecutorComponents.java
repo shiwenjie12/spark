@@ -25,7 +25,7 @@ import org.apache.spark.annotation.Private;
 
 /**
  * :: Private ::
- * An interface for building shuffle support for Executors.
+ * 用于构建对执行程序的随机播放支持的接口。
  *
  * @since 3.0.0
  */

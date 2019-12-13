@@ -24,15 +24,14 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.util.CallSite
 
 /**
- * ShuffleMapStages are intermediate stages in the execution DAG that produce data for a shuffle.
- * They occur right before each shuffle operation, and might contain multiple pipelined operations
- * before that (e.g. map and filter). When executed, they save map output files that can later be
- * fetched by reduce tasks. The `shuffleDep` field describes the shuffle each stage is part of,
- * and variables like `outputLocs` and `numAvailableOutputs` track how many map outputs are ready.
+ * ShuffleMapStages是执行DAG中的中间阶段，可为随机产生数据。
+ * 它们在每个随机操作之前发生，并且可能在此之前包含多个流水线操作（例如，映射和过滤器）。
+ * 在执行时，它们保存地图输出文件，以后可以通过reduce任务获取它们。
+ * “ shuffleDep”字段描述了每个阶段所属的洗牌，
+ * “ outputLocs”和“ numAvailableOutputs”之类的变量跟踪准备好多少地图输出。
  *
- * ShuffleMapStages can also be submitted independently as jobs with DAGScheduler.submitMapStage.
- * For such stages, the ActiveJobs that submitted them are tracked in `mapStageJobs`. Note that
- * there can be multiple ActiveJobs trying to compute the same shuffle map stage.
+ * ShuffleMapStages也可以作为作业通过DAGScheduler.submitMapStage独立提交。
+ * 对于这样的阶段，在`mapStageJobs`中跟踪提交它们的ActiveJobs。请注意，可能有多个ActiveJob尝试计算相同的随机映射阶段。
  */
 private[spark] class ShuffleMapStage(
     id: Int,
@@ -48,13 +47,11 @@ private[spark] class ShuffleMapStage(
   private[this] var _mapStageJobs: List[ActiveJob] = Nil
 
   /**
-   * Partitions that either haven't yet been computed, or that were computed on an executor
-   * that has since been lost, so should be re-computed.  This variable is used by the
-   * DAGScheduler to determine when a stage has completed. Task successes in both the active
-   * attempt for the stage or in earlier attempts for this stage can cause paritition ids to get
-   * removed from pendingPartitions. As a result, this variable may be inconsistent with the pending
-   * tasks in the TaskSetManager for the active attempt for the stage (the partitions stored here
-   * will always be a subset of the partitions that the TaskSetManager thinks are pending).
+   * 尚未计算的分区，或已经丢失的执行器上已计算的分区，因此应重新计算。
+   * DAGScheduler使用此变量来确定阶段何时完成。
+   * 在该阶段的活动尝试中或在此阶段的较早尝试中，如果任务成功，都可能导致分区ID从PendingPartitions中删除。
+   * 结果，此变量可能与该阶段的活动尝试与TaskSetManager中的待处理任务不一致
+   * (此处存储的分区将始终是TaskSetManager认为待处理的分区的子集)。
    */
   val pendingPartitions = new HashSet[Int]
 
@@ -87,7 +84,7 @@ private[spark] class ShuffleMapStage(
    */
   def isAvailable: Boolean = numAvailableOutputs == numPartitions
 
-  /** Returns the sequence of partition ids that are missing (i.e. needs to be computed). */
+  /** 返回缺少的分区ID的序列(即需要计算)。 */
   override def findMissingPartitions(): Seq[Int] = {
     mapOutputTrackerMaster
       .findMissingPartitions(shuffleDep.shuffleId)

@@ -37,7 +37,7 @@ private[spark] class TorrentBroadcastFactory extends BroadcastFactory {
   override def stop(): Unit = { }
 
   /**
-   * Remove all persisted state associated with the torrent broadcast with the given ID.
+   * 删除与带有给定ID的种子广播相关的所有持久状态。
    * @param removeFromDriver Whether to remove state from the driver.
    * @param blocking Whether to block until unbroadcasted
    */

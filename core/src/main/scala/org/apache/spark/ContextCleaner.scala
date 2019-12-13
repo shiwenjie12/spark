@@ -31,7 +31,7 @@ import org.apache.spark.shuffle.api.ShuffleDriverComponents
 import org.apache.spark.util.{AccumulatorContext, AccumulatorV2, ThreadUtils, Utils}
 
 /**
- * Classes that represent cleaning tasks.
+ * 代表清洁任务的类。
  */
 private sealed trait CleanupTask
 private case class CleanRDD(rddId: Int) extends CleanupTask
@@ -41,10 +41,10 @@ private case class CleanAccum(accId: Long) extends CleanupTask
 private case class CleanCheckpoint(rddId: Int) extends CleanupTask
 
 /**
- * A WeakReference associated with a CleanupTask.
+ * 与CleanupTask相关联的WeakReference。
  *
- * When the referent object becomes only weakly reachable, the corresponding
- * CleanupTaskWeakReference is automatically added to the given reference queue.
+ * 当参照对象仅变得微弱可达时，相应的
+ * CleanupTaskWeakReference将自动添加到给定的参考队列中。
  */
 private class CleanupTaskWeakReference(
     val task: CleanupTask,
@@ -53,19 +53,17 @@ private class CleanupTaskWeakReference(
   extends WeakReference(referent, referenceQueue)
 
 /**
- * An asynchronous cleaner for RDD, shuffle, and broadcast state.
+ * 用于RDD，随机播放和广播状态的异步清除器。
  *
- * This maintains a weak reference for each RDD, ShuffleDependency, and Broadcast of interest,
- * to be processed when the associated object goes out of scope of the application. Actual
- * cleanup is performed in a separate daemon thread.
+ * 当关联的对象超出应用程序范围时，这将对要处理的每个RDD，ShuffleDependency和Broadcast保持弱引用。
+ * 实际清理是在单独的守护程序线程中执行的。
  */
 private[spark] class ContextCleaner(
     sc: SparkContext,
     shuffleDriverComponents: ShuffleDriverComponents) extends Logging {
 
   /**
-   * A buffer to ensure that `CleanupTaskWeakReference`s are not garbage collected as long as they
-   * have not been handled by the reference queue.
+   * 一个确保`CleanupTaskWeakReference`不被垃圾回收的缓冲区，只要它们没有被参考队列处理。
    */
   private val referenceBuffer =
     Collections.newSetFromMap[CleanupTaskWeakReference](new ConcurrentHashMap)
@@ -175,7 +173,7 @@ private[spark] class ContextCleaner(
     referenceBuffer.add(new CleanupTaskWeakReference(task, objectForCleanup, referenceQueue))
   }
 
-  /** Keep cleaning RDD, shuffle, and broadcast state. */
+  /** 保持清洁RDD，随机播放和广播状态。 */
   private def keepCleaning(): Unit = Utils.tryOrStopSparkContext(sc) {
     while (!stopped) {
       try {

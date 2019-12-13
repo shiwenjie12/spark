@@ -25,16 +25,15 @@ import org.apache.spark.internal.Logging
 
 /**
  * ::DeveloperApi::
- * BlockReplicationPrioritization provides logic for prioritizing a sequence of peers for
- * replicating blocks. BlockManager will replicate to each peer returned in order until the
- * desired replication order is reached. If a replication fails, prioritize() will be called
- * again to get a fresh prioritization.
+ * BlockReplicationPrioritization提供了用于优先级用于复制块的对等序列的逻辑。
+ * BlockManager将按顺序复制到返回的每个对等节点，直到达到所需的复制顺序为止。
+ * 如果复制失败，将再次调用priorityitize()以获得新的优先级。
  */
 @DeveloperApi
 trait BlockReplicationPolicy {
 
   /**
-   * Method to prioritize a bunch of candidate peers of a block
+   *优先排列一堆候选对等体的方法
    *
    * @param blockManagerId Id of the current BlockManager for self identification
    * @param peers A list of peers of a BlockManager
@@ -73,7 +72,7 @@ object BlockReplicationUtils {
   }
 
   /**
-   * Get a random sample of size m from the elems
+   * 从元素中获取大小为m的随机样本
    *
    * @param elems
    * @param m number of samples needed
@@ -97,16 +96,14 @@ class RandomBlockReplicationPolicy
   with Logging {
 
   /**
-   * Method to prioritize a bunch of candidate peers of a block. This is a basic implementation,
-   * that just makes sure we put blocks on different hosts, if possible
+   * 优先分配一堆候选对等体的方法。这是一个基本的实现，可以确保在可能的情况下将块放置在不同的主机上
    *
-   * @param blockManagerId Id of the current BlockManager for self identification
-   * @param peers A list of peers of a BlockManager
-   * @param peersReplicatedTo Set of peers already replicated to
-   * @param blockId BlockId of the block being replicated. This can be used as a source of
-   *                randomness if needed.
-   * @param numReplicas Number of peers we need to replicate to
-   * @return A prioritized list of peers. Lower the index of a peer, higher its priority
+   * @param blockManagerId 当前BlockManager的ID以进行自我识别
+   * @param peers BlockManager的同级列表
+   * @param peersReplicatedTo 已复制到的对等体集
+   * @param blockId 要复制的块的BlockId。如果需要，可以将其用作随机性的来源。
+   * @param numReplicas 我们需要复制到的对等体的数量
+   * @return 优先级列表。邻居索引越低，优先级越高
    */
   override def prioritize(
       blockManagerId: BlockManagerId,
@@ -135,11 +132,9 @@ class BasicBlockReplicationPolicy
     with Logging {
 
   /**
-   * Method to prioritize a bunch of candidate peers of a block manager. This implementation
-   * replicates the behavior of block replication in HDFS. For a given number of replicas needed,
-   * we choose a peer within the rack, one outside and remaining blockmanagers are chosen at
-   * random, in that order till we meet the number of replicas needed.
-   * This works best with a total replication factor of 3, like HDFS.
+   * 确定块管理器的一堆候选对等对象优先级的方法。此实现复制了HDFS中块复制的行为。
+   * 对于给定数量的副本，我们在机架内选择一个对等方，一个外部，剩余的块管理器按此顺序随机选择，直到满足所需的副本数为止。
+   * 总复制因子为3（例如HDFS）时，此效果最佳。
    *
    * @param blockManagerId    Id of the current BlockManager for self identification
    * @param peers             A list of peers of a BlockManager

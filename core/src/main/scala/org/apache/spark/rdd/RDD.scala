@@ -118,7 +118,7 @@ abstract class RDD[T: ClassTag](
 
   /**
    * :: DeveloperApi ::
-   * Implemented by subclasses to compute a given partition.
+   * 由子类实现以计算给定的分区。
    */
   @DeveloperApi
   def compute(split: Partition, context: TaskContext): Iterator[T]
@@ -343,7 +343,7 @@ abstract class RDD[T: ClassTag](
   }
 
   /**
-   * Compute an RDD partition or read it from a checkpoint if the RDD is checkpointing.
+   * 如果RDD是检查点，则计算RDD分区或从检查点读取它。
    */
   private[spark] def computeOrReadCheckpoint(split: Partition, context: TaskContext): Iterator[T] =
   {

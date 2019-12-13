@@ -161,10 +161,10 @@ case class SparkListenerNodeUnblacklisted(time: Long, hostId: String)
 case class SparkListenerBlockUpdated(blockUpdatedInfo: BlockUpdatedInfo) extends SparkListenerEvent
 
 /**
- * Periodic updates from executors.
+ * 执行者的定期更新。
  * @param execId executor id
- * @param accumUpdates sequence of (taskId, stageId, stageAttemptId, accumUpdates)
- * @param executorUpdates executor level per-stage metrics updates
+ * @param accumUpdates （taskId，stageId，stageAttemptId，accumUpdates）的顺序
+ * @param executorUpdates 执行者级每阶段指标更新
  */
 @DeveloperApi
 case class SparkListenerExecutorMetricsUpdate(
@@ -273,7 +273,7 @@ private[spark] trait SparkListenerInterface {
   def onUnpersistRDD(unpersistRDD: SparkListenerUnpersistRDD): Unit
 
   /**
-   * Called when the application starts
+   * 在应用程序启动时调用
    */
   def onApplicationStart(applicationStart: SparkListenerApplicationStart): Unit
 
@@ -283,7 +283,7 @@ private[spark] trait SparkListenerInterface {
   def onApplicationEnd(applicationEnd: SparkListenerApplicationEnd): Unit
 
   /**
-   * Called when the driver receives task metrics from an executor in a heartbeat.
+   * 当driver在心跳中从执行者接收任务指标时调用。
    */
   def onExecutorMetricsUpdate(executorMetricsUpdate: SparkListenerExecutorMetricsUpdate): Unit
 
@@ -295,7 +295,7 @@ private[spark] trait SparkListenerInterface {
   def onStageExecutorMetrics(executorMetrics: SparkListenerStageExecutorMetrics): Unit
 
   /**
-   * Called when the driver registers a new executor.
+   * 当驱动程序注册新的执行程序时调用。
    */
   def onExecutorAdded(executorAdded: SparkListenerExecutorAdded): Unit
 

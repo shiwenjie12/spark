@@ -24,14 +24,14 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.util.{AccumulatorV2, CallSite}
 
 /**
- * Types of events that can be handled by the DAGScheduler. The DAGScheduler uses an event queue
- * architecture where any thread can post an event (e.g. a task finishing or a new job being
- * submitted) but there is a single "logic" thread that reads these events and takes decisions.
- * This greatly simplifies synchronization.
+ * DAGScheduler可以处理的事件类型。
+ * DAGScheduler使用事件队列架构，其中任何线程都可以发布事件（例如任务完成或正在提交新作业），
+ * 但是只有一个“逻辑”线程可以读取这些事件并做出决定。
+ * 这大大简化了同步。
  */
 private[scheduler] sealed trait DAGSchedulerEvent
 
-/** A result-yielding job was submitted on a target RDD */
+/** 已针对目标RDD提交了一项result-yielding的工作 */
 private[scheduler] case class JobSubmitted(
     jobId: Int,
     finalRDD: RDD[_],
@@ -71,6 +71,7 @@ case class BeginEvent(task: Task[_], taskInfo: TaskInfo) extends DAGSchedulerEve
 private[scheduler]
 case class GettingResultEvent(taskInfo: TaskInfo) extends DAGSchedulerEvent
 
+// 完成时间
 private[scheduler] case class CompletionEvent(
     task: Task[_],
     reason: TaskEndReason,
@@ -88,6 +89,7 @@ private[scheduler] case class ExecutorLost(execId: String, reason: ExecutorLossR
 private[scheduler] case class WorkerRemoved(workerId: String, host: String, message: String)
   extends DAGSchedulerEvent
 
+// 任务集失败
 private[scheduler]
 case class TaskSetFailed(taskSet: TaskSet, reason: String, exception: Option[Throwable])
   extends DAGSchedulerEvent

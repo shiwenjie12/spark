@@ -144,8 +144,7 @@ class LauncherServer implements Closeable {
   }
 
   /**
-   * Registers a handle with the server, and returns the secret the child app needs to connect
-   * back.
+   * 向服务器注册一个句柄，并返回子应用需要重新连接的秘密。
    */
   synchronized String registerHandle(AbstractAppHandle handle) {
     String secret = createSecret();

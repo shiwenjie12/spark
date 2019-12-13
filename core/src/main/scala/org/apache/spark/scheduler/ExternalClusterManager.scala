@@ -20,20 +20,19 @@ package org.apache.spark.scheduler
 import org.apache.spark.SparkContext
 
 /**
- * A cluster manager interface to plugin external scheduler.
+ * 插件外部调度程序的集群管理器界面。
  */
 private[spark] trait ExternalClusterManager {
 
   /**
-   * Check if this cluster manager instance can create scheduler components
-   * for a certain master URL.
+   * 检查此集群管理器实例是否可以为某个主URL创建调度程序组件。
    * @param masterURL the master URL
    * @return True if the cluster manager can create scheduler backend/
    */
   def canCreate(masterURL: String): Boolean
 
   /**
-   * Create a task scheduler instance for the given SparkContext
+   * 为给定的SparkContext创建任务计划程序实例
    * @param sc SparkContext
    * @param masterURL the master URL
    * @return TaskScheduler that will be responsible for task handling
@@ -41,8 +40,8 @@ private[spark] trait ExternalClusterManager {
   def createTaskScheduler(sc: SparkContext, masterURL: String): TaskScheduler
 
   /**
-   * Create a scheduler backend for the given SparkContext and scheduler. This is
-   * called after task scheduler is created using `ExternalClusterManager.createTaskScheduler()`.
+   * 为给定的SparkContext和调度程序创建调度程序后端。
+   * 在使用“ ExternalClusterManager.createTaskScheduler()”创建任务计划程序之后调用该方法。
    * @param sc SparkContext
    * @param masterURL the master URL
    * @param scheduler TaskScheduler that will be used with the scheduler backend.
@@ -53,8 +52,7 @@ private[spark] trait ExternalClusterManager {
       scheduler: TaskScheduler): SchedulerBackend
 
   /**
-   * Initialize task scheduler and backend scheduler. This is called after the
-   * scheduler components are created
+   * 初始化任务计划程序和后端计划程序。创建调度程序组件后调用
    * @param scheduler TaskScheduler that will be responsible for task handling
    * @param backend SchedulerBackend that works with a TaskScheduler
    */

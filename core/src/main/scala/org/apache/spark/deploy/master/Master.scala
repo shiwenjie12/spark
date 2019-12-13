@@ -275,6 +275,7 @@ private[deploy] class Master(
         }
       }
 
+    // 注册应用
     case RegisterApplication(description, driver) =>
       // TODO Prevent repeated registrations from some driver
       if (state == RecoveryState.STANDBY) {
@@ -971,11 +972,10 @@ private[deploy] class Master(
   }
 
   /**
-   * Handle a request to set the target number of executors for this application.
+   * 处理请求以设置此应用程序的目标执行者数。
    *
-   * If the executor limit is adjusted upwards, new executors will be launched provided
-   * that there are workers with sufficient resources. If it is adjusted downwards, however,
-   * we do not kill existing executors until we explicitly receive a kill request.
+   * 如果将执行者限制上调，只要有足够的worker资源，就会启动新的执行者。
+   * 但是，如果将其向下调整，则在明确收到终止请求之前，我们不会终止现有执行程序。
    *
    * @return whether the application has previously registered with this Master.
    */

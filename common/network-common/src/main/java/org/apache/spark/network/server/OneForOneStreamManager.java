@@ -51,8 +51,7 @@ public class OneForOneStreamManager extends StreamManager {
     // 与流关联的频道
     final Channel associatedChannel;
 
-    // Used to keep track of the index of the buffer that the user has retrieved, just to ensure
-    // that the caller only requests each chunk one at a time, in order.
+    // 用于跟踪用户已检索到的缓冲区的索引，只是为了确保调用者一次仅请求每个块一个。
     int curChunk = 0;
 
     // 用于跟踪正在传输但尚未完成的块的数量。
@@ -103,8 +102,7 @@ public class OneForOneStreamManager extends StreamManager {
     return String.format("%d_%d", streamId, chunkId);
   }
 
-  // Parse streamChunkId to be stream id and chunk id. This is used when fetch remote chunk as a
-  // stream.
+  // 将streamChunkId解析为流ID和块ID。当获取远程块作为流时使用。
   public static Pair<Long, Integer> parseStreamChunkId(String streamChunkId) {
     String[] array = streamChunkId.split("_");
     assert array.length == 2:
@@ -122,7 +120,7 @@ public class OneForOneStreamManager extends StreamManager {
       if (state.associatedChannel == channel) {
         streams.remove(entry.getKey());
 
-        // Release all remaining buffers.
+        // 释放所有剩余的缓冲区。
         while (state.buffers.hasNext()) {
           ManagedBuffer buffer = state.buffers.next();
           if (buffer != null) {
@@ -185,10 +183,8 @@ public class OneForOneStreamManager extends StreamManager {
   }
 
   /**
-   * Registers a stream of ManagedBuffers which are served as individual chunks one at a time to
-   * callers. Each ManagedBuffer will be release()'d after it is transferred on the wire. If a
-   * client connection is closed before the iterator is fully drained, then the remaining buffers
-   * will all be release()'d.
+   * 注册一个ManagedBuffers流，一次作为单独的块提供给调用者。每个ManagedBuffer在网络上传输后都将被释放。
+   * 如果在完全耗尽迭代器之前关闭了客户端连接，则其余的缓冲区将全部由release()处理。
    *
    * If an app ID is provided, only callers who've authenticated with the given app ID will be
    * allowed to fetch from this stream.

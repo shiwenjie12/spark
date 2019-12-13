@@ -222,9 +222,8 @@ private[spark] class EventLoggingListener(
     if (shouldLogStageExecutorMetrics) {
       event.executorUpdates.foreach { case (stageKey1, newPeaks) =>
         liveStageExecutorMetrics.foreach { case (stageKey2, metricsPerExecutor) =>
-          // If the update came from the driver, stageKey1 will be the dummy key (-1, -1),
-          // so record those peaks for all active stages.
-          // Otherwise, record the peaks for the matching stage.
+          // 如果更新来自驱动程序，stageKey1将是虚拟键（-1，-1），因此请记录所有活动阶段的峰值。
+          // 否则，记录匹配阶段的峰。
           if (stageKey1 == DRIVER_STAGE_KEY || stageKey1 == stageKey2) {
             val metrics = metricsPerExecutor.getOrElseUpdate(
               event.execId, new ExecutorMetrics())

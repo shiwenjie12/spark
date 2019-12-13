@@ -24,8 +24,7 @@ import io.netty.buffer.ByteBuf;
 import static org.apache.spark.network.shuffle.protocol.BlockTransferMessage.Type;
 
 /**
- * Identifier for a fixed number of chunks to read from a stream created by an "open blocks"
- * message. This is used by {@link org.apache.spark.network.shuffle.OneForOneBlockFetcher}.
+ * 从“开放块”消息创建的流中读取固定数量的块的标识符。 {@link org.apache.spark.network.shuffle.OneForOneBlockFetcher}使用此功能。
  */
 public class StreamHandle extends BlockTransferMessage {
   public final long streamId;

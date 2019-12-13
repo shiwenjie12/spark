@@ -256,10 +256,9 @@ private[spark] class BlockManager(
     }
 
     /**
-     * Put the given data according to the given level in one of the block stores, replicating
-     * the values if necessary.
+     * 根据给定级别将给定数据放入一个块存储中，如有必要，复制值。
      *
-     * If the block already exists, this method will not overwrite it.
+     * 如果该块已经存在，则此方法不会覆盖它。
      *
      * If keepReadLock is true, this method will hold the read lock when it returns (even if the
      * block already exists). If false, this method will hold no locks when it returns.
@@ -538,8 +537,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Interface to get local block data. Throws an exception if the block cannot be found or
-   * cannot be read successfully.
+   * 获取本地块数据的接口。如果找不到或无法成功读取该块，则引发异常。
    */
   override def getBlockData(blockId: BlockId): ManagedBuffer = {
     if (blockId.isShuffle) {
@@ -1015,9 +1013,8 @@ private[spark] class BlockManager(
    */
   def getRemoteBytes(blockId: BlockId): Option[ChunkedByteBuffer] = {
     getRemoteBlock(blockId, (data: ManagedBuffer) => {
-      // SPARK-24307 undocumented "escape-hatch" in case there are any issues in converting to
-      // ChunkedByteBuffer, to go back to old code-path.  Can be removed post Spark 2.4 if
-      // new path is stable.
+      // SPARK-24307未记录的“转义符”，以防在转换为ChunkedByteBuffer时出现任何问题，以返回到旧的代码路径。
+      // 如果新路径稳定，可以在Spark 2.4之后删除。
       if (remoteReadNioBufferConversion) {
         new ChunkedByteBuffer(data.nioByteBuffer())
       } else {
@@ -1264,8 +1261,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Put the given block according to the given level in one of the block stores, replicating
-   * the values if necessary.
+   * 根据给定的级别将给定的块放入一个块存储中，必要时复制值。
    *
    * If the block already exists, this method will not overwrite it.
    *

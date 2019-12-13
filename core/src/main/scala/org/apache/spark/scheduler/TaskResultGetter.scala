@@ -30,7 +30,7 @@ import org.apache.spark.serializer.SerializerInstance
 import org.apache.spark.util.{LongAccumulator, ThreadUtils, Utils}
 
 /**
- * Runs a thread pool that deserializes and remotely fetches (if necessary) task results.
+ * 运行线程池，该线程池反序列化并远程获取（如果需要）任务结果。
  */
 private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedulerImpl)
   extends Logging {
@@ -64,7 +64,7 @@ private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedul
           val (result, size) = serializer.get().deserialize[TaskResult[_]](serializedData) match {
             case directResult: DirectTaskResult[_] =>
               if (!taskSetManager.canFetchMoreResults(serializedData.limit())) {
-                // kill the task so that it will not become zombie task
+                // 杀死任务，使其不会成为僵尸任务
                 scheduler.handleFailedTask(taskSetManager, tid, TaskState.KILLED, TaskKilled(
                   "Tasks result size has exceeded maxResultSize"))
                 return
@@ -76,9 +76,9 @@ private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedul
               (directResult, serializedData.limit())
             case IndirectTaskResult(blockId, size) =>
               if (!taskSetManager.canFetchMoreResults(size)) {
-                // dropped by executor if size is larger than maxResultSize
+                // 如果大小大于maxResultSize，则由执行者丢弃
                 sparkEnv.blockManager.master.removeBlock(blockId)
-                // kill the task so that it will not become zombie task
+                // 杀死任务，使其不会成为僵尸任务
                 scheduler.handleFailedTask(taskSetManager, tid, TaskState.KILLED, TaskKilled(
                   "Tasks result size has exceeded maxResultSize"))
                 return
@@ -87,9 +87,8 @@ private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedul
               scheduler.handleTaskGettingResult(taskSetManager, tid)
               val serializedTaskResult = sparkEnv.blockManager.getRemoteBytes(blockId)
               if (serializedTaskResult.isEmpty) {
-                /* We won't be able to get the task result if the machine that ran the task failed
-                 * between when the task ended and when we tried to fetch the result, or if the
-                 * block manager had to flush the result. */
+                /* 如果运行任务的机器在任务结束与尝试获取结果之间失败，或者块管理器必须刷新结果，则无法获得任务结果。
+                  * */
                 scheduler.handleFailedTask(
                   taskSetManager, tid, TaskState.FINISHED, TaskResultLost)
                 return
@@ -102,11 +101,10 @@ private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedul
               (deserializedResult, size)
           }
 
-          // Set the task result size in the accumulator updates received from the executors.
-          // We need to do this here on the driver because if we did this on the executors then
-          // we would have to serialize the result again after updating the size.
+          // 在从执行程序接收的累加器更新中设置任务结果大小。
+          // 我们需要在驱动程序上执行此操作，因为如果在执行程序上执行此操作，则在更新大小后必须再次序列化结果。
           result.accumUpdates = result.accumUpdates.map { a =>
-            if (a.name == Some(InternalAccumulator.RESULT_SIZE)) {
+            if (a.name.contains(InternalAccumulator.RESULT_SIZE)) {
               val acc = a.asInstanceOf[LongAccumulator]
               assert(acc.sum == 0L, "task result size should not have been set on the executors")
               acc.setValue(size.toLong)

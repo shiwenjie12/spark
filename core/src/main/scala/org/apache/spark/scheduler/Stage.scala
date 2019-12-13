@@ -25,25 +25,20 @@ import org.apache.spark.rdd.{DeterministicLevel, RDD}
 import org.apache.spark.util.CallSite
 
 /**
- * A stage is a set of parallel tasks all computing the same function that need to run as part
- * of a Spark job, where all the tasks have the same shuffle dependencies. Each DAG of tasks run
- * by the scheduler is split up into stages at the boundaries where shuffle occurs, and then the
- * DAGScheduler runs these stages in topological order.
+ * 阶段是一组并行任务，所有这些任务都计算需要作为Spark作业的一部分运行的相同功能，
+ * 其中所有任务都具有相同的随机依赖关系。调度程序运行的每个DAG任务在发生混洗的边界处分为多个阶段，
+ * 然后DAGScheduler以拓扑顺序运行这些阶段。
  *
- * Each Stage can either be a shuffle map stage, in which case its tasks' results are input for
- * other stage(s), or a result stage, in which case its tasks directly compute a Spark action
- * (e.g. count(), save(), etc) by running a function on an RDD. For shuffle map stages, we also
- * track the nodes that each output partition is on.
+ * 每个阶段可以是随机播放映射阶段(在这种情况下其任务的结果输入到其他阶段)，也可以是结果阶段(在这种情况下其任务直接计算Spark动作)\
+ * (例如count()，save()等等)，方法是在RDD上运行函数。对于随机映射阶段，我们还跟踪每个输出分区所在的节点。
  *
- * Each Stage also has a firstJobId, identifying the job that first submitted the stage.  When FIFO
- * scheduling is used, this allows Stages from earlier jobs to be computed first or recovered
- * faster on failure.
+ * 每个阶段还具有一个firstJobId，用于标识首先提交该阶段的作业。
+ * 使用FIFO调度时，这允许首先计算较早作业的阶段，或者在出现故障时更快地恢复。
  *
- * Finally, a single stage can be re-executed in multiple attempts due to fault recovery. In that
- * case, the Stage object will track multiple StageInfo objects to pass to listeners or the web UI.
- * The latest one will be accessible through latestInfo.
+ * 最后，由于故障恢复，可以多次尝试重新执行一个阶段。
+ * 在这种情况下，Stage对象将跟踪多个StageInfo对象以传递给侦听器或Web UI。最新的将可以通过latestInfo访问。
  *
- * @param id Unique stage ID
+ * @param id 唯一的阶段ID
  * @param rdd RDD that this stage runs on: for a shuffle map stage, it's the RDD we run map tasks
  *   on, while for a result stage, it's the target RDD that we ran an action on
  * @param numTasks Total number of tasks in stage; result stages in particular may not need to
@@ -64,10 +59,10 @@ private[scheduler] abstract class Stage(
 
   val numPartitions = rdd.partitions.length
 
-  /** Set of jobs that this stage belongs to. */
+  /** 此阶段所属的一组作业。 */
   val jobIds = new HashSet[Int]
 
-  /** The ID to use for the next new attempt for this stage. */
+  /** 该阶段下一次新尝试使用的ID。 */
   private var nextAttemptId: Int = 0
 
   val name: String = callSite.shortForm
@@ -93,7 +88,7 @@ private[scheduler] abstract class Stage(
     failedAttemptIds.clear()
   }
 
-  /** Creates a new attempt for this stage by creating a new StageInfo with a new attempt ID. */
+  /** 通过创建具有新尝试ID的新StageInfo来为此阶段创建新尝试。 */
   def makeNewStageAttempt(
       numPartitionsToCompute: Int,
       taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq.empty): Unit = {
@@ -114,7 +109,7 @@ private[scheduler] abstract class Stage(
     case _ => false
   }
 
-  /** Returns the sequence of partition ids that are missing (i.e. needs to be computed). */
+  /** 返回缺少的分区ID的序列（即需要计算）。 */
   def findMissingPartitions(): Seq[Int]
 
   def isIndeterminate: Boolean = {

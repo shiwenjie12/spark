@@ -31,12 +31,11 @@ import org.apache.spark.util._
 
 /**
  * :: DeveloperApi ::
- * Metrics tracked during the execution of a task.
+ * 在任务执行过程中跟踪的指标。
  *
- * This class is wrapper around a collection of internal accumulators that represent metrics
- * associated with a task. The local values of these accumulators are sent from the executor
- * to the driver when the task completes. These values are then merged into the corresponding
- * accumulator previously registered on the driver.
+ * 此类围绕表示与任务相关联的度量的内部累加器的集合进行包装。
+ * 任务完成时，这些累加器的本地值将从执行器发送到驱动程序。
+ * 然后将这些值合并到先前在驱动程序上注册的相应累加器中。
  *
  * The accumulator updates are also sent to the driver periodically (on executor heartbeat)
  * and when the task failed with an exception. The [[TaskMetrics]] object itself should never
@@ -310,7 +309,7 @@ private[spark] object TaskMetrics extends Logging {
   }
 
   /**
-   * Construct a [[TaskMetrics]] object from a list of accumulator updates, called on driver only.
+   * 从累加器更新列表构造一个[[TaskMetrics]]对象，仅在驱动程序上调用。
    */
   def fromAccumulators(accums: Seq[AccumulatorV2[_, _]]): TaskMetrics = {
     val tm = new TaskMetrics

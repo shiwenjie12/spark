@@ -45,8 +45,7 @@ private[spark] case class Heartbeat(
     executorUpdates: Map[(Int, Int), ExecutorMetrics])
 
 /**
- * An event that SparkContext uses to notify HeartbeatReceiver that SparkContext.taskScheduler is
- * created.
+ * SparkContext用于通知HeartbeatReceiver已创建SparkContext.taskScheduler的事件。
  */
 private[spark] case object TaskSchedulerIsSet
 
@@ -59,7 +58,7 @@ private case class ExecutorRemoved(executorId: String)
 private[spark] case class HeartbeatResponse(reregisterBlockManager: Boolean)
 
 /**
- * Lives in the driver to receive heartbeats from executors..
+ * 住在驱动程序中以接收执行者的心跳。
  */
 private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
   extends SparkListener with ThreadSafeRpcEndpoint with Logging {
@@ -74,7 +73,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
 
   private[spark] var scheduler: TaskScheduler = null
 
-  // executor ID -> timestamp of when the last heartbeat from this executor was received
+  // 执行者ID->接收到该执行者上一次心跳的时间戳
   private val executorLastSeen = new HashMap[String, Long]
 
   private val executorTimeoutMs = sc.conf.get(config.STORAGE_BLOCKMANAGER_SLAVE_TIMEOUT)
@@ -92,8 +91,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
 
   private var timeoutCheckingTask: ScheduledFuture[_] = null
 
-  // "eventLoopThread" is used to run some pretty fast actions. The actions running in it should not
-  // block the thread for a long time.
+  // "eventLoopThread"用于运行一些非常快速的操作。在其中运行的操作不应长时间阻塞线程。
   private val eventLoopThread =
     ThreadUtils.newDaemonSingleThreadScheduledExecutor("heartbeat-receiver-event-loop-thread")
 
@@ -162,7 +160,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
   }
 
   /**
-   * If the heartbeat receiver is not stopped, notify it of executor registrations.
+   * 如果心跳接收器没有停止，请通知执行者注册。
    */
   override def onExecutorAdded(executorAdded: SparkListenerExecutorAdded): Unit = {
     addExecutor(executorAdded.executorId)
@@ -196,6 +194,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     logTrace("Checking for hosts with no recent heartbeats in HeartbeatReceiver.")
     val now = clock.getTimeMillis()
     for ((executorId, lastSeenMs) <- executorLastSeen) {
+      // 执行器已过期
       if (now - lastSeenMs > executorTimeoutMs) {
         logWarning(s"Removing executor $executorId with no recent heartbeats: " +
           s"${now - lastSeenMs} ms exceeds timeout $executorTimeoutMs ms")

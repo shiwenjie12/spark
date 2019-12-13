@@ -21,10 +21,10 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 
-/** Provides a canonical set of Encoders for simple types. */
+/** 为简单类型提供一组规范的编码器。 */
 public class Encoders {
 
-  /** Strings are encoded with their length followed by UTF-8 bytes. */
+  /** 字符串按其长度编码，后跟UTF-8字节。 */
   public static class Strings {
     public static int encodedLength(String s) {
       return 4 + s.getBytes(StandardCharsets.UTF_8).length;
@@ -44,7 +44,7 @@ public class Encoders {
     }
   }
 
-  /** Byte arrays are encoded with their length followed by bytes. */
+  /** 字节数组按其长度后跟字节进行编码。 */
   public static class ByteArrays {
     public static int encodedLength(byte[] arr) {
       return 4 + arr.length;

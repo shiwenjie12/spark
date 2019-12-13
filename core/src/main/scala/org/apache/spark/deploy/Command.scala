@@ -19,6 +19,7 @@ package org.apache.spark.deploy
 
 import scala.collection.Map
 
+// java 执行命令
 private[spark] case class Command(
     mainClass: String,
     arguments: Seq[String],

@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Handle implementation for monitoring apps started as a child process.
+ * 处理监视应用程序的实现是从子进程开始的。
  */
 class ChildProcAppHandle extends AbstractAppHandle {
 

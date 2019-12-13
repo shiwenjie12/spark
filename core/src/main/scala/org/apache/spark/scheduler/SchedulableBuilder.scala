@@ -30,9 +30,9 @@ import org.apache.spark.scheduler.SchedulingMode.SchedulingMode
 import org.apache.spark.util.Utils
 
 /**
- * An interface to build Schedulable tree
- * buildPools: build the tree nodes(pools)
- * addTaskSetManager: build the leaf nodes(TaskSetManagers)
+ * 建立可调度树的接口
+ * buildPools：构建树节点（池）
+ * addTaskSetManager：构建叶子节点（TaskSetManagers）
  */
 private[spark] trait SchedulableBuilder {
   def rootPool: Pool

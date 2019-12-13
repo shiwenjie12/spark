@@ -202,12 +202,10 @@ class SnappyCompressionCodec(conf: SparkConf) extends CompressionCodec {
 
 /**
  * :: DeveloperApi ::
- * ZStandard implementation of [[org.apache.spark.io.CompressionCodec]]. For more
+ * [[org.apache.spark.io.CompressionCodec]]的ZStandard实现。 For more
  * details see - http://facebook.github.io/zstd/
  *
- * @note The wire protocol for this codec is not guaranteed to be compatible across versions
- * of Spark. This is intended for use as an internal compression utility within a single Spark
- * application.
+ * @note 不能保证此编解码器的有线协议在Spark的各个版本之间都兼容。它旨在用作单个Spark应用程序中的内部压缩实用程序。
  */
 @DeveloperApi
 class ZStdCompressionCodec(conf: SparkConf) extends CompressionCodec {

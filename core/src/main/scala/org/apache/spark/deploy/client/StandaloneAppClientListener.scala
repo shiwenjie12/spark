@@ -18,9 +18,8 @@
 package org.apache.spark.deploy.client
 
 /**
- * Callbacks invoked by deploy client when various events happen. There are currently five events:
- * connecting to the cluster, disconnecting, being given an executor, having an executor removed
- * (either due to failure or due to revocation), and having a worker removed.
+ * 发生各种事件时，部署客户端调用的回调。当前有五个事件：
+ * 连接到集群，断开连接，被授予执行者，删除执行者（由于故障或由于吊销）以及删除工作人员。
  *
  * Users of this API should *not* block inside the callback methods.
  */

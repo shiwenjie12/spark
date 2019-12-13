@@ -41,10 +41,8 @@ import org.apache.spark.network.shuffle.protocol.StreamHandle;
 import org.apache.spark.network.util.TransportConf;
 
 /**
- * Simple wrapper on top of a TransportClient which interprets each chunk as a whole block, and
- * invokes the BlockFetchingListener appropriately. This class is agnostic to the actual RPC
- * handler, as long as there is a single "open blocks" message which returns a ShuffleStreamHandle,
- * and Java serialization is used.
+ * TransportClient之上的简单包装器将每个块解释为一个完整的块，并适当地调用BlockFetchingListener。
+ * 此类与实际的RPC处理程序无关，只要有一条返回“ ShuffleStreamHandle”的“打开块”消息，并使用Java序列化即可。
  *
  * Note that this typically corresponds to a
  * {@link org.apache.spark.network.server.OneForOneStreamManager} on the server side.

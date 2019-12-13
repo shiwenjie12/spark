@@ -263,7 +263,7 @@ class SparkContext(config: SparkConf) extends Logging {
 
   private[spark] def statusStore: AppStatusStore = _statusStore
 
-  // An asynchronous listener bus for Spark events
+  // 用于Spark事件的异步侦听器总线
   private[spark] def listenerBus: LiveListenerBus = _listenerBus
 
   // This function allows components created by SparkEnv to be mocked in unit tests:
@@ -481,8 +481,7 @@ class SparkContext(config: SparkConf) extends Logging {
         // For tests, do not enable the UI
         None
       }
-    // Bind the UI before starting the task scheduler to communicate
-    // the bound port to the cluster manager properly
+    // 在启动任务计划程序之前将UI绑定，以将绑定的端口正确地传达给集群管理器
     _ui.foreach(_.bind())
 
     _hadoopConfiguration = SparkHadoopUtil.get.newConfiguration(_conf)
@@ -537,22 +536,21 @@ class SparkContext(config: SparkConf) extends Logging {
     _heartbeatReceiver = env.rpcEnv.setupEndpoint(
       HeartbeatReceiver.ENDPOINT_NAME, new HeartbeatReceiver(this))
 
-    // Create and start the scheduler
+    // 创建并启动调度程序
     val (sched, ts) = SparkContext.createTaskScheduler(this, master, deployMode)
     _schedulerBackend = sched
     _taskScheduler = ts
     _dagScheduler = new DAGScheduler(this)
     _heartbeatReceiver.ask[Boolean](TaskSchedulerIsSet)
 
-    // create and start the heartbeater for collecting memory metrics
+    // 创建并启动检测信号以收集内存指标
     _heartbeater = new Heartbeater(
       () => SparkContext.this.reportHeartBeat(),
       "driver-heartbeater",
       conf.get(EXECUTOR_HEARTBEAT_INTERVAL))
     _heartbeater.start()
 
-    // start TaskScheduler after taskScheduler sets DAGScheduler reference in DAGScheduler's
-    // constructor
+    // 在taskScheduler在DAGScheduler的构造函数中设置DAGScheduler引用之后，启动TaskScheduler
     _taskScheduler.start()
 
     _applicationId = _taskScheduler.applicationId()
@@ -1811,9 +1809,8 @@ class SparkContext(config: SparkConf) extends Logging {
   }
 
   /**
-   * 为将来要在此“ SparkContext”上执行的所有任务添加JAR依赖关系。
-   *
-   * If a jar is added during execution, it will not be available until the next TaskSet starts.
+   * 为将来要在此"SparkContext"上执行的所有任务添加JAR依赖关系。
+   * 如果在执行过程中添加了jar，则在下一个TaskSet启动之前它将不可用。
    *
    * @param path can be either a local file, a file in HDFS (or other Hadoop-supported filesystems),
    * an HTTP, HTTPS or FTP URI, or local:/path for a file on every worker node.
@@ -1830,6 +1827,7 @@ class SparkContext(config: SparkConf) extends Logging {
           throw new IllegalArgumentException(
             s"Directory ${file.getAbsoluteFile} is not allowed for addJar")
         }
+        // 添加到文件服务器
         env.rpcEnv.fileServer.addJar(file)
       } catch {
         case NonFatal(e) =>
@@ -1838,6 +1836,7 @@ class SparkContext(config: SparkConf) extends Logging {
       }
     }
 
+    // 检查远程服务器jar文件
     def checkRemoteJarFile(path: String): String = {
       val hadoopPath = new Path(path)
       val scheme = new URI(path).getScheme
@@ -1865,6 +1864,7 @@ class SparkContext(config: SparkConf) extends Logging {
     if (path == null) {
       logWarning("null specified as parameter to addJar")
     } else {
+      // 文件的URI
       val key = if (path.contains("\\")) {
         // For local paths with backslashes on Windows, URI throws an exception
         addLocalJarFile(new File(path))
@@ -2055,8 +2055,7 @@ class SparkContext(config: SparkConf) extends Logging {
   }
 
   /**
-   * Capture the current user callsite and return a formatted version for printing. If the user
-   * has overridden the call site using `setCallSite()`, this will return the user's version.
+   * 捕获当前用户的呼叫站点并返回格式化版本以进行打印。如果用户使用setCallSite()覆盖了呼叫站点，则将返回用户的版本。
    */
   private[spark] def getCallSite(): CallSite = {
     lazy val callSite = Utils.getCallSite()
@@ -2067,14 +2066,12 @@ class SparkContext(config: SparkConf) extends Logging {
   }
 
   /**
-   * Run a function on a given set of partitions in an RDD and pass the results to the given
-   * handler function. This is the main entry point for all actions in Spark.
+   * 在RDD中给定的一组分区上运行一个函数，并将结果传递给给定的处理函数。这是Spark中所有动作的主要切入点。
    *
-   * @param rdd target RDD to run tasks on
-   * @param func a function to run on each partition of the RDD
-   * @param partitions set of partitions to run on; some jobs may not want to compute on all
-   * partitions of the target RDD, e.g. for operations like `first()`
-   * @param resultHandler callback to pass each result to
+   * @param rdd 目标RDD以在其上运行任务
+   * @param func 在RDD的每个分区上运行的功能
+   * @param partitions 一组要运行的分区；一些作业可能不希望在目标RDD的所有分区上进行计算，例如用于诸如"first()"之类的操作
+   * @param resultHandler 回调以将每个结果传递给
    */
   def runJob[T, U: ClassTag](
       rdd: RDD[T],
@@ -2174,7 +2171,7 @@ class SparkContext(config: SparkConf) extends Logging {
   }
 
   /**
-   * Run a job on all partitions in an RDD and pass the results to a handler function.
+   * 在RDD中的所有分区上运行作业，然后将结果传递给处理程序函数。
    *
    * @param rdd target RDD to run tasks on
    * @param processPartition a function to run on each partition of the RDD
@@ -2218,7 +2215,7 @@ class SparkContext(config: SparkConf) extends Logging {
   }
 
   /**
-   * Submit a job for execution and return a FutureJob holding the result.
+   * 提交作业以执行并返回保存结果的FutureJob。
    *
    * @param rdd target RDD to run tasks on
    * @param processPartition a function to run on each partition of the RDD
@@ -2407,9 +2404,8 @@ class SparkContext(config: SparkConf) extends Logging {
   private[spark] def newRddId(): Int = nextRddId.getAndIncrement()
 
   /**
-   * Registers listeners specified in spark.extraListeners, then starts the listener bus.
-   * This should be called after all internal listeners have been registered with the listener bus
-   * (e.g. after the web UI and event logging listeners have been registered).
+   * 注册spark.extraListeners中指定的侦听器，然后启动侦听器总线。
+   * 在所有内部侦听器都已向侦听器总线注册之后（例如，在Web UI和事件记录侦听器已注册之后），应调用此方法。
    */
   private def setupAndStartListenerBus(): Unit = {
     try {
@@ -2433,7 +2429,7 @@ class SparkContext(config: SparkConf) extends Logging {
     _listenerBusStarted = true
   }
 
-  /** Post the application start event */
+  /** 发布应用程序启动事件 */
   private def postApplicationStart(): Unit = {
     // Note: this code assumes that the task scheduler has been initialized and has contacted
     // the cluster manager to get an application ID (in case the cluster manager provides one).
@@ -2448,7 +2444,7 @@ class SparkContext(config: SparkConf) extends Logging {
     listenerBus.post(SparkListenerApplicationEnd(System.currentTimeMillis))
   }
 
-  /** Post the environment update event once the task scheduler is ready */
+  /** 任务计划程序准备就绪后，发布环境更新事件 */
   private def postEnvironmentUpdate(): Unit = {
     if (taskScheduler != null) {
       val schedulingMode = getSchedulingMode.toString
@@ -2461,11 +2457,11 @@ class SparkContext(config: SparkConf) extends Logging {
     }
   }
 
-  /** Reports heartbeat metrics for the driver. */
+  /** 报告驱动程序的心跳指标。 */
   private def reportHeartBeat(): Unit = {
     val currentMetrics = ExecutorMetrics.getCurrentMetrics(env.memoryManager)
     val driverUpdates = new HashMap[(Int, Int), ExecutorMetrics]
-    // In the driver, we do not track per-stage metrics, so use a dummy stage for the key
+    // 在驱动程序中，我们不跟踪每个阶段的指标，因此对密钥使用虚拟阶段
     driverUpdates.put(EventLoggingListener.DRIVER_STAGE_KEY, new ExecutorMetrics(currentMetrics))
     val accumUpdates = new Array[(Long, Int, Int, Seq[AccumulableInfo])](0)
     listenerBus.post(SparkListenerExecutorMetricsUpdate("driver", accumUpdates,
@@ -2732,8 +2728,8 @@ object SparkContext extends Logging {
   }
 
   /**
-   * Create a task scheduler based on a given master URL.
-   * Return a 2-tuple of the scheduler backend and the task scheduler.
+   * 根据给定的主URL创建任务计划程序。
+   * 返回调度程序后端和任务调度程序的2元组。
    */
   private def createTaskScheduler(
       sc: SparkContext,
@@ -2741,10 +2737,10 @@ object SparkContext extends Logging {
       deployMode: String): (SchedulerBackend, TaskScheduler) = {
     import SparkMasterRegex._
 
-    // When running locally, don't try to re-execute tasks on failure.
+    // 在本地运行时，请勿尝试在失败时重新执行任务。
     val MAX_LOCAL_TASK_FAILURES = 1
 
-    // Ensure that executor's resources satisfies one or more tasks requirement.
+    // 确保执行者的资源满足一项或多项任务要求。
     def checkResourcesPerTask(clusterMode: Boolean, executorCores: Option[Int]): Unit = {
       val taskCores = sc.conf.get(CPUS_PER_TASK)
       val execCores = if (clusterMode) {
@@ -2753,14 +2749,13 @@ object SparkContext extends Logging {
         executorCores.get
       }
 
-      // Number of cores per executor must meet at least one task requirement.
+      // 每个执行者的核心数必须至少满足一项任务要求。
       if (execCores < taskCores) {
         throw new SparkException(s"The number of cores per executor (=$execCores) has to be >= " +
           s"the task config: ${CPUS_PER_TASK.key} = $taskCores when run on $master.")
       }
 
-      // Calculate the max slots each executor can provide based on resources available on each
-      // executor and resources required by each task.
+      // 根据每个执行者可用的资源和每个任务所需的资源，计算每个执行者可以提供的最大插槽。
       val taskResourceRequirements = parseResourceRequirements(sc.conf, SPARK_TASK_PREFIX)
       val executorResourcesAndAmounts =
         parseAllResourceRequests(sc.conf, SPARK_EXECUTOR_PREFIX)
@@ -2785,7 +2780,7 @@ object SparkContext extends Logging {
             ResourceID(SPARK_TASK_PREFIX, taskReq.resourceName).amountConf +
             s" = ${taskReq.amount}")
         }
-        // Compare and update the max slots each executor can provide.
+        // 比较并更新每个执行程序可以提供的最大插槽。
         val resourceNumSlots = execAmount / taskReq.amount
         if (resourceNumSlots < numSlots) {
           numSlots = resourceNumSlots

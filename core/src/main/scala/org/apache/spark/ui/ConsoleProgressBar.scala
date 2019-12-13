@@ -110,8 +110,7 @@ private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
   }
 
   /**
-   * Mark all the stages as finished, clear the progress bar if showed, then the progress will not
-   * interweave with output of jobs.
+   * 将所有阶段标记为已完成，清除进度条（如果显示），则进度将不会与作业输出交织在一起。
    */
   def finishAll(): Unit = synchronized {
     clear()

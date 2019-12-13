@@ -18,9 +18,8 @@
 package org.apache.spark.scheduler
 
 /**
- * A backend interface for scheduling systems that allows plugging in different ones under
- * TaskSchedulerImpl. We assume a Mesos-like model where the application gets resource offers as
- * machines become available and can launch tasks on them.
+ * 调度系统的后端接口，允许在TaskSchedulerImpl下插入不同的接口。
+ * 我们假设一个类似Mesos的模型，其中当机器可用时，应用程序将获得资源提供，并且可以在机器上启动任务。
  */
 private[spark] trait SchedulerBackend {
   private val appId = "spark-application-" + System.currentTimeMillis
@@ -55,8 +54,7 @@ private[spark] trait SchedulerBackend {
   def applicationId(): String = appId
 
   /**
-   * Get the attempt ID for this run, if the cluster manager supports multiple
-   * attempts. Applications run in client mode will not have attempt IDs.
+   * 如果集群管理器支持多次尝试，则获取此运行的尝试ID。在客户端模式下运行的应用程序将没有尝试ID。
    *
    * @return The application attempt id, if available.
    */

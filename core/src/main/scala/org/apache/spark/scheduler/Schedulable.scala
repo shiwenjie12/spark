@@ -24,8 +24,8 @@ import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.scheduler.SchedulingMode.SchedulingMode
 
 /**
- * An interface for schedulable entities.
- * there are two type of Schedulable entities(Pools and TaskSetManagers)
+ * 可调度实体的接口。
+ * 有两种类型的可调度实体（Pools和TaskSetManagers）
  */
 private[spark] trait Schedulable {
   var parent: Pool

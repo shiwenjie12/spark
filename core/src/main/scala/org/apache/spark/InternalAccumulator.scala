@@ -18,8 +18,7 @@
 package org.apache.spark
 
 /**
- * A collection of fields and methods concerned with internal accumulators that represent
- * task level metrics.
+ * 与内部累加器有关的字段和方法的集合，这些累加器和方法表示任务级别指标。
  */
 private[spark] object InternalAccumulator {
   // Prefixes used in names of internal task level metrics

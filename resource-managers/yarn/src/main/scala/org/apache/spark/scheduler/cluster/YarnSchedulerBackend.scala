@@ -70,7 +70,7 @@ private[spark] abstract class YarnSchedulerBackend(
   /** Application ID. */
   protected var appId: Option[ApplicationId] = None
 
-  /** Attempt ID. This is unset for client-mode schedulers */
+  /** 尝试ID。客户端模式调度程序未设置 */
   private var attemptId: Option[ApplicationAttemptId] = None
 
   /**

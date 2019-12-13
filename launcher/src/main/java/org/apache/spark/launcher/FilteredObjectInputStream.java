@@ -25,8 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * An object input stream that only allows classes used by the launcher protocol to be in the
- * serialized stream. See SPARK-20922.
+ * 对象输入流，仅允许启动程序协议使用的类在序列化流中。参见SPARK-20922。
  */
 class FilteredObjectInputStream extends ObjectInputStream {
 

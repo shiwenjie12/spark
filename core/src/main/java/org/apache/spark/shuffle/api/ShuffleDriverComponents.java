@@ -23,14 +23,14 @@ import org.apache.spark.annotation.Private;
 
 /**
  * :: Private ::
- * An interface for building shuffle support modules for the Driver.
+ * 用于为驱动程序构建随机播放支持模块的接口。
  */
 @Private
 public interface ShuffleDriverComponents {
 
   /**
-   * Called once in the driver to bootstrap this module that is specific to this application.
-   * This method is called before submitting executor requests to the cluster manager.
+   * 在驱动程序中调用一次以引导此特定于此应用程序的模块。
+   * 在将执行程序请求提交给集群管理器之前，将调用此方法。
    *
    * This method should prepare the module with its shuffle components i.e. registering against
    * an external file servers or shuffle services, or creating tables in a shuffle
@@ -43,19 +43,19 @@ public interface ShuffleDriverComponents {
   Map<String, String> initializeApplication();
 
   /**
-   * Called once at the end of the Spark application to clean up any existing shuffle state.
+   * 在Spark应用程序的末尾调用一次，以清除任何现有的随机播放状态。
    */
   void cleanupApplication();
 
   /**
-   * Called once per shuffle id when the shuffle id is first generated for a shuffle stage.
+   * 在随机播放阶段首次生成随机播放ID时，每个随机播放ID调用一次。
    *
-   * @param shuffleId The unique identifier for the shuffle stage.
+   * @param shuffleId 随机播放阶段的唯一标识符。
    */
   default void registerShuffle(int shuffleId) {}
 
   /**
-   * Removes shuffle data associated with the given shuffle.
+   * 删除与给定随机播放关联的随机播放数据。
    *
    * @param shuffleId The unique identifier for the shuffle stage.
    * @param blocking Whether this call should block on the deletion of the data.

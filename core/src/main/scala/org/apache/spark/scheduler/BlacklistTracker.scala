@@ -27,19 +27,14 @@ import org.apache.spark.internal.config
 import org.apache.spark.util.{Clock, SystemClock, Utils}
 
 /**
- * BlacklistTracker is designed to track problematic executors and nodes.  It supports blacklisting
- * executors and nodes across an entire application (with a periodic expiry).  TaskSetManagers add
- * additional blacklisting of executors and nodes for individual tasks and stages which works in
- * concert with the blacklisting here.
+ * BlacklistTracker旨在跟踪有问题的执行者和节点。它支持在整个应用程序中将执行程序和节点列入黑名单（定期到期）。
+ * TaskSetManager为单个任务和阶段添加了执行者和节点的其他黑名单，这些黑名单与此处的黑名单配合使用。
  *
- * The tracker needs to deal with a variety of workloads, eg.:
+ * 跟踪器需要处理各种工作负载，例如：
  *
- *  * bad user code --  this may lead to many task failures, but that should not count against
- *      individual executors
- *  * many small stages -- this may prevent a bad executor for having many failures within one
- *      stage, but still many failures over the entire application
- *  * "flaky" executors -- they don't fail every task, but are still faulty enough to merit
- *      blacklisting
+ *  错误的用户代码-这可能会导致许多任务失败，但是这不应算作单个执行者
+ *  许多小阶段-这可以防止不良执行者在一个阶段内发生许多故障，但在整个应用程序中仍然存在许多故障
+ *  “片状”执行者-他们不会完成所有任务，但仍然有缺陷，值得列入黑名单
  *
  * See the design doc on SPARK-8425 for a more in-depth discussion.
  *
@@ -74,8 +69,7 @@ private[scheduler] class BlacklistTracker (
   val executorIdToBlacklistStatus = new HashMap[String, BlacklistedExecutor]()
   val nodeIdToBlacklistExpiryTime = new HashMap[String, Long]()
   /**
-   * An immutable copy of the set of nodes that are currently blacklisted.  Kept in an
-   * AtomicReference to make [[nodeBlacklist()]] thread-safe.
+   * 当前已列入黑名单的节点集的不可变副本。保留AtomicReference以使[[nodeBlacklist()]]成为线程安全的。
    */
   private val _nodeBlacklist = new AtomicReference[Set[String]](Set())
   /**
@@ -280,8 +274,7 @@ private[scheduler] class BlacklistTracker (
   }
 
   /**
-   * Get the full set of nodes that are blacklisted.  Unlike other methods in this class, this *IS*
-   * thread-safe -- no lock required on a taskScheduler.
+   * 获取列入黑名单的完整节点集。与此类中的其他方法不同，此* IS *线程安全的-无需在taskScheduler上锁定。
    */
   def nodeBlacklist(): Set[String] = {
     _nodeBlacklist.get()
@@ -386,11 +379,10 @@ private[spark] object BlacklistTracker extends Logging {
   private val DEFAULT_TIMEOUT = "1h"
 
   /**
-   * Returns true if the blacklist is enabled, based on checking the configuration in the following
-   * order:
-   * 1. Is it specifically enabled or disabled?
-   * 2. Is it enabled via the legacy timeout conf?
-   * 3. Default is off
+   * 如果按照以下顺序检查配置，则如果启用了黑名单，则返回true：
+   * 1.是专门启用还是禁用？
+   * 2.是否通过旧版超时conf启用了它？
+   * 3.默认为关闭
    */
   def isBlacklistEnabled(conf: SparkConf): Boolean = {
     conf.get(config.BLACKLIST_ENABLED) match {

@@ -34,11 +34,10 @@ import org.apache.spark.scheduler.dynalloc.ExecutorMonitor
 import org.apache.spark.util.{Clock, SystemClock, ThreadUtils, Utils}
 
 /**
- * An agent that dynamically allocates and removes executors based on the workload.
+ * 一种根据工作负载动态分配和删除执行程序的代理。
  *
- * The ExecutorAllocationManager maintains a moving target number of executors which is periodically
- * synced to the cluster manager. The target starts at a configured initial value and changes with
- * the number of pending and running tasks.
+ * ExecutorAllocationManager维护执行程序的移动目标数量，该数量定期与集群管理器同步。
+ * 目标从配置的初始值开始，并随未决和正在运行的任务数而变化。
  *
  * Decreasing the target number of executors happens when the current target is more than needed to
  * handle the current load. The target number of executors is always truncated to the number of

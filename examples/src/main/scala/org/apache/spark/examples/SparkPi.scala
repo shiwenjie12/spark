@@ -40,4 +40,5 @@ object SparkPi {
     spark.stop()
   }
 }
+
 // scalastyle:on println

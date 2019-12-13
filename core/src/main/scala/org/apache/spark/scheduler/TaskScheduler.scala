@@ -25,13 +25,11 @@ import org.apache.spark.storage.BlockManagerId
 import org.apache.spark.util.AccumulatorV2
 
 /**
- * Low-level task scheduler interface, currently implemented exclusively by
- * [[org.apache.spark.scheduler.TaskSchedulerImpl]].
- * This interface allows plugging in different task schedulers. Each TaskScheduler schedules tasks
- * for a single SparkContext. These schedulers get sets of tasks submitted to them from the
- * DAGScheduler for each stage, and are responsible for sending the tasks to the cluster, running
- * them, retrying if there are failures, and mitigating stragglers. They return events to the
- * DAGScheduler.
+ * 低级任务计划程序接口，当前仅由[[org.apache.spark.scheduler.TaskSchedulerImpl]]实施。
+ *
+ * 该接口允许插入不同的任务计划程序。每个TaskScheduler为单个SparkContext计划任务。
+ * 这些调度程序从DAGScheduler获取每个阶段提交给它们的任务集，并负责将任务发送到集群，运行它们，重试是否有故障以及减轻散乱。
+ * 他们将事件返回给DAGScheduler。
  */
 private[spark] trait TaskScheduler {
 
@@ -43,15 +41,14 @@ private[spark] trait TaskScheduler {
 
   def start(): Unit
 
-  // Invoked after system has successfully initialized (typically in spark context).
-  // Yarn uses this to bootstrap allocation of resources based on preferred locations,
-  // wait for slave registrations, etc.
+  // 在系统成功初始化之后调用（通常在spark上下文中）。
+  // Yarn使用它来引导基于首选位置的资源分配，等待从属注册等。
   def postStartHook(): Unit = { }
 
   // Disconnect from the cluster.
   def stop(): Unit
 
-  // Submit a sequence of tasks to run.
+  // 提交一系列要运行的任务。
   def submitTasks(taskSet: TaskSet): Unit
 
   // Kill all the tasks in a stage and fail the stage and all the jobs that depend on the stage.
@@ -92,24 +89,24 @@ private[spark] trait TaskScheduler {
       executorUpdates: Map[(Int, Int), ExecutorMetrics]): Boolean
 
   /**
-   * Get an application ID associated with the job.
+   * 获取与作业关联的应用程序ID。
    *
    * @return An application ID
    */
   def applicationId(): String = appId
 
   /**
-   * Process a lost executor
+   * 处理丢失的执行者
    */
   def executorLost(executorId: String, reason: ExecutorLossReason): Unit
 
   /**
-   * Process a removed worker
+   * 处理被删除的worker
    */
   def workerRemoved(workerId: String, host: String, message: String): Unit
 
   /**
-   * Get an application's attempt ID associated with the job.
+   * 获取与作业关联的应用程序的尝试ID。
    *
    * @return An application's Attempt ID
    */

@@ -39,13 +39,11 @@ import org.apache.spark.storage.BlockManagerId
 import org.apache.spark.util.{AccumulatorV2, SystemClock, ThreadUtils, Utils}
 
 /**
- * Schedules tasks for multiple types of clusters by acting through a SchedulerBackend.
- * It can also work with a local setup by using a `LocalSchedulerBackend` and setting
- * isLocal to true. It handles common logic, like determining a scheduling order across jobs, waking
- * up to launch speculative tasks, etc.
+ * 通过SchedulerBackend进行操作，可为多种类型的群集计划任务。
+ * 通过使用`LocalSchedulerBackend`并将isLocal设置为true，它也可以与本地设置一起使用。
+ * 它处理常见的逻辑，例如确定跨作业的调度顺序，唤醒以启动推测性任务等。
  *
- * Clients should first call initialize() and start(), then submit task sets through the
- * submitTasks method.
+ * 客户应首先调用initialize()和start()，然后通过SubmitTasks方法提交任务集。
  *
  * THREADING: [[SchedulerBackend]]s and task-submitting clients can call this class from multiple
  * threads, so it needs locks in public API methods to maintain its state. In addition, some
@@ -70,8 +68,8 @@ private[spark] class TaskSchedulerImpl(
     this(sc, sc.conf.get(config.TASK_MAX_FAILURES))
   }
 
-  // Lazily initializing blacklistTrackerOpt to avoid getting empty ExecutorAllocationClient,
-  // because ExecutorAllocationClient is created after this TaskSchedulerImpl.
+  // 延迟初始化blacklistTrackerOpt以避免获取空的ExecutorAllocationClient，
+  // 因为ExecutorAllocationClient是在此TaskSchedulerImpl之后创建的。
   private[scheduler] lazy val blacklistTrackerOpt = maybeCreateBlacklistTracker(sc)
 
   val conf = sc.conf
@@ -93,11 +91,10 @@ private[spark] class TaskSchedulerImpl(
   // CPUs to request per task
   val CPUS_PER_TASK = conf.get(config.CPUS_PER_TASK)
 
-  // Resources to request per task
+  // 每个任务要求的资源
   val resourcesReqsPerTask = ResourceUtils.parseResourceRequirements(sc.conf, SPARK_TASK_PREFIX)
 
-  // TaskSetManagers are not thread safe, so any access to one should be synchronized
-  // on this class.  Protected by `this`
+  // TaskSetManagers不是线程安全的，因此对此类的任何访问都应该同步。受“ this”保护
   private val taskSetsByStageIdAndAttempt = new HashMap[Int, HashMap[Int, TaskSetManager]]
 
   // Protected by `this`
@@ -152,7 +149,7 @@ private[spark] class TaskSchedulerImpl(
 
   val rootPool: Pool = new Pool("", schedulingMode, 0, 0)
 
-  // This is a var so that we can reset it for testing purposes.
+  // 这是一个变量，因此我们可以出于测试目的将其重置。
   private[spark] var taskResultGetter = new TaskResultGetter(sc.env, this)
 
   private lazy val barrierSyncTimeout = conf.get(config.BARRIER_SYNC_TIMEOUT)
@@ -388,9 +385,8 @@ private[spark] class TaskSchedulerImpl(
   }
 
   /**
-   * Called by cluster manager to offer resources on slaves. We respond by asking our active task
-   * sets for tasks in order of priority. We fill each node with tasks in a round-robin manner so
-   * that tasks are balanced across the cluster.
+   * 由集群管理器调用以在从属服务器上提供资源。我们通过以优先顺序向活动任务集询问任务来做出响应。
+   * 我们以轮循方式为每个节点填充任务，以便在整个群集之间平衡任务。
    */
   def resourceOffers(offers: IndexedSeq[WorkerOffer]): Seq[Seq[TaskDescription]] = synchronized {
     // Mark each slave as alive and remember its hostname
@@ -854,8 +850,7 @@ private[spark] class TaskSchedulerImpl(
   }
 
   /**
-   * Get a snapshot of the currently blacklisted nodes for the entire application.  This is
-   * thread-safe -- it can be called without a lock on the TaskScheduler.
+   * 获取整个应用程序当前列入黑名单的节点的快照。这是线程安全的，可以在不锁定TaskScheduler的情况下调用它。
    */
   def nodeBlacklist(): Set[String] = {
     blacklistTrackerOpt.map(_.nodeBlacklist()).getOrElse(Set.empty)

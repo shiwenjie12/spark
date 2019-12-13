@@ -238,8 +238,7 @@ private[spark] object StorageUtils extends Logging {
   }
 
   /**
-   * Get the port used by the external shuffle service. In Yarn mode, this may be already be
-   * set through the Hadoop configuration as the server is launched in the Yarn NM.
+   * 获取外部随机播放服务使用的端口。在Yarn模式下，当服务器在Yarn NM中启动时，可能已经通过Hadoop配置进行了设置。
    */
   def externalShuffleServicePort(conf: SparkConf): Int = {
     val tmpPort = Utils.getSparkOrYarnConfig(conf, config.SHUFFLE_SERVICE_PORT.key,

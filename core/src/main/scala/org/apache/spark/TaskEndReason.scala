@@ -31,23 +31,23 @@ import org.apache.spark.util.{AccumulatorV2, Utils}
 
 /**
  * :: DeveloperApi ::
- * Various possible reasons why a task ended. The low-level TaskScheduler is supposed to retry
- * tasks several times for "ephemeral" failures, and only report back failures that require some
- * old stages to be resubmitted, such as shuffle map fetch failures.
+ * 任务结束的各种可能原因。
+ * 低级TaskScheduler应该针对“短暂”失败重试几次，
+ * 并且仅报告需要重新提交某些旧阶段的失败，例如Shuffle映射获取失败。
  */
 @DeveloperApi
 sealed trait TaskEndReason
 
 /**
  * :: DeveloperApi ::
- * Task succeeded.
+ * 任务成功。
  */
 @DeveloperApi
 case object Success extends TaskEndReason
 
 /**
  * :: DeveloperApi ::
- * Various possible reasons why a task failed.
+ * 任务失败的各种可能原因。
  */
 @DeveloperApi
 sealed trait TaskFailedReason extends TaskEndReason {

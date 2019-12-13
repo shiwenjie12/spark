@@ -36,20 +36,18 @@ import org.apache.spark.util.{AccumulatorV2, Clock, LongAccumulator, SystemClock
 import org.apache.spark.util.collection.MedianHeap
 
 /**
- * Schedules the tasks within a single TaskSet in the TaskSchedulerImpl. This class keeps track of
- * each task, retries tasks if they fail (up to a limited number of times), and
- * handles locality-aware scheduling for this TaskSet via delay scheduling. The main interfaces
- * to it are resourceOffer, which asks the TaskSet whether it wants to run a task on one node,
- * and handleSuccessfulTask/handleFailedTask, which tells it that one of its tasks changed state
+ * 在TaskSchedulerImpl中的单个TaskSet中安排任务。
+ * 此类跟踪每个任务，如果失败则重试任务（最多重复次数），并通过延迟调度处理此TaskSet的位置感知调度。
+ * 它的主要接口是resourceOffer，它询问TaskSet是否要在一个节点上运行任务，以及handleSuccessfulTask​​ / handleFailedTask，
+ * 它告诉它任务之一已更改状态。
  *  (e.g. finished/failed).
  *
  * THREADING: This class is designed to only be called from code with a lock on the
  * TaskScheduler (e.g. its event handlers). It should not be called from other threads.
  *
- * @param sched           the TaskSchedulerImpl associated with the TaskSetManager
- * @param taskSet         the TaskSet to manage scheduling for
- * @param maxTaskFailures if any particular task fails this number of times, the entire
- *                        task set will be aborted
+ * @param sched           与TaskSetManager关联的TaskSchedulerImpl
+ * @param taskSet         TaskSet管理计划
+ * @param maxTaskFailures 如果任何特定任务失败此次数，则整个任务集将被中止
  */
 private[spark] class TaskSetManager(
     sched: TaskSchedulerImpl,
@@ -142,7 +140,7 @@ private[spark] class TaskSetManager(
   // Store speculatable tasks by locality preferences
   private[scheduler] val pendingSpeculatableTasks = new PendingTasksByLocality()
 
-  // Task index, start and finish time for each task attempt (indexed by task ID)
+  // 任务索引，每次任务尝试的开始和完成时间（按任务ID索引）
   private[scheduler] val taskInfos = new HashMap[Long, TaskInfo]
 
   // Use a MedianHeap to record durations of successful tasks so we know when to launch
@@ -364,15 +362,15 @@ private[spark] class TaskSetManager(
   }
 
   /**
-   * Respond to an offer of a single executor from the scheduler by finding a task
+   * 通过查找任务来响应调度程序中单个执行者的提议
    *
    * NOTE: this function is either called with a maxLocality which
    * would be adjusted by delay scheduling algorithm or it will be with a special
    * NO_PREF locality which will be not modified
    *
-   * @param execId the executor Id of the offered resource
-   * @param host  the host Id of the offered resource
-   * @param maxLocality the maximum locality we want to schedule the tasks at
+   * @param execId 提供资源的执行者ID
+   * @param host  所提供资源的主机ID
+   * @param maxLocality 我们要安排任务的最大位置
    */
   @throws[TaskNotSerializableException]
   def resourceOffer(
@@ -657,7 +655,7 @@ private[spark] class TaskSetManager(
   }
 
   /**
-   * Check whether has enough quota to fetch the result with `size` bytes
+   * 检查是否有足够的配额来获取`size`字节的结果
    */
   def canFetchMoreResults(size: Long): Boolean = sched.synchronized {
     totalResultSize += size
@@ -675,12 +673,12 @@ private[spark] class TaskSetManager(
   }
 
   /**
-   * Marks a task as successful and notifies the DAGScheduler that the task has ended.
+   * 将任务标记为成功，并通知DAGScheduler该任务已结束。
    */
   def handleSuccessfulTask(tid: Long, result: DirectTaskResult[_]): Unit = {
     val info = taskInfos(tid)
     val index = info.index
-    // Check if any other attempt succeeded before this and this attempt has not been handled
+    // 在此之前检查是否有任何其他尝试成功完成，并且此尝试未得到处理
     if (successful(index) && killedByOtherAttempt.contains(tid)) {
       // Undo the effect on calculatedTasks and totalResultSize made earlier when
       // checking if can fetch more results
@@ -703,8 +701,7 @@ private[spark] class TaskSetManager(
     }
     removeRunningTask(tid)
 
-    // Kill any other attempts for the same task (since those are unnecessary now that one
-    // attempt completed successfully).
+    // 终止对同一任务的任何其他尝试（由于成功完成一次尝试，因此不再需要这些尝试）。
     for (attemptInfo <- taskAttempts(index) if attemptInfo.running) {
       logInfo(s"Killing attempt ${attemptInfo.attemptNumber} for task ${attemptInfo.id} " +
         s"in stage ${taskSet.id} (TID ${attemptInfo.taskId}) on ${attemptInfo.host} " +
@@ -875,6 +872,7 @@ private[spark] class TaskSetManager(
     maybeFinishTaskSet()
   }
 
+  // 中断任务
   def abort(message: String, exception: Option[Throwable] = None): Unit = sched.synchronized {
     // TODO: Kill running tasks if we were not terminated due to a Mesos error
     sched.dagScheduler.taskSetFailed(taskSet, message, exception)

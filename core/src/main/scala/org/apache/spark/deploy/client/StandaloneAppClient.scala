@@ -61,7 +61,7 @@ private[spark] class StandaloneAppClient(
     with Logging {
 
     private var master: Option[RpcEndpointRef] = None
-    // To avoid calling listener.disconnected() multiple times
+    // 为了避免多次调用listener.disconnected()
     private var alreadyDisconnected = false
     // To avoid calling listener.dead() multiple times
     private val alreadyDead = new AtomicBoolean(false)
@@ -76,7 +76,7 @@ private[spark] class StandaloneAppClient(
       masterRpcAddresses.length // Make sure we can register with all masters at the same time
     )
 
-    // A scheduled executor for scheduling the registration actions
+    // 计划执行程序，用于计划注册操作
     private val registrationRetryThread =
       ThreadUtils.newDaemonSingleThreadScheduledExecutor("appclient-registration-retry-thread")
 
@@ -92,7 +92,7 @@ private[spark] class StandaloneAppClient(
     }
 
     /**
-     *  Register with all masters asynchronously and returns an array `Future`s for cancellation.
+     *  异步向所有主机注册，并返回一个数组“ Future”以进行取消。
      */
     private def tryRegisterAllMasters(): Array[JFuture[_]] = {
       for (masterAddress <- masterRpcAddresses) yield {
@@ -124,11 +124,14 @@ private[spark] class StandaloneAppClient(
       registrationRetryTimer.set(registrationRetryThread.schedule(new Runnable {
         override def run(): Unit = {
           if (registered.get) {
+            // 如果注册成功，则取消任务
             registerMasterFutures.get.foreach(_.cancel(true))
             registerMasterThreadPool.shutdownNow()
           } else if (nthRetry >= REGISTRATION_RETRIES) {
+            // 发送失败通知
             markDead("All masters are unresponsive! Giving up.")
           } else {
+            // 重试
             registerMasterFutures.get.foreach(_.cancel(true))
             registerWithMaster(nthRetry + 1)
           }
@@ -154,10 +157,8 @@ private[spark] class StandaloneAppClient(
     override def receive: PartialFunction[Any, Unit] = {
       case RegisteredApplication(appId_, masterRef) =>
         // FIXME How to handle the following cases?
-        // 1. A master receives multiple registrations and sends back multiple
-        // RegisteredApplications due to an unstable network.
-        // 2. Receive multiple RegisteredApplication from different masters because the master is
-        // changing.
+        // 1.主服务器由于网络不稳定而接收多个注册并发送回多个RegisteredApplications。
+        // 2.因为主机正在更改，所以从不同的主机接收多个RegisteredApplication。
         appId.set(appId_)
         registered.set(true)
         master = Some(masterRef)
@@ -200,6 +201,7 @@ private[spark] class StandaloneAppClient(
         context.reply(true)
         stop()
 
+      // 转发到master
       case r: RequestExecutors =>
         master match {
           case Some(m) => askAndReplyAsync(m, context, r)
@@ -272,7 +274,7 @@ private[spark] class StandaloneAppClient(
   }
 
   def start(): Unit = {
-    // Just launch an rpcEndpoint; it will call back into the listener.
+    // 只需启动一个rpcEndpoint即可；它将回调回监听器。
     endpoint.set(rpcEnv.setupEndpoint("AppClient", new ClientEndpoint(rpcEnv)))
   }
 
@@ -290,8 +292,7 @@ private[spark] class StandaloneAppClient(
   }
 
   /**
-   * Request executors from the Master by specifying the total number desired,
-   * including existing pending and running executors.
+   * 通过指定所需的总数（包括现有的挂起的和正在运行的执行者）来向Master请求执行者。
    *
    * @return whether the request is acknowledged.
    */

@@ -27,7 +27,7 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
 /**
- * A task that sends back the output to the driver application.
+ * 将输出发送回驱动程序应用程序的任务。
  *
  * See [[Task]] for more information.
  *

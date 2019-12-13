@@ -33,8 +33,7 @@ public abstract class StreamManager {
    * 在响应fetchChunk()请求时调用。返回的缓冲区将按原样传递给客户端。
    * 单个流将与单个TCP连接相关联，因此不会为特定流并行调用此方法。
    *
-   * Chunks may be requested in any order, and requests may be repeated, but it is not required
-   * that implementations support this behavior.
+   * 可以按任何顺序请求块，并且可以重复请求，但是不需要实现支持此行为。
    *
    * The returned ManagedBuffer will be release()'d after being written to the network.
    *

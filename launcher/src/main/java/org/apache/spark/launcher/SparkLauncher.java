@@ -35,8 +35,7 @@ import static org.apache.spark.launcher.CommandBuilderUtils.join;
 /**
  * Spark应用程序的启动器。
  * <p>
- * Use this class to start Spark applications programmatically. The class uses a builder pattern
- * to allow clients to configure the Spark application and launch it as a child process.
+ * 使用此类以编程方式启动Spark应用程序。该类使用构建器模式来允许客户端配置Spark应用程序并将其作为子进程启动。
  * </p>
  */
 public class SparkLauncher extends AbstractLauncher<SparkLauncher> {

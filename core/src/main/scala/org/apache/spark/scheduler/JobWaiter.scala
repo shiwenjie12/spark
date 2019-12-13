@@ -24,8 +24,7 @@ import scala.concurrent.{Future, Promise}
 import org.apache.spark.internal.Logging
 
 /**
- * An object that waits for a DAGScheduler job to complete. As tasks finish, it passes their
- * results to the given handler function.
+ * 等待DAGScheduler作业完成的对象。任务完成时，它将结果传递给给定的处理函数。
  */
 private[spark] class JobWaiter[T](
     dagScheduler: DAGScheduler,
@@ -35,8 +34,7 @@ private[spark] class JobWaiter[T](
   extends JobListener with Logging {
 
   private val finishedTasks = new AtomicInteger(0)
-  // If the job is finished, this will be its result. In the case of 0 task jobs (e.g. zero
-  // partition RDDs), we set the jobResult directly to JobSucceeded.
+  // 如果作业完成，这将是其结果。对于0个任务作业（例如零分区RDD），我们将jobResult直接设置为JobSucceeded。
   private val jobPromise: Promise[Unit] =
     if (totalTasks == 0) Promise.successful(()) else Promise()
 
@@ -45,16 +43,15 @@ private[spark] class JobWaiter[T](
   def completionFuture: Future[Unit] = jobPromise.future
 
   /**
-   * Sends a signal to the DAGScheduler to cancel the job. The cancellation itself is handled
-   * asynchronously. After the low level scheduler cancels all the tasks belonging to this job, it
-   * will fail this job with a SparkException.
+   * 向DAGScheduler发送信号以取消作业。取消本身是异步处理的。
+   * 低级调度程序取消了属于该作业的所有任务后，它将通过SparkException使该作业失败。
    */
   def cancel(): Unit = {
     dagScheduler.cancelJob(jobId, None)
   }
 
   override def taskSucceeded(index: Int, result: Any): Unit = {
-    // resultHandler call must be synchronized in case resultHandler itself is not thread safe.
+    // 如果resultHandler本身不是线程安全的，则必须同步resultHandler调用。
     synchronized {
       resultHandler(index, result.asInstanceOf[T])
     }

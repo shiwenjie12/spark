@@ -27,15 +27,14 @@ import org.apache.spark.network.client.StreamCallbackWithID;
 import org.apache.spark.network.client.TransportClient;
 
 /**
- * Handler for sendRPC() messages sent by {@link org.apache.spark.network.client.TransportClient}s.
+ * {@link org.apache.spark.network.client.TransportClient} 发送的sendRPC()消息的处理程序。
  */
 public abstract class RpcHandler {
 
   private static final RpcResponseCallback ONE_WAY_CALLBACK = new OneWayRpcCallback();
 
   /**
-   * Receive a single RPC message. Any exception thrown while in this method will be sent back to
-   * the client in string form as a standard RPC failure.
+   * 收到一条RPC消息。在此方法中抛出的任何异常都将以字符串形式作为标准的RPC错误发送回客户端。
    *
    * Neither this method nor #receiveStream will be called in parallel for a single
    * TransportClient (i.e., channel).
@@ -52,9 +51,8 @@ public abstract class RpcHandler {
       RpcResponseCallback callback);
 
   /**
-   * Receive a single RPC message which includes data that is to be received as a stream. Any
-   * exception thrown while in this method will be sent back to the client in string form as a
-   * standard RPC failure.
+   * 接收一条RPC消息，其中包含要作为流接收的数据。
+   * 在此方法中抛出的任何异常都将以字符串形式作为标准的RPC错误发送回客户端。
    *
    * Neither this method nor #receive will be called in parallel for a single TransportClient
    * (i.e., channel).

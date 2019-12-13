@@ -124,6 +124,9 @@ private[spark] class MetricsSystem private (
    * Build a name that uniquely identifies each metric source.
    * The name is structured as follows: <app ID>.<executor ID (or "driver")>.<source name>.
    * If either ID is not available, this defaults to just using <source name>.
+   * 建立一个唯一标识每个度量标准来源的名称。
+   * 名称的结构如下：<应用程序ID>。<执行者ID（或“驱动程序”）>。<源名称>。
+   * 如果两个ID都不可用，则默认为仅使用<源名称>。
    *
    * @param source Metric source to be named by this method.
    * @return A unique metric name for each combination of

@@ -24,7 +24,7 @@ import java.util.List;
 import static org.apache.spark.launcher.CommandBuilderUtils.*;
 
 /**
- * Base class for launcher implementations.
+ * 启动器实现的基类。
  *
  * @since Spark 2.3.0
  */
@@ -244,7 +244,7 @@ public abstract class AbstractLauncher<T extends AbstractLauncher<T>> {
   }
 
   /**
-   * Enables verbose reporting for SparkSubmit.
+   * 为SparkSubmit启用详细报告。
    *
    * @param verbose Whether to enable verbose output.
    * @return This launcher.
@@ -255,17 +255,14 @@ public abstract class AbstractLauncher<T extends AbstractLauncher<T>> {
   }
 
   /**
-   * Starts a Spark application.
+   * 启动一个Spark应用程序。
    *
    * <p>
-   * This method returns a handle that provides information about the running application and can
-   * be used to do basic interaction with it.
+   * 此方法返回一个句柄，该句柄提供有关正在运行的应用程序的信息，并可用于与其进行基本交互。
    * <p>
-   * The returned handle assumes that the application will instantiate a single SparkContext
-   * during its lifetime. Once that context reports a final state (one that indicates the
-   * SparkContext has stopped), the handle will not perform new state transitions, so anything
-   * that happens after that cannot be monitored. If the underlying application is launched as
-   * a child process, {@link SparkAppHandle#kill()} can still be used to kill the child process.
+   * 返回的句柄假定应用程序将在其生命周期内实例化单个SparkContext。
+   * 一旦该上下文报告了一种最终状态（指示SparkContext已停止），该句柄将不会执行新的状态转换，
+   * 因此在此之后发生的任何事情都无法监视。如果基础应用程序作为子进程启动，则{@link SparkAppHandle#kill()}仍可用于终止子进程。
    *
    * @since 1.6.0
    * @param listeners Listeners to add to the handle before the app is launched.

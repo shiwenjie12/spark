@@ -1865,7 +1865,7 @@ private[spark] object Utils extends Logging {
   }
 
 
-  /** Return the class name of the given object, removing all dollar signs */
+  /** 返回给定对象的类名，除去所有美元符号 */
   def getFormattedClassName(obj: AnyRef): String = {
     getSimpleName(obj.getClass).replace("$", "")
   }
@@ -2218,7 +2218,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Convert all spark properties set in the given SparkConf to a sequence of java options.
+   * 将给定SparkConf中设置的所有spark属性转换为一系列Java选项。
    */
   def sparkJavaOpts(conf: SparkConf, filterKey: (String => Boolean) = _ => true): Seq[String] = {
     conf.getAll
@@ -2516,7 +2516,7 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Return whether dynamic allocation is enabled in the given conf.
+   * 返回是否在给定的conf中启用了动态分配。
    */
   def isDynamicAllocationEnabled(conf: SparkConf): Boolean = {
     val dynamicAllocationEnabled = conf.get(DYN_ALLOCATION_ENABLED)
@@ -2722,16 +2722,15 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Create instances of extension classes.
+   * 创建扩展类的实例。
    *
-   * The classes in the given list must:
-   * - Be sub-classes of the given base class.
-   * - Provide either a no-arg constructor, or a 1-arg constructor that takes a SparkConf.
+   * 给定列表中的类必须：
+   * -是给定基类的子类。
+   * -提供采用SparkConf的无参数构造函数或1-arg构造函数。
    *
-   * The constructors are allowed to throw "UnsupportedOperationException" if the extension does not
-   * want to be registered; this allows the implementations to check the Spark configuration (or
-   * other state) and decide they do not need to be added. A log message is printed in that case.
-   * Other exceptions are bubbled up.
+   * 如果不想注册扩展名，则允许构造函数抛出“ UnsupportedOperationException”。
+   * 这允许实现检查Spark配置（或其他状态）并确定不需要添加它们。在这种情况下，将显示日志消息。
+   * 其他异常也冒出来了。
    */
   def loadExtensions[T <: AnyRef](
       extClass: Class[T], classes: Seq[String], conf: SparkConf): Seq[T] = {

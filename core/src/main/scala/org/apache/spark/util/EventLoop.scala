@@ -97,7 +97,7 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
   }
 
   /**
-   * Put the event into the event queue. The event thread will process it later.
+   * 将事件放入事件队列。事件线程稍后将对其进行处理。
    */
   def post(event: E): Unit = {
     if (!stopped.get) {

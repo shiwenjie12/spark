@@ -118,8 +118,7 @@ class SparkSession private(
    * ----------------------- */
 
   /**
-   * State shared across sessions, including the `SparkContext`, cached data, listener,
-   * and a catalog that interacts with external systems.
+   * 跨会话共享的状态，包括“ SparkContext”，缓存的数据，侦听器以及与外部系统交互的目录。
    *
    * This is internal to Spark and there is no guarantee on interface stability.
    *

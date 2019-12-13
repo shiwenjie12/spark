@@ -20,9 +20,8 @@ package org.apache.spark.util
 import java.util.concurrent.TimeUnit
 
 /**
- * A `Clock` whose time can be manually set and modified. Its reported time does not change
- * as time elapses, but only as its time is modified by callers. This is mainly useful for
- * testing.
+ * 一个“时钟”，其时间可以手动设置和修改。
+ * 其报告的时间不会随着时间的流逝而改变，而仅是其时间被呼叫者修改的时间。这主要用于测试。
  *
  * For this implementation, `getTimeMillis()` and `nanoTime()` always return the same value
  * (adjusted for the correct unit).

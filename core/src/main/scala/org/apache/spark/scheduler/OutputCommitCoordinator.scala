@@ -48,10 +48,8 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
   // Initialized by SparkEnv
   var coordinatorRef: Option[RpcEndpointRef] = None
 
-  // Class used to identify a committer. The task ID for a committer is implicitly defined by
-  // the partition being processed, but the coordinator needs to keep track of both the stage
-  // attempt and the task attempt, because in some situations the same task may be running
-  // concurrently in two different attempts of the same stage.
+  // 用于标识提交者的类。提交者的任务ID由正在处理的分区隐式定义，但是协调器需要同时跟踪阶段尝试和任务尝试，
+  // 因为在某些情况下，同一任务可能在相同的两次不同尝试中同时运行阶段。
   private case class TaskIdentifier(stageAttempt: Int, taskAttempt: Int)
 
   private case class StageState(numPartitions: Int) {
@@ -137,12 +135,12 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
     })
     reason match {
       case Success =>
-      // The task output has been committed successfully
+      // 任务输出已成功提交
       case _: TaskCommitDenied =>
         logInfo(s"Task was denied committing, stage: $stage.$stageAttempt, " +
           s"partition: $partition, attempt: $attemptNumber")
       case _ =>
-        // Mark the attempt as failed to blacklist from future commit protocol
+        // 将尝试标记为无法从将来的提交协议列入黑名单
         val taskId = TaskIdentifier(stageAttempt, attemptNumber)
         stageState.failures.getOrElseUpdate(partition, mutable.Set()) += taskId
         if (stageState.authorizedCommitters(partition) == taskId) {

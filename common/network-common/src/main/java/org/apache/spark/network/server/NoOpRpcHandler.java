@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import org.apache.spark.network.client.RpcResponseCallback;
 import org.apache.spark.network.client.TransportClient;
 
-/** An RpcHandler suitable for a client-only TransportContext, which cannot receive RPCs. */
+/** 适用于不能接收RPC的仅客户端TransportContext的RpcHandler。 */
 public class NoOpRpcHandler extends RpcHandler {
   private final StreamManager streamManager;
 

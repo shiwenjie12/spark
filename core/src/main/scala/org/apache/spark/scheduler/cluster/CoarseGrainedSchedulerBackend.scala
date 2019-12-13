@@ -40,26 +40,23 @@ import org.apache.spark.scheduler.cluster.CoarseGrainedSchedulerBackend.ENDPOINT
 import org.apache.spark.util.{RpcUtils, SerializableBuffer, ThreadUtils, Utils}
 
 /**
- * A scheduler backend that waits for coarse-grained executors to connect.
- * This backend holds onto each executor for the duration of the Spark job rather than relinquishing
- * executors whenever a task is done and asking the scheduler to launch a new executor for
- * each new task. Executors may be launched in a variety of ways, such as Mesos tasks for the
- * coarse-grained Mesos mode or standalone processes for Spark's standalone deploy mode
+ * 等待粗粒度执行程序连接的调度程序后端。
+ * 该后端在Spark作业期间保留每个执行器，而不是在任务完成时放弃执行器，并要求调度程序为每个新任务启动一个新的执行器。
+  * 执行程序可以通过多种方式启动，例如用于粗粒度Mesos模式的Mesos任务或用于Spark独立部署模式的独立进程。
  * (spark.deploy.*).
  */
 private[spark]
 class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: RpcEnv)
   extends ExecutorAllocationClient with SchedulerBackend with Logging {
 
-  // Use an atomic variable to track total number of cores in the cluster for simplicity and speed
+  // 使用原子变量跟踪群集中的内核总数，以简化操作并提高速度
   protected val totalCoreCount = new AtomicInteger(0)
-  // Total number of executors that are currently registered
+  // 当前已注册的执行人总数
   protected val totalRegisteredExecutors = new AtomicInteger(0)
   protected val conf = scheduler.sc.conf
   private val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
   private val defaultAskTimeout = RpcUtils.askRpcTimeout(conf)
-  // Submit tasks only after (registered resources / total expected resources)
-  // is equal to at least this value, that is double between 0 and 1.
+  // 仅在（注册资源/预期总资源）至少等于此值（即0到1的两倍）之后才提交任务。
   private val _minRegisteredRatio =
     math.min(1, conf.get(SCHEDULER_MIN_REGISTERED_RESOURCES_RATIO).getOrElse(0.0))
   // Submit tasks after maxRegisteredWaitingTime milliseconds
@@ -189,9 +186,10 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
     }
 
     override def receiveAndReply(context: RpcCallContext): PartialFunction[Any, Unit] = {
-
+      // 注册执行器
       case RegisterExecutor(executorId, executorRef, hostname, cores, logUrls,
           attributes, resources) =>
+        // 如果存在执行器则直接返回
         if (executorDataMap.contains(executorId)) {
           executorRef.send(RegisterExecutorFailed("Duplicate executor ID: " + executorId))
           context.reply(true)
@@ -354,7 +352,7 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
       }
     }
 
-    // Remove a disconnected slave from the cluster
+    // 从集群中删除断开连接的从属服务器
     private def removeExecutor(executorId: String, reason: ExecutorLossReason): Unit = {
       logDebug(s"Asked to remove executor $executorId with reason $reason")
       executorDataMap.get(executorId) match {
@@ -533,7 +531,7 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
   }
 
   /**
-   * Return the number of executors currently registered with this backend.
+   * 返回当前在此后端注册的执行程序的数量。
    */
   private def numExistingExecutors: Int = synchronized { executorDataMap.size }
 
@@ -591,14 +589,11 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
   }
 
   /**
-   * Update the cluster manager on our scheduling needs. Three bits of information are included
-   * to help it make decisions.
-   * @param numExecutors The total number of executors we'd like to have. The cluster manager
-   *                     shouldn't kill any running executor to reach this number, but,
-   *                     if all existing executors were to die, this is the number of executors
-   *                     we'd want to be allocated.
-   * @param localityAwareTasks The number of tasks in all active stages that have a locality
-   *                           preferences. This includes running, pending, and completed tasks.
+   * 根据我们的调度需求更新集群管理器。包含三位信息以帮助其做出决策。
+   * @param numExecutors 我们希望拥有的执行者总数。
+   *                    集群管理器不应该杀死任何正在运行的执行器来达到这个数目，但是，如果所有现有执行器都死了，
+   *                    这就是我们想要分配的执行器数。
+   * @param localityAwareTasks 具有局部性首选项的所有活动阶段中的任务数。这包括正在运行，待处理和已完成的任务。
    * @param hostToLocalTaskCount A map of hosts to the number of tasks from all active stages
    *                             that would like to like to run on that host.
    *                             This includes running, pending, and completed tasks.

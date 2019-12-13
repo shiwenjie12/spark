@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * A handle to a running Spark application.
  * <p>
- * Provides runtime information about the underlying Spark application, and actions to control it.
+ * 提供有关基础Spark应用程序的运行时信息，以及控制该应用程序的操作。
  *
  * @since 1.6.0
  */

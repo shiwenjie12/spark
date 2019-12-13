@@ -62,14 +62,13 @@ private[spark] class StandaloneSchedulerBackend(
   override def start(): Unit = {
     super.start()
 
-    // SPARK-21159. The scheduler backend should only try to connect to the launcher when in client
-    // mode. In cluster mode, the code that submits the application to the Master needs to connect
-    // to the launcher instead.
+    // SPARK-21159。调度程序后端仅应在客户端模式下尝试连接到启动器。
+    // 在群集模式下，将应用程序提交给主服务器的代码需要连接到启动器。
     if (sc.deployMode == "client") {
       launcherBackend.connect()
     }
 
-    // The endpoint for executors to talk to us
+    // 执行者与我们交谈的终点
     val driverUrl = RpcEndpointAddress(
       sc.conf.get(config.DRIVER_HOST_ADDRESS),
       sc.conf.get(config.DRIVER_PORT),
@@ -98,7 +97,7 @@ private[spark] class StandaloneSchedulerBackend(
         Nil
       }
 
-    // Start executors with a few necessary configs for registering with the scheduler
+    // 使用一些必要的配置启动执行程序，以向调度程序进行注册
     val sparkJavaOpts = Utils.sparkJavaOpts(conf, SparkConf.isExecutorStartupConf)
     val javaOpts = sparkJavaOpts ++ extraJavaOpts
     val command = Command("org.apache.spark.executor.CoarseGrainedExecutorBackend",
@@ -189,8 +188,7 @@ private[spark] class StandaloneSchedulerBackend(
     }
 
   /**
-   * Request executors from the Master by specifying the total number desired,
-   * including existing pending and running executors.
+   * 通过指定所需的总数（包括现有的挂起的和正在运行的执行者）来向Master请求执行者。
    *
    * @return whether the request is acknowledged.
    */

@@ -29,7 +29,7 @@ import org.apache.spark.{SparkEnv, SparkException}
 import org.apache.spark.internal.Logging
 
 /**
- * A cleaner that renders closures serializable if they can be done so safely.
+ * 如果可以安全地使闭包可序列化的清洁器。
  */
 private[spark] object ClosureCleaner extends Logging {
 
@@ -145,8 +145,7 @@ private[spark] object ClosureCleaner extends Logging {
   /**
    * Clean the given closure in place.
    *
-   * More specifically, this renders the given closure serializable as long as it does not
-   * explicitly reference unserializable objects.
+   * 更具体地说，这使给定的闭包可序列化，只要它没有显式引用不可序列化的对象即可。
    *
    * @param closure the closure to clean
    * @param checkSerializable whether to verify that the closure is serializable after cleaning
@@ -193,23 +192,18 @@ private[spark] object ClosureCleaner extends Logging {
   }
 
   /**
-   * Helper method to clean the given closure in place.
+   * 辅助方法，用于清洁给定的闭包。
    *
-   * The mechanism is to traverse the hierarchy of enclosing closures and null out any
-   * references along the way that are not actually used by the starting closure, but are
-   * nevertheless included in the compiled anonymous classes. Note that it is unsafe to
-   * simply mutate the enclosing closures in place, as other code paths may depend on them.
-   * Instead, we clone each enclosing closure and set the parent pointers accordingly.
+   * 该机制是遍历封闭式闭包的层次结构，并以这种方式使任何未由起始闭包实际使用但仍包含在已编译匿名类中的引用无效。
+   * 请注意，简单地更改封闭的闭包是不安全的，因为其他代码路径可能取决于它们。
+   * 相反，我们克隆每个封闭的闭包并相应地设置父指针。
    *
-   * By default, closures are cleaned transitively. This means we detect whether enclosing
-   * objects are actually referenced by the starting one, either directly or transitively,
-   * and, if not, sever these closures from the hierarchy. In other words, in addition to
-   * nulling out unused field references, we also null out any parent pointers that refer
-   * to enclosing objects not actually needed by the starting closure. We determine
-   * transitivity by tracing through the tree of all methods ultimately invoked by the
-   * inner closure and record all the fields referenced in the process.
+   * 默认情况下，关闭会暂时清除。这意味着我们将检测封闭对象是否实际上是由起始对象直接或传递引用的，
+   * 如果没有，则从层次结构中切断这些封闭。换句话说，除了使未使用的字段引用无效之外，
+   * 我们还使所有引用封闭启动对象实际上不需要的对象的父指针无效。
+   * 我们通过跟踪内部闭包最终调用的所有方法的树来确定可传递性，并记录该过程中引用的所有字段。
    *
-   * For instance, transitive cleaning is necessary in the following scenario:
+   * 例如，在以下情况下，必须进行传递式清洁：
    *
    *   class SomethingNotSerializable {
    *     def someValue = 1
@@ -221,17 +215,15 @@ private[spark] object ClosureCleaner extends Logging {
    *     }
    *   }
    *
-   * In this example, scope "two" is not serializable because it references scope "one", which
-   * references SomethingNotSerializable. Note that, however, the body of scope "two" does not
-   * actually depend on SomethingNotSerializable. This means we can safely null out the parent
-   * pointer of a cloned scope "one" and set it the parent of scope "two", such that scope "two"
-   * no longer references SomethingNotSerializable transitively.
+   * 在此示例中，范围"two"不可序列化，因为它引用了范围"one"，后者引用了SomethingNotSerializable。
+   * 但是请注意，范围"two"的主体实际上并不依赖SomethingNotSerializable。
+   * 这意味着我们可以安全地使克隆的作用域“一个”的父指针无效，并将其设置为作用域“两个”的父代，
+   * 这样作用域“两个”不再可传递地引用SomethingNotSerializable。
    *
-   * @param func the starting closure to clean
-   * @param checkSerializable whether to verify that the closure is serializable after cleaning
-   * @param cleanTransitively whether to clean enclosing closures transitively
-   * @param accessedFields a map from a class to a set of its fields that are accessed by
-   *                       the starting closure
+   * @param func 开始清洁的闭包
+   * @param checkSerializable 是否在清洁后验证封盖是否可序列化
+   * @param cleanTransitively 是否以过渡方式清洁封闭的封闭物
+   * @param accessedFields 从类到它的由开始的闭包访问的一组字段的映射
    */
   private def clean(
       func: AnyRef,

@@ -23,8 +23,7 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.util.{ThreadUtils, Utils}
 
 /**
- * Creates a heartbeat thread which will call the specified reportHeartbeat function at
- * intervals of intervalMs.
+ * 创建一个心跳线程，该线程将以intervalMs的间隔调用指定的reportHeartbeat函数。
  *
  * @param reportHeartbeat the heartbeat reporting function to call.
  * @param name the thread name for the heartbeater.

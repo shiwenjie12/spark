@@ -24,10 +24,9 @@ import org.apache.spark.launcher.LauncherProtocol._
 import org.apache.spark.util.{ThreadUtils, Utils}
 
 /**
- * A class that can be used to talk to a launcher server. Users should extend this class to
- * provide implementation for the abstract methods.
+ * 可用于与启动器服务器对话的类。用户应扩展此类，以提供抽象方法的实现。
  *
- * See `LauncherServer` for an explanation of how launcher communication works.
+ * 有关启动器通信如何工作的说明，请参见`LauncherServer`。
  */
 private[spark] abstract class LauncherBackend {
 

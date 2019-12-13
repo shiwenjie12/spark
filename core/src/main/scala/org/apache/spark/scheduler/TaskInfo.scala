@@ -23,14 +23,13 @@ import org.apache.spark.annotation.DeveloperApi
 
 /**
  * :: DeveloperApi ::
- * Information about a running task attempt inside a TaskSet.
+ * 有关TaskSet中正在运行的任务尝试的信息。
  */
 @DeveloperApi
 class TaskInfo(
     val taskId: Long,
     /**
-     * The index of this task within its task set. Not necessarily the same as the ID of the RDD
-     * partition that the task is computing.
+     * 该任务在其任务集中的索引。不必与任务正在计算的RDD分区的ID相同。
      */
     val index: Int,
     val attemptNumber: Int,
@@ -41,16 +40,15 @@ class TaskInfo(
     val speculative: Boolean) {
 
   /**
-   * The time when the task started remotely getting the result. Will not be set if the
-   * task result was sent immediately when the task finished (as opposed to sending an
-   * IndirectTaskResult and later fetching the result from the block manager).
+   * 任务开始远程获取结果的时间。如果任务完成后立即发送任务结果
+   * （与发送IndirectTaskResult和稍后从块管理器获取结果相反），则不会设置。
    */
   var gettingResultTime: Long = 0
 
   /**
-   * Intermediate updates to accumulables during this task. Note that it is valid for the same
-   * accumulable to be updated multiple times in a single task or for two accumulables with the
-   * same name but different IDs to exist in a task.
+   * 在此任务期间对可累积物料进行中间更新。
+   * 请注意，对于一个任务中的同一可累积量多次更新，
+   * 或者对于一个任务中存在相同名称但具有不同ID的两个可累积量而言，这都是有效的。
    */
   def accumulables: Seq[AccumulableInfo] = _accumulables
 

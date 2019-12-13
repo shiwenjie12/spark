@@ -179,8 +179,7 @@ private class ShuffleStatus(numPartitions: Int) {
   }
 
   /**
-   * Serializes the mapStatuses array into an efficient compressed format. See the comments on
-   * `MapOutputTracker.serializeMapStatuses()` for more details on the serialization format.
+   * 将mapStatuses数组序列化为有效的压缩格式。有关序列化格式的更多详细信息，请参见MapOutputTracker.serializeMapStatuses()上的注释。
    *
    * This method is designed to be called multiple times and implements caching in order to speed
    * up subsequent requests. If the cache is empty and multiple threads concurrently attempt to
@@ -525,16 +524,14 @@ private[spark] class MapOutputTrackerMaster(
   }
 
   /**
-   * Returns the sequence of partition ids that are missing (i.e. needs to be computed), or None
-   * if the MapOutputTrackerMaster doesn't know about this shuffle.
+   * 返回缺少的分区ID的序列（即需要计算），如果MapOutputTrackerMaster不知道此洗牌，则返回None。
    */
   def findMissingPartitions(shuffleId: Int): Option[Seq[Int]] = {
     shuffleStatuses.get(shuffleId).map(_.findMissingPartitions())
   }
 
   /**
-   * Grouped function of Range, this is to avoid traverse of all elements of Range using
-   * IterableLike's grouped function.
+   * Range的分组函数，这是为了避免使用IterableLike的分组函数遍历Range的所有元素。
    */
   def rangeGrouped(range: Range, size: Int): Seq[Range] = {
     val start = range.start
@@ -876,9 +873,9 @@ private[spark] object MapOutputTracker extends Logging {
   private val DIRECT = 0
   private val BROADCAST = 1
 
-  // Serialize an array of map output locations into an efficient byte format so that we can send
-  // it to reduce tasks. We do this by compressing the serialized bytes using Zstd. They will
-  // generally be pretty compressible because many map outputs will be on the same hostname.
+  // 将地图输出位置数组序列化为有效字节格式，以便我们可以发送它以减少任务。
+  // 我们通过使用Zstd压缩序列化的字节来做到这一点。
+  // 它们通常是相当可压缩的，因为许多映射输出将在同一主机名上。
   def serializeMapStatuses(
       statuses: Array[MapStatus],
       broadcastManager: BroadcastManager,
@@ -894,7 +891,7 @@ private[spark] object MapOutputTracker extends Logging {
     val codec = CompressionCodec.createCodec(conf, "zstd")
     val objOut = new ObjectOutputStream(codec.compressedOutputStream(out))
     Utils.tryWithSafeFinally {
-      // Since statuses can be modified in parallel, sync on it
+      // 由于状态可以并行修改，因此请对其同步
       statuses.synchronized {
         objOut.writeObject(statuses)
       }

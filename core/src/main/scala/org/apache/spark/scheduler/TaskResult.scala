@@ -28,14 +28,14 @@ import org.apache.spark.serializer.SerializerInstance
 import org.apache.spark.storage.BlockId
 import org.apache.spark.util.{AccumulatorV2, Utils}
 
-// Task result. Also contains updates to accumulator variables and executor metric peaks.
+// 任务结果。还包含对累加器变量和执行器指标峰值的更新。
 private[spark] sealed trait TaskResult[T]
 
-/** A reference to a DirectTaskResult that has been stored in the worker's BlockManager. */
+/** 对已存储在工作程序的BlockManager中的DirectTaskResult的引用。 */
 private[spark] case class IndirectTaskResult[T](blockId: BlockId, size: Int)
   extends TaskResult[T] with Serializable
 
-/** A TaskResult that contains the task's return value, accumulator updates and metric peaks. */
+/** 一个TaskResult，其中包含任务的返回值，累加器更新和指标峰值。 */
 private[spark] class DirectTaskResult[T](
     var valueBytes: ByteBuffer,
     var accumUpdates: Seq[AccumulatorV2[_, _]],
@@ -87,11 +87,10 @@ private[spark] class DirectTaskResult[T](
   }
 
   /**
-   * When `value()` is called at the first time, it needs to deserialize `valueObject` from
-   * `valueBytes`. It may cost dozens of seconds for a large instance. So when calling `value` at
-   * the first time, the caller should avoid to block other threads.
+   * 第一次调用value()时，需要从valueBytes中反序列化valueObject。
+   * 大型实例可能要花费数十秒。因此，在第一次调用“值”时，调用者应避免阻塞其他线程。
    *
-   * After the first time, `value()` is trivial and just returns the deserialized `valueObject`.
+   * 第一次之后，value（）很简单，只返回反序列化的valueObject。
    */
   def value(resultSer: SerializerInstance = null): T = {
     if (valueObjectDeserialized) {

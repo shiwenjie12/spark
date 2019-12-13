@@ -32,11 +32,12 @@ import org.apache.spark.serializer.Serializer
 import org.apache.spark.storage.{BlockId, ShuffleBlockBatchId, ShuffleBlockId, StorageLevel}
 
 /**
- * Serves requests to open blocks by simply registering one chunk per block requested.
- * Handles opening and uploading arbitrary BlockManager blocks.
+ * 通过简单地为每个请求的块注册一个块来服务于打开块的请求。
+ * 处理打开和上传任意BlockManager块。
  *
  * Opened blocks are registered with the "one-for-one" strategy, meaning each Transport-layer Chunk
  * is equivalent to one Spark-level shuffle block.
+ * 打开的块以“一对一”策略注册，这意味着每个传输层块均等同于一个Spark级别的洗牌块。
  */
 class NettyBlockRpcServer(
     appId: String,
@@ -116,8 +117,7 @@ class NettyBlockRpcServer(
     val blockId = BlockId(message.blockId)
     logDebug(s"Receiving replicated block $blockId with level ${level} as stream " +
       s"from ${client.getSocketAddress}")
-    // This will return immediately, but will setup a callback on streamData which will still
-    // do all the processing in the netty thread.
+    // 这将立即返回，但将在streamData上设置一个回调，该回调仍将执行netty线程中的所有处理。
     blockManager.putBlockDataAsStream(blockId, level, classTag)
   }
 

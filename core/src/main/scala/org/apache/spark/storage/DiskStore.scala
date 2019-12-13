@@ -330,6 +330,7 @@ private class ReadableChannelFileRegion(source: ReadableByteChannel, blockSize: 
   override def deallocate(): Unit = source.close()
 }
 
+// 拥有计数的写入通道
 private class CountingWritableChannel(sink: WritableByteChannel) extends WritableByteChannel {
 
   private var count = 0L

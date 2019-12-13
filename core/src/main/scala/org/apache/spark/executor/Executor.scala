@@ -206,7 +206,7 @@ private[spark] class Executor(
     env.memoryManager,
     METRICS_POLLING_INTERVAL_MS)
 
-  // Executor for the heartbeat task.
+  // 心跳任务执行器。
   private val heartbeater = new Heartbeater(
     () => Executor.this.reportHeartBeat(),
     "executor-heartbeater",

@@ -56,7 +56,7 @@ private[spark] trait Clock {
 }
 
 /**
- * A clock backed by the actual time from the OS as reported by the `System` API.
+ * 由OS的实际时间支持的时钟，如System API所报告。
  */
 private[spark] class SystemClock extends Clock {
 
@@ -74,8 +74,8 @@ private[spark] class SystemClock extends Clock {
   override def nanoTime(): Long = System.nanoTime()
 
   /**
-   * @param targetTime block until the current time is at least this value
-   * @return current system time when wait has completed
+   * @param targetTime 阻止，直到当前时间至少是此值
+   * @return 等待完成时的当前系统时间
    */
   override def waitTillTime(targetTime: Long): Long = {
     var currentTime = System.currentTimeMillis()

@@ -100,10 +100,10 @@ abstract class Serializer {
 
 /**
  * :: DeveloperApi ::
- * An instance of a serializer, for use by one thread at a time.
+ * 序列化程序的实例，一次供一个线程使用。
  *
- * It is legal to create multiple serialization / deserialization streams from the same
- * SerializerInstance as long as those streams are all used within the same thread.
+ * 从同一个创建多个序列化/反序列化流是合法的
+ * 只要这些流都在同一线程中使用，即可使用SerializerInstance。
  */
 @DeveloperApi
 @NotThreadSafe

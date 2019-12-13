@@ -40,7 +40,7 @@ import org.apache.spark.util.Utils
 
 
 /**
- * A class that holds all state shared across sessions in a given [[SQLContext]].
+ * 一个类，用于在给定的[[SQLContext]]中跨会话共享所有状态。
  *
  * @param sparkContext The Spark context associated with this SharedState
  * @param initialConfigs The configs from the very first created SparkSession

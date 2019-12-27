@@ -49,11 +49,14 @@ public class ByteArrayMethods {
   // Refer to "http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/src/share/classes/java/util/ArrayList.java#l229"
   // This value is word rounded. Use this value if the allocated byte arrays are used to store other
   // types rather than bytes.
+  //某些JVM无法分配长度为Integer.MAX_VALUE的数组。实际最大值略小。
+  //保守一点，降低上限。参见“ http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/src/share/classes/java/util/ArrayList.java#l229”
+  //此值是取整的。如果分配的字节数组用于存储其他类型而不是字节，请使用此值。
   public static int MAX_ROUNDED_ARRAY_LENGTH = Integer.MAX_VALUE - 15;
 
   private static final boolean unaligned = Platform.unaligned();
   /**
-   * Optimized byte array equality check for byte arrays.
+   * 优化了字节数组的字节数组相等性检查。
    * @return true if the arrays are equal, false otherwise
    */
   public static boolean arrayEquals(

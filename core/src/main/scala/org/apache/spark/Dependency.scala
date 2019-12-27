@@ -100,7 +100,7 @@ class ShuffleDependency[K: ClassTag, V: ClassTag, C: ClassTag](
 
 /**
  * :: DeveloperApi ::
- * Represents a one-to-one dependency between partitions of the parent and child RDDs.
+ * 表示父RDD和子RDD分区之间的一对一依赖关系。
  */
 @DeveloperApi
 class OneToOneDependency[T](rdd: RDD[T]) extends NarrowDependency[T](rdd) {

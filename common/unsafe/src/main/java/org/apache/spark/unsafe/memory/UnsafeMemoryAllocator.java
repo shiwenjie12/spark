@@ -20,7 +20,7 @@ package org.apache.spark.unsafe.memory;
 import org.apache.spark.unsafe.Platform;
 
 /**
- * A simple {@link MemoryAllocator} that uses {@code Unsafe} to allocate off-heap memory.
+ * 一个简单的{@link MemoryAllocator}，它使用{@code Unsafe}分配堆外内存。
  */
 public class UnsafeMemoryAllocator implements MemoryAllocator {
 
@@ -51,7 +51,7 @@ public class UnsafeMemoryAllocator implements MemoryAllocator {
     // As an additional layer of defense against use-after-free bugs, we mutate the
     // MemoryBlock to reset its pointer.
     memory.offset = 0;
-    // Mark the page as freed (so we can detect double-frees).
+    // 将页面标记为已释放（以便我们可以检测到两次释放）。
     memory.pageNumber = MemoryBlock.FREED_IN_ALLOCATOR_PAGE_NUMBER;
   }
 }

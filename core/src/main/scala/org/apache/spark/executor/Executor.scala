@@ -47,11 +47,10 @@ import org.apache.spark.util._
 import org.apache.spark.util.io.ChunkedByteBuffer
 
 /**
- * Spark executor, backed by a threadpool to run tasks.
+ * Spark执行程序，由线程池支持以运行任务。
  *
- * This can be used with Mesos, YARN, and the standalone scheduler.
- * An internal RPC interface is used for communication with the driver,
- * except in the case of Mesos fine-grained mode.
+ * 可以与Mesos，YARN和独立调度程序一起使用。
+ * 内部RPC接口用于与驱动程序进行通信，但Mesos细粒度模式除外。
  */
 private[spark] class Executor(
     executorId: String,
@@ -125,8 +124,8 @@ private[spark] class Executor(
   // Whether to monitor killed / interrupted tasks
   private val taskReaperEnabled = conf.get(TASK_REAPER_ENABLED)
 
-  // Create our ClassLoader
-  // do this after SparkEnv creation so can access the SecurityManager
+  // 创建我们的ClassLoader
+  // 在创建SparkEnv之后执行此操作，以便可以访问SecurityManager
   private val urlClassLoader = createClassLoader()
   private val replClassLoader = addReplClassLoaderIfNeeded(urlClassLoader)
 
@@ -303,7 +302,7 @@ private[spark] class Executor(
     }
   }
 
-  /** Returns the total amount of time this JVM process has spent in garbage collection. */
+  /** 返回此JVM进程在垃圾回收上花费的总时间。 */
   private def computeTotalGcTime(): Long = {
     ManagementFactory.getGarbageCollectorMXBeans.asScala.map(_.getCollectionTime).sum
   }
@@ -330,12 +329,11 @@ private[spark] class Executor(
 
     def isFinished: Boolean = synchronized { finished }
 
-    /** How much the JVM process has spent in GC when the task starts to run. */
+    /** 当任务开始运行时，JVM进程在GC中花费了多少。 */
     @volatile var startGCTime: Long = _
 
     /**
-     * The task to run. This will be set in run() by deserializing the task binary coming
-     * from the driver. Once it is set, it will never be changed.
+     * 要运行的任务。这将通过反序列化来自驱动程序的任务二进制文件在run()中设置。一旦设置，它将永远不会改变。
      */
     @volatile var task: Task[Any] = _
 
@@ -401,6 +399,7 @@ private[spark] class Executor(
       Thread.currentThread.setContextClassLoader(replClassLoader)
       val ser = env.closureSerializer.newInstance()
       logInfo(s"Running $taskName (TID $taskId)")
+      // 更新任务状态
       execBackend.statusUpdate(taskId, TaskState.RUNNING, EMPTY_BYTE_BUFFER)
       var taskStartTimeNs: Long = 0
       var taskStartCpu: Long = 0
@@ -408,8 +407,7 @@ private[spark] class Executor(
       var taskStarted: Boolean = false
 
       try {
-        // Must be set before updateDependencies() is called, in case fetching dependencies
-        // requires access to properties contained within (e.g. for access control).
+        // 必须在调用updateDependencies()之前进行设置，以防获取依赖项需要访问其中包含的属性（例如，用于访问控制）。
         Executor.taskDeserializationProps.set(taskDescription.properties)
 
         updateDependencies(taskDescription.addedFiles, taskDescription.addedJars)
@@ -418,8 +416,7 @@ private[spark] class Executor(
         task.localProperties = taskDescription.properties
         task.setTaskMemoryManager(taskMemoryManager)
 
-        // If this task has been killed before we deserialized it, let's quit now. Otherwise,
-        // continue executing the task.
+        // 如果此任务在反序列化之前已被终止，那么让我们现在退出。否则，继续执行任务。
         val killReason = reasonIfKilled
         if (killReason.isDefined) {
           // Throw an exception rather than returning, because returning within a try{} block
@@ -803,8 +800,7 @@ private[spark] class Executor(
   }
 
   /**
-   * Create a ClassLoader for use in tasks, adding any JARs specified by the user or any classes
-   * created by the interpreter to the search path
+   * 创建用于任务的ClassLoader，将用户指定的任何JAR或解释器创建的任何类添加到搜索路径
    */
   private def createClassLoader(): MutableURLClassLoader = {
     // Bootstrap the list of jars with the user class path.
@@ -854,13 +850,12 @@ private[spark] class Executor(
   }
 
   /**
-   * Download any missing dependencies if we receive a new set of files and JARs from the
-   * SparkContext. Also adds any new JARs we fetched to the class loader.
+   * 如果我们从SparkContext收到一组新的文件和JAR，请下载所有缺少的依赖项。还将我们获取的所有新JAR添加到类加载器中。
    */
   private def updateDependencies(newFiles: Map[String, Long], newJars: Map[String, Long]): Unit = {
     lazy val hadoopConf = SparkHadoopUtil.get.newConfiguration(conf)
     synchronized {
-      // Fetch missing dependencies
+      // 获取缺少的依赖项
       for ((name, timestamp) <- newFiles if currentFiles.getOrElse(name, -1L) < timestamp) {
         logInfo("Fetching " + name + " with timestamp " + timestamp)
         // Fetch file with useCache mode, close cache for local mode.

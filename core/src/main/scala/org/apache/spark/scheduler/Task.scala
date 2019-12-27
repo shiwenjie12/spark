@@ -71,8 +71,8 @@ private[spark] abstract class Task[T](
   /**
    * Called by [[org.apache.spark.executor.Executor]] to run this task.
    *
-   * @param taskAttemptId an identifier for this task attempt that is unique within a SparkContext.
-   * @param attemptNumber how many times this task has been attempted (0 for the first attempt)
+   * @param taskAttemptId 此任务尝试的标识符在SparkContext中是唯一的。
+   * @param attemptNumber 尝试过此任务的次数（第一次尝试为0）
    * @param resources other host resources (like gpus) that this task attempt can access
    * @return the result of the task along with updates of Accumulators.
    */
@@ -86,7 +86,7 @@ private[spark] abstract class Task[T](
     // the stage is barrier.
     val taskContext = new TaskContextImpl(
       stageId,
-      stageAttemptId, // stageAttemptId and stageAttemptNumber are semantically equal
+      stageAttemptId, // stageAttemptId和stageAttemptNumber在语义上相等
       partitionId,
       taskAttemptId,
       attemptNumber,

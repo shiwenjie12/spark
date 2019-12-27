@@ -61,19 +61,19 @@ import org.apache.spark.util.random.{BernoulliCellSampler, BernoulliSampler, Poi
  * can be saved as SequenceFiles.
  * All operations are automatically available on any RDD of the right type (e.g. RDD[(Int, Int)])
  * through implicit.
- * 弹性分布式数据集（RDD），Spark中的基本抽象。表示可以并行操作的元素的不变分区集合。此类包含所有RDD上可用的基本操作，例如“ map”，“ filter”和“ persist”。此外，
-  * [[org.apache.spark.rdd.PairRDDFunctions]]包含仅在键/值对的RDD上可用的操作，例如groupByKey和join。
-  * [[org.apache.spark.rdd.DoubleRDDFunctions]]包含仅在Doubles的RDD上可用的操作；和
-  * [[org.apache.spark.rdd.SequenceFileRDDFunctions]]包含可保存为SequenceFiles的RDD上可用的操作。
-  * 所有操作都可以在任何类型正确的RDD上自动使用（例如RDD [（Int，Int）]） 通过隐式。
- * Internally, each RDD is characterized by five main properties:
+ * 弹性分布式数据集（RDD），Spark中的基本抽象。表示可以并行操作的元素的不变分区集合。
+ * 此类包含所有RDD上可用的基本操作，例如“ map”，“ filter”和“ persist”。此外，
+ * [[org.apache.spark.rdd.PairRDDFunctions]]包含仅在键/值对的RDD上可用的操作，例如groupByKey和join。
+ * [[org.apache.spark.rdd.DoubleRDDFunctions]]包含仅在Doubles的RDD上可用的操作；和
+ * [[org.apache.spark.rdd.SequenceFileRDDFunctions]]包含可保存为SequenceFiles的RDD上可用的操作。
+ * 所有操作都可以在任何类型正确的RDD上自动使用（例如RDD [（Int，Int）]） 通过隐式。
+ * 在内部，每个RDD具有五个主要属性：
  *
- *  - A list of partitions
- *  - A function for computing each split
- *  - A list of dependencies on other RDDs
- *  - Optionally, a Partitioner for key-value RDDs (e.g. to say that the RDD is hash-partitioned)
- *  - Optionally, a list of preferred locations to compute each split on (e.g. block locations for
- *    an HDFS file)
+ *  -分区列表
+ *  -计算每个分割的功能
+ *  -对其他RDD的依赖关系列表
+ *  -（可选）用于键值RDD的分区程序（例如，该RDD是哈希分区的）
+ *  -（可选）用于计算每个分割的首选位置列表（例如，HDFS文件的块位置）
  *
  * All of the scheduling and execution in Spark is done based on these methods, allowing each RDD
  * to implement its own way of computing itself. Indeed, users can implement custom RDDs (e.g. for
@@ -306,9 +306,8 @@ abstract class RDD[T: ClassTag](
   }
 
   /**
-   * Internal method to this RDD; will read from cache if applicable, or otherwise compute it.
-   * This should ''not'' be called by users directly, but is available for implementors of custom
-   * subclasses of RDD.
+   * 该RDD的内部方法；将从缓存中读取（如果适用），或者进行其他计算。
+   * 用户“不应”直接调用此方法，但可用于RDD的自定义子类的实现者。
    */
   final def iterator(split: Partition, context: TaskContext): Iterator[T] = {
     if (storageLevel != StorageLevel.NONE) {
@@ -355,7 +354,7 @@ abstract class RDD[T: ClassTag](
   }
 
   /**
-   * Gets or computes an RDD partition. Used by RDD.iterator() when an RDD is cached.
+   * 获取或计算RDD分区。 RDD缓存时由RDD.iterator()使用。
    */
   private[spark] def getOrCompute(partition: Partition, context: TaskContext): Iterator[T] = {
     val blockId = RDDBlockId(id, partition.index)

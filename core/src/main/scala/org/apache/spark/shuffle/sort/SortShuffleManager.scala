@@ -143,7 +143,7 @@ private[spark] class SortShuffleManager(conf: SparkConf) extends ShuffleManager 
       shouldBatchFetch = canUseBatchFetch(startPartition, endPartition, context))
   }
 
-  /** Get a writer for a given partition. Called on executors by map tasks. */
+  /** 获取给定分区的writer。地图任务调用执行程序。 */
   override def getWriter[K, V](
       handle: ShuffleHandle,
       mapId: Long,

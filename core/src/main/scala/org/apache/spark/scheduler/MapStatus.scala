@@ -149,8 +149,8 @@ private[spark] class CompressedMapStatus(
  * 一种[[MapStatus]]实现，用于存储大块的准确大小，这些大块大于spark.shuffle.accurateBlockThreshold。
  * 它存储其他非空块的平均大小，以及用于跟踪哪些块为空的位图。
  *
- * @param loc location where the task is being executed
- * @param numNonEmptyBlocks the number of non-empty blocks
+ * @param loc 执行任务的位置
+ * @param numNonEmptyBlocks 非空块的数量
  * @param emptyBlocks a bitmap tracking which blocks are empty
  * @param avgSize average size of the non-empty and non-huge blocks
  * @param hugeBlockSizes sizes of huge blocks by their reduceId.

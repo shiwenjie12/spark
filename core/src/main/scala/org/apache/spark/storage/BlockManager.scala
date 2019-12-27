@@ -1083,8 +1083,7 @@ private[spark] class BlockManager(
   }
 
   /**
-   * Retrieve the given block if it exists, otherwise call the provided `makeIterator` method
-   * to compute the block, persist it, and return its values.
+   * 检索给定的块（如果存在），否则调用提供的“makeIterator”方法来计算该块，对其进行持久化并返回其值。
    *
    * @return either a BlockResult if the block was successfully cached, or an iterator if the block
    *         could not be cached.

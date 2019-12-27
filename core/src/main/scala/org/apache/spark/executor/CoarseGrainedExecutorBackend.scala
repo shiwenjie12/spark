@@ -122,6 +122,7 @@ private[spark] class CoarseGrainedExecutorBackend(
   }
 
   override def receive: PartialFunction[Any, Unit] = {
+    // 注册执行器
     case RegisteredExecutor =>
       logInfo("Successfully registered with driver")
       try {

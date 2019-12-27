@@ -40,7 +40,7 @@ import static org.apache.spark.unsafe.Platform.*;
 
 
 /**
- * A UTF-8 String for internal Spark use.
+ * 供内部Spark使用的UTF-8字符串。
  * <p>
  * A String encoded in UTF-8 as an Array[Byte], which can be used for comparison,
  * search, see http://en.wikipedia.org/wiki/UTF-8 for details.

@@ -26,7 +26,7 @@ import java.util.Map;
 import org.apache.spark.unsafe.Platform;
 
 /**
- * A simple {@link MemoryAllocator} that can allocate up to 16GB using a JVM long primitive array.
+ * 一个简单的{@link MemoryAllocator}，可以使用JVM长原语数组分配多达16GB的内存。
  */
 public class HeapMemoryAllocator implements MemoryAllocator {
 
@@ -36,8 +36,7 @@ public class HeapMemoryAllocator implements MemoryAllocator {
   private static final int POOLING_THRESHOLD_BYTES = 1024 * 1024;
 
   /**
-   * Returns true if allocations of the given size should go through the pooling mechanism and
-   * false otherwise.
+   * 如果给定大小的分配应通过池化机制，则返回true，否则返回false。
    */
   private boolean shouldPool(long size) {
     // Very small allocations are less likely to benefit from pooling.
@@ -49,6 +48,7 @@ public class HeapMemoryAllocator implements MemoryAllocator {
     int numWords = (int) ((size + 7) / 8);
     long alignedSize = numWords * 8L;
     assert (alignedSize >= size);
+    // 是否需要分配到池中
     if (shouldPool(alignedSize)) {
       synchronized (this) {
         final LinkedList<WeakReference<long[]>> pool = bufferPoolsBySize.get(alignedSize);

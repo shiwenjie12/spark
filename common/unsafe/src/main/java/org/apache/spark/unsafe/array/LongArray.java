@@ -21,15 +21,15 @@ import org.apache.spark.unsafe.Platform;
 import org.apache.spark.unsafe.memory.MemoryBlock;
 
 /**
- * An array of long values. Compared with native JVM arrays, this:
+ * 长值数组。与本地JVM阵列相比，这:
  * <ul>
- *   <li>supports using both on-heap and off-heap memory</li>
- *   <li>has no bound checking, and thus can crash the JVM process when assert is turned off</li>
+ *   <li>支持同时使用堆上和堆外内存</li>
+ *   <li>没有边界检查，因此当断言关闭时，可能会使JVM进程崩溃</li>
  * </ul>
  */
 public final class LongArray {
 
-  // This is a long so that we perform long multiplications when computing offsets.
+  // 这很长，因此我们在计算偏移量时执行长乘法。
   private static final long WIDTH = 8;
 
   private final MemoryBlock memory;

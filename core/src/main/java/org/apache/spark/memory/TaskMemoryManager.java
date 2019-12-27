@@ -36,15 +36,12 @@ import org.apache.spark.unsafe.memory.MemoryBlock;
 import org.apache.spark.util.Utils;
 
 /**
- * Manages the memory allocated by an individual task.
+ * 管理由单个任务分配的内存。
  * <p>
- * Most of the complexity in this class deals with encoding of off-heap addresses into 64-bit longs.
- * In off-heap mode, memory can be directly addressed with 64-bit longs. In on-heap mode, memory is
- * addressed by the combination of a base Object reference and a 64-bit offset within that object.
- * This is a problem when we want to store pointers to data structures inside of other structures,
- * such as record pointers inside hashmaps or sorting buffers. Even if we decided to use 128 bits
- * to address memory, we can't just store the address of the base object since it's not guaranteed
- * to remain stable as the heap gets reorganized due to GC.
+ * 此类中的大多数复杂性涉及将堆外地址编码为64位long。
+ * 在堆外模式下，可以使用64位长直接寻址内存。在堆模式下，内存是通过基本对象引用和该对象内的64位偏移量的组合来寻址的。
+ * 当我们要在其他结构内部存储指向数据结构的指针时，例如在哈希映射或排序缓冲区中的记录指针时，这是一个问题。
+ * 即使我们决定使用128位来寻址内存，我们也不能仅存储基础对象的地址，因为不能保证其稳定，因为GC会使堆重组。
  * <p>
  * Instead, we use the following approach to encode record pointers in 64-bit longs: for off-heap
  * mode, just store the raw address, and for on-heap mode use the upper 13 bits of the address to
@@ -60,7 +57,7 @@ public class TaskMemoryManager {
 
   private static final Logger logger = LoggerFactory.getLogger(TaskMemoryManager.class);
 
-  /** The number of bits used to address the page table. */
+  /** 用于寻址页表的位数。 */
   private static final int PAGE_NUMBER_BITS = 13;
 
   /** The number of bits used to encode offsets in data pages. */

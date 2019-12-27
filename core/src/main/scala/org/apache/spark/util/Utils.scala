@@ -690,10 +690,8 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-   * Download a file or directory to target directory. Supports fetching the file in a variety of
-   * ways, including HTTP, Hadoop-compatible filesystems, and files on a standard filesystem, based
-   * on the URL parameter. Fetching directories is only supported from Hadoop-compatible
-   * filesystems.
+   * 将文件或目录下载到目标目录。支持基于URL参数以多种方式获取文件，包括HTTP，兼容Hadoop的文件系统以及标准文件系统上的文件。
+   * 仅从兼容Hadoop的文件系统中支持获取目录。
    *
    * Throws SparkException if the target file already exists and has different contents than
    * the requested file.

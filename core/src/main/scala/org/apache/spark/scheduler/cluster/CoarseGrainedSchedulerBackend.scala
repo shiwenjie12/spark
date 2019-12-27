@@ -260,7 +260,7 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
         context.reply(reply)
     }
 
-    // Make fake resource offers on all executors
+    // 向所有执行人提供虚假资源报价
     private def makeOffers(): Unit = {
       // Make sure no executor is killed while some task is launching on it
       val taskDescs = withLock {
@@ -289,7 +289,7 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
           "messages.")))
     }
 
-    // Make fake resource offers on just one executor
+    // 仅对一名执行人提供虚假资源报价
     private def makeOffers(executorId: String): Unit = {
       // Make sure no executor is killed while some task is launching on it
       val taskDescs = withLock {
@@ -317,7 +317,7 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
         !executorsPendingLossReason.contains(executorId)
     }
 
-    // Launch tasks returned by a set of resource offers
+    // 一组资源报价返回的启动任务
     private def launchTasks(tasks: Seq[Seq[TaskDescription]]): Unit = {
       for (task <- tasks.flatten) {
         val serializedTask = TaskDescription.encode(task)

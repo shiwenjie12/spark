@@ -23,7 +23,7 @@ import org.apache.spark.unsafe.array.LongArray;
 import org.apache.spark.unsafe.memory.MemoryBlock;
 
 /**
- * A memory consumer of {@link TaskMemoryManager} that supports spilling.
+ * {@link TaskMemoryManager}的内存使用者支持溢出。
  *
  * Note: this only supports allocation / spilling of Tungsten memory.
  */

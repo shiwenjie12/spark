@@ -47,7 +47,7 @@ public class UTF8StringBuilder {
     this.buffer = new byte[initialSize];
   }
 
-  // Grows the buffer by at least `neededSize`
+  // 将缓冲区至少增加“ neededSize”
   private void grow(int neededSize) {
     if (neededSize > ARRAY_MAX - totalSize()) {
       throw new UnsupportedOperationException(

@@ -23,8 +23,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.scheduler.MapStatus
 
 /**
- * The interface for customizing shuffle write process. The driver create a ShuffleWriteProcessor
- * and put it into [[ShuffleDependency]], and executors use it in each ShuffleMapTask.
+ * 用于定制随机写入过程的界面。
+ * 驱动程序创建一个ShuffleWriteProcessor并将其放入[[ShuffleDependency]]中，执行程序在每个ShuffleMapTask中使用它。
  */
 private[spark] class ShuffleWriteProcessor extends Serializable with Logging {
 
@@ -37,9 +37,8 @@ private[spark] class ShuffleWriteProcessor extends Serializable with Logging {
   }
 
   /**
-   * The write process for particular partition, it controls the life circle of [[ShuffleWriter]]
-   * get from [[ShuffleManager]] and triggers rdd compute, finally return the [[MapStatus]] for
-   * this task.
+   * 特定分区的写入过程，它控制从[ShuffleManager]获取的[[ShuffleWriter]]的生命周期，
+   * 并触发rdd计算，最后返回此任务的[[MapStatus]]。
    */
   def write(
       rdd: RDD[_],

@@ -20,8 +20,8 @@ package org.apache.spark.unsafe.memory;
 public interface MemoryAllocator {
 
   /**
-   * Whether to fill newly allocated and deallocated memory with 0xa5 and 0x5a bytes respectively.
-   * This helps catch misuse of uninitialized or freed memory, but imposes some overhead.
+   * 是否分别用0xa5和0x5a字节填充新分配和释放的内存。
+   * 这有助于捕获对未初始化或释放的内存的滥用，但会带来一些开销。
    */
   boolean MEMORY_DEBUG_FILL_ENABLED = Boolean.parseBoolean(
     System.getProperty("spark.memory.debugFill", "false"));
@@ -31,8 +31,7 @@ public interface MemoryAllocator {
   byte MEMORY_DEBUG_FILL_FREED_VALUE = (byte)0x5a;
 
   /**
-   * Allocates a contiguous block of memory. Note that the allocated memory is not guaranteed
-   * to be zeroed out (call `fill(0)` on the result if this is necessary).
+   * 分配连续的内存块。注意，不能保证分配的内存被清零（如果需要的话，对结果调用`fill（0）`）。
    */
   MemoryBlock allocate(long size) throws OutOfMemoryError;
 

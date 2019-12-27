@@ -45,8 +45,7 @@ public final class Platform {
 
   private static final boolean unaligned;
 
-  // Access fields and constructors once and store them, for performance:
-
+  // 一次访问字段和构造函数并存储它们，以提高性能：
   private static final Constructor<?> DBB_CONSTRUCTOR;
   private static final Field DBB_CLEANER_FIELD;
   static {
@@ -102,8 +101,7 @@ public final class Platform {
   }
 
   /**
-   * @return true when running JVM is having sun's Unsafe package available in it and underlying
-   *         system having unaligned-access capability.
+   * @return 当运行JVM时，可以使用sun的Unsafe软件包，并且底层系统具有不对齐访问功能，则为true。
    */
   public static boolean unaligned() {
     return unaligned;

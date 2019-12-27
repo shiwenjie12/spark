@@ -246,7 +246,7 @@ private[spark] class TaskSchedulerImpl(
     backend.reviveOffers()
   }
 
-  // Label as private[scheduler] to allow tests to swap in different task set managers if necessary
+  // 标记为private [scheduler]以允许测试在必要时在不同的任务集管理器中交换
   private[scheduler] def createTaskSetManager(
       taskSet: TaskSet,
       maxTaskFailures: Int): TaskSetManager = {

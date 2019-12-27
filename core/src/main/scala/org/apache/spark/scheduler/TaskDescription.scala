@@ -30,21 +30,15 @@ import org.apache.spark.resource.ResourceInformation
 import org.apache.spark.util.{ByteBufferInputStream, ByteBufferOutputStream, Utils}
 
 /**
- * Description of a task that gets passed onto executors to be executed, usually created by
- * `TaskSetManager.resourceOffer`.
+ * 传递给要执行的执行器的任务的描述，通常由TaskSetManager.resourceOffer创建。
  *
- * TaskDescriptions and the associated Task need to be serialized carefully for two reasons:
+ * 由于两个原因，需要仔细序列化TaskDescriptions和关联的Task：
  *
- *     (1) When a TaskDescription is received by an Executor, the Executor needs to first get the
- *         list of JARs and files and add these to the classpath, and set the properties, before
- *         deserializing the Task object (serializedTask). This is why the Properties are included
- *         in the TaskDescription, even though they're also in the serialized task.
- *     (2) Because a TaskDescription is serialized and sent to an executor for each task, efficient
- *         serialization (both in terms of serialization time and serialized buffer size) is
- *         important. For this reason, we serialize TaskDescriptions ourselves with the
- *         TaskDescription.encode and TaskDescription.decode methods.  This results in a smaller
- *         serialized size because it avoids serializing unnecessary fields in the Map objects
- *         (which can introduce significant overhead when the maps are small).
+ *     (1) 当执行者收到TaskDescription时，执行者需要首先获取JAR和文件列表，并将它们添加到类路径中，并设置属性，
+ *         然后反序列化Task对象（serializedTask）。这就是即使在序列化任务中也将属性包含在TaskDescription中的原因。
+ *     (2) 因为TaskDescription已序列化并发送给每个任务的执行者，所以有效的序列化（就序列化时间和序列化的缓冲区大小而言）都很重要。
+ *         因此，我们使用TaskDescription.encode和TaskDescription.decode方法序列化TaskDescriptions。
+ *         这将导致较小的序列化大小，因为它避免了对Map对象中不必要的字段进行序列化（当映射较小时，这可能会导致大量开销）。
  */
 private[spark] class TaskDescription(
     val taskId: Long,

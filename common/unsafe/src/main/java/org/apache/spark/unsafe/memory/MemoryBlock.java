@@ -26,7 +26,7 @@ import org.apache.spark.unsafe.Platform;
  */
 public class MemoryBlock extends MemoryLocation {
 
-  /** Special `pageNumber` value for pages which were not allocated by TaskMemoryManagers */
+  /** TaskMemoryManager未分配的页面的特殊“ pageNumber”值 */
   public static final int NO_PAGE_NUMBER = -1;
 
   /**
@@ -40,8 +40,7 @@ public class MemoryBlock extends MemoryLocation {
   public static final int FREED_IN_TMM_PAGE_NUMBER = -2;
 
   /**
-   * Special `pageNumber` value for pages that have been freed by the MemoryAllocator. This allows
-   * us to detect double-frees.
+   * 由MemoryAllocator释放的页面的特殊“ pageNumber”值。这使我们能够检测到双重释放。
    */
   public static final int FREED_IN_ALLOCATOR_PAGE_NUMBER = -3;
 

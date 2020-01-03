@@ -23,31 +23,31 @@ import org.apache.spark.internal.config.Tests._
 import org.apache.spark.storage.BlockId
 
 /**
- * [[MemoryManager]]强制执行和存储之间的软边界，以便任何一方都可以从另一方借用内存。
- *
- * 执行和存储之间共享的区域是（总堆空间-300MB）的一小部分，可通过`spark.memory.fraction'（默认值为0.6）进行配置。
- * 边界在该空间内的位置进一步由“ spark.memory.storageFraction”（默认值为0.5）确定。
- * 这意味着默认情况下，存储区域的大小为堆空间的0.6 * 0.5 = 0.3。
- *
- * Storage can borrow as much execution memory as is free until execution reclaims its space.
- * When this happens, cached blocks will be evicted from memory until sufficient borrowed
- * memory is released to satisfy the execution memory request.
- *
- * Similarly, execution can borrow as much storage memory as is free. However, execution
- * memory is *never* evicted by storage due to the complexities involved in implementing this.
- * The implication is that attempts to cache blocks may fail if execution has already eaten
- * up most of the storage space, in which case the new blocks will be evicted immediately
- * according to their respective storage levels.
- *
- * @param onHeapStorageRegionSize 存储区域的大小，以字节为单位。
- *                                该区域不是静态保留的。如有必要，执行可以从中借用。
- *                                仅当实际存储内存使用量超出此区域时，才可以驱逐缓存的块。
- */
+  * [[MemoryManager]]强制执行和存储之间的软边界，以便任何一方都可以从另一方借用内存。
+  *
+  * 执行和存储之间共享的区域是（总堆空间-300MB）的一小部分，可通过`spark.memory.fraction'（默认值为0.6）进行配置。
+  * 边界在该空间内的位置进一步由“ spark.memory.storageFraction”（默认值为0.5）确定。
+  * 这意味着默认情况下，存储区域的大小为堆空间的0.6 * 0.5 = 0.3。
+  *
+  * Storage can borrow as much execution memory as is free until execution reclaims its space.
+  * When this happens, cached blocks will be evicted from memory until sufficient borrowed
+  * memory is released to satisfy the execution memory request.
+  *
+  * Similarly, execution can borrow as much storage memory as is free. However, execution
+  * memory is *never* evicted by storage due to the complexities involved in implementing this.
+  * The implication is that attempts to cache blocks may fail if execution has already eaten
+  * up most of the storage space, in which case the new blocks will be evicted immediately
+  * according to their respective storage levels.
+  *
+  * @param onHeapStorageRegionSize 存储区域的大小，以字节为单位。
+  * 该区域不是静态保留的。如有必要，执行可以从中借用。
+  * 仅当实际存储内存使用量超出此区域时，才可以驱逐缓存的块。
+  **/
 private[spark] class UnifiedMemoryManager(
-    conf: SparkConf,
-    val maxHeapMemory: Long,
-    onHeapStorageRegionSize: Long,
-    numCores: Int)
+                                           conf: SparkConf,
+                                           val maxHeapMemory: Long,
+                                           onHeapStorageRegionSize: Long,
+                                           numCores: Int)
   extends MemoryManager(
     conf,
     numCores,
@@ -71,18 +71,15 @@ private[spark] class UnifiedMemoryManager(
   }
 
   /**
-   * Try to acquire up to `numBytes` of execution memory for the current task and return the
-   * number of bytes obtained, or 0 if none can be allocated.
-   *
-   * This call may block until there is enough free memory in some situations, to make sure each
-   * task has a chance to ramp up to at least 1 / 2N of the total memory pool (where N is the # of
-   * active tasks) before it is forced to spill. This can happen if the number of tasks increase
-   * but an older task had a lot of memory already.
-   */
+    * 尝试为当前任务获取最多“ numBytes”个执行内存，并返回获得的字节数，如果不能分配则返回0。
+    *
+    * 在某些情况下，此调用可能会阻塞，直到有足够的可用内存为止，以确保在强制执行之前，每个任务都有机会增加到总内存池的至少1 / 2N
+    * （其中N是活动任务的数量）。溢。如果任务数量增加，但是较旧的任务已经有很多内存，则可能会发生这种情况。
+    */
   override private[memory] def acquireExecutionMemory(
-      numBytes: Long,
-      taskAttemptId: Long,
-      memoryMode: MemoryMode): Long = synchronized {
+                                                       numBytes: Long,
+                                                       taskAttemptId: Long,
+                                                       memoryMode: MemoryMode): Long = synchronized {
     assertInvariants()
     assert(numBytes >= 0)
     val (executionPool, storagePool, storageRegionSize, maxMemory) = memoryMode match {
@@ -99,23 +96,20 @@ private[spark] class UnifiedMemoryManager(
     }
 
     /**
-     * 通过逐出缓存的块来扩大执行池，从而缩小存储池。
-     *
-     * When acquiring memory for a task, the execution pool may need to make multiple
-     * attempts. Each attempt must be able to evict storage in case another task jumps in
-     * and caches a large block between the attempts. This is called once per attempt.
-     */
+      * 通过逐出缓存的块来扩大执行池，从而缩小存储池。
+      *
+      * 当获取任务的内存时，执行池可能需要进行多次尝试。
+      * 每次尝试都必须能够退出存储，以防其他任务跳入并在两次尝试之间缓存较大的块。每次尝试调用一次。
+      */
     def maybeGrowExecutionPool(extraMemoryNeeded: Long): Unit = {
       if (extraMemoryNeeded > 0) {
-        // There is not enough free memory in the execution pool, so try to reclaim memory from
-        // storage. We can reclaim any free memory from the storage pool. If the storage pool
-        // has grown to become larger than `storageRegionSize`, we can evict blocks and reclaim
-        // the memory that storage has borrowed from execution.
+        // 执行池中没有足够的可用内存，因此请尝试从存储中回收内存。我们可以从存储池中回收任何可用内存。
+        // 如果存储池变得大于“ storageRegionSize”，我们可以逐出存储块并回收从执行中借用的内存。
         val memoryReclaimableFromStorage = math.max(
           storagePool.memoryFree,
           storagePool.poolSize - storageRegionSize)
         if (memoryReclaimableFromStorage > 0) {
-          // Only reclaim as much space as is necessary and available:
+          // 仅回收必要和可用的空间：
           val spaceToReclaim = storagePool.freeSpaceToShrinkPool(
             math.min(extraMemoryNeeded, memoryReclaimableFromStorage))
           storagePool.decrementPoolSize(spaceToReclaim)
@@ -125,30 +119,29 @@ private[spark] class UnifiedMemoryManager(
     }
 
     /**
-     * 退出存储内存后，执行池的大小。
-     *
-     * The execution memory pool divides this quantity among the active tasks evenly to cap
-     * the execution memory allocation for each task. It is important to keep this greater
-     * than the execution pool size, which doesn't take into account potential memory that
-     * could be freed by evicting storage. Otherwise we may hit SPARK-12155.
-     *
-     * Additionally, this quantity should be kept below `maxMemory` to arbitrate fairness
-     * in execution memory allocation across tasks, Otherwise, a task may occupy more than
-     * its fair share of execution memory, mistakenly thinking that other tasks can acquire
-     * the portion of storage memory that cannot be evicted.
-     */
+      * 退出存储内存后，执行池的大小。
+      *
+      * 执行内存池将此数量平均分配给活动任务，以限制每个任务的执行内存分配。
+      * 重要的是要使其大于执行池的大小，因为执行池的大小不考虑可能因撤消存储空间而释放的潜在内存。
+      * 否则，我们可能会打SPARK-12155。
+      *
+      * Additionally, this quantity should be kept below `maxMemory` to arbitrate fairness
+      * in execution memory allocation across tasks, Otherwise, a task may occupy more than
+      * its fair share of execution memory, mistakenly thinking that other tasks can acquire
+      * the portion of storage memory that cannot be evicted.
+      */
     def computeMaxExecutionPoolSize(): Long = {
       maxMemory - math.min(storagePool.memoryUsed, storageRegionSize)
     }
 
     executionPool.acquireMemory(
-      numBytes, taskAttemptId, maybeGrowExecutionPool, () => computeMaxExecutionPoolSize)
+      numBytes, taskAttemptId, maybeGrowExecutionPool, computeMaxExecutionPoolSize
   }
 
   override def acquireStorageMemory(
-      blockId: BlockId,
-      numBytes: Long,
-      memoryMode: MemoryMode): Boolean = synchronized {
+                                     blockId: BlockId,
+                                     numBytes: Long,
+                                     memoryMode: MemoryMode): Boolean = synchronized {
     assertInvariants()
     assert(numBytes >= 0)
     val (executionPool, storagePool, maxMemory) = memoryMode match {
@@ -179,9 +172,9 @@ private[spark] class UnifiedMemoryManager(
   }
 
   override def acquireUnrollMemory(
-      blockId: BlockId,
-      numBytes: Long,
-      memoryMode: MemoryMode): Boolean = synchronized {
+                                    blockId: BlockId,
+                                    numBytes: Long,
+                                    memoryMode: MemoryMode): Boolean = synchronized {
     acquireStorageMemory(blockId, numBytes, memoryMode)
   }
 }
@@ -204,8 +197,8 @@ object UnifiedMemoryManager {
   }
 
   /**
-   * 返回执行和存储之间共享的内存总量（以字节为单位）。
-   */
+    * 返回执行和存储之间共享的内存总量（以字节为单位）。
+    */
   private def getMaxMemory(conf: SparkConf): Long = {
     val systemMemory = conf.get(TEST_MEMORY)
     // 保留内存

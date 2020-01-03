@@ -19,9 +19,8 @@ package org.apache.spark.memory;
 import org.apache.spark.annotation.Private;
 
 /**
- * This exception is thrown when a task can not acquire memory from the Memory manager.
- * Instead of throwing {@link OutOfMemoryError}, which kills the executor,
- * we should use throw this exception, which just kills the current task.
+ * 当任务无法从内存管理器获取内存时，抛出此异常。
+ * 与其抛出{@link OutOfMemoryError}杀死执行程序，不如使用throw此异常，它只会杀死当前任务。
  */
 @Private
 public final class SparkOutOfMemoryError extends OutOfMemoryError {

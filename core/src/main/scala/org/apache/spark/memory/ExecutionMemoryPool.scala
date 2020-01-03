@@ -49,7 +49,7 @@ private[memory] class ExecutionMemoryPool(
   }
 
   /**
-   * Map from taskAttemptId -> memory consumption in bytes
+   * 从taskAttemptId映射->内存消耗（以字节为单位）
    */
   @GuardedBy("lock")
   private val memoryForTask = new mutable.HashMap[Long, Long]()
@@ -66,16 +66,13 @@ private[memory] class ExecutionMemoryPool(
   }
 
   /**
-   * Try to acquire up to `numBytes` of memory for the given task and return the number of bytes
-   * obtained, or 0 if none can be allocated.
+   * 尝试为给定任务获取最多“ numBytes”的内存，并返回获得的字节数，如果不能分配则返回0。
    *
-   * This call may block until there is enough free memory in some situations, to make sure each
-   * task has a chance to ramp up to at least 1 / 2N of the total memory pool (where N is the # of
-   * active tasks) before it is forced to spill. This can happen if the number of tasks increase
-   * but an older task had a lot of memory already.
+   * 在某些情况下，此调用可能会阻塞，直到有足够的可用内存为止，以确保在强制执行之前，每个任务都有机会增加到总内存池的至少1 / 2N
+   * （其中N是活动任务的数量）。溢。如果任务数量增加，但是较旧的任务已经有很多内存，则可能会发生这种情况。
    *
-   * @param numBytes number of bytes to acquire
-   * @param taskAttemptId the task attempt acquiring memory
+   * @param numBytes 要获取的字节数
+   * @param taskAttemptId 任务尝试获取内存
    * @param maybeGrowPool a callback that potentially grows the size of this pool. It takes in
    *                      one parameter (Long) that represents the desired amount of memory by
    *                      which this pool should be expanded.
@@ -96,11 +93,10 @@ private[memory] class ExecutionMemoryPool(
 
     // TODO: clean up this clunky method signature
 
-    // Add this task to the taskMemory map just so we can keep an accurate count of the number
-    // of active tasks, to let other tasks ramp down their memory in calls to `acquireMemory`
+    // 仅将此任务添加到taskMemory映射中，以便我们可以准确地计数活动任务的数量，以使其他任务在调用`acquireMemory`时降低其内存。
     if (!memoryForTask.contains(taskAttemptId)) {
       memoryForTask(taskAttemptId) = 0L
-      // This will later cause waiting tasks to wake up and check numTasks again
+      // 稍后将导致等待的任务唤醒并再次检查numTasks
       lock.notifyAll()
     }
 
@@ -112,9 +108,8 @@ private[memory] class ExecutionMemoryPool(
       val numActiveTasks = memoryForTask.keys.size
       val curMem = memoryForTask(taskAttemptId)
 
-      // In every iteration of this loop, we should first try to reclaim any borrowed execution
-      // space from storage. This is necessary because of the potential race condition where new
-      // storage blocks may steal the free execution memory that this task was waiting for.
+      // 在此循环的每次迭代中，我们都应首先尝试从存储中回收所有借用的执行空间。
+      // 这是必要的，因为潜在的争用情况是，新的存储块可能会窃取此任务正在等待的空闲执行内存。
       maybeGrowPool(numBytes - memoryFree)
 
       // Maximum size the pool would have after potentially growing the pool.
@@ -126,9 +121,9 @@ private[memory] class ExecutionMemoryPool(
       val maxMemoryPerTask = maxPoolSize / numActiveTasks
       val minMemoryPerTask = poolSize / (2 * numActiveTasks)
 
-      // How much we can grant this task; keep its share within 0 <= X <= 1 / numActiveTasks
+      // 我们可以承担多少任务；保持其份额在0 <= X <= 1 / numActiveTasks之内
       val maxToGrant = math.min(numBytes, math.max(0, maxMemoryPerTask - curMem))
-      // Only give it as much memory as is free, which might be none if it reached 1 / numTasks
+      // 只给它尽可能多的内存，如果达到1 / num，则可能没有内存。
       val toGrant = math.min(maxToGrant, memoryFree)
 
       // We want to let each task get at least 1 / (2 * numActiveTasks) before blocking;

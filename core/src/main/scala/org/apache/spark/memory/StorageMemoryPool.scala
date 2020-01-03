@@ -115,20 +115,22 @@ private[memory] class StorageMemoryPool(
   }
 
   /**
-   * Free space to shrink the size of this storage memory pool by `spaceToFree` bytes.
-   * Note: this method doesn't actually reduce the pool size but relies on the caller to do so.
+   * 可用空间，以通过“ spaceToFree”字节缩小此存储内存池的大小。
+   * 注意：此方法实际上并没有减小池的大小，而是依靠调用方来减小池的大小。
    *
-   * @return number of bytes to be removed from the pool's capacity.
+   * @return 要从池的容量中删除的字节数。
    */
   def freeSpaceToShrinkPool(spaceToFree: Long): Long = lock.synchronized {
     val spaceFreedByReleasingUnusedMemory = math.min(spaceToFree, memoryFree)
     val remainingSpaceToFree = spaceToFree - spaceFreedByReleasingUnusedMemory
     if (remainingSpaceToFree > 0) {
-      // If reclaiming free memory did not adequately shrink the pool, begin evicting blocks:
+      // 如果回收可用内存不足以缩小池，请开始逐出块：
       val spaceFreedByEviction =
         memoryStore.evictBlocksToFreeSpace(None, remainingSpaceToFree, memoryMode)
       // When a block is released, BlockManager.dropFromMemory() calls releaseMemory(), so we do
       // not need to decrement _memoryUsed here. However, we do need to decrement the pool size.
+      // 当释放一个块时，BlockManager.dropFromMemory()会调用releaseMemory()，
+      // 因此我们无需在此减小_memoryUsed。但是，我们确实需要减小池的大小。
       spaceFreedByReleasingUnusedMemory + spaceFreedByEviction
     } else {
       spaceFreedByReleasingUnusedMemory

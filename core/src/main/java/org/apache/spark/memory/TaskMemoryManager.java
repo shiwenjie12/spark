@@ -60,7 +60,7 @@ public class TaskMemoryManager {
   /** 用于寻址页表的位数。 */
   private static final int PAGE_NUMBER_BITS = 13;
 
-  /** The number of bits used to encode offsets in data pages. */
+  /** 用于对数据页中的偏移量进行编码的位数。 */
   @VisibleForTesting
   static final int OFFSET_BITS = 64 - PAGE_NUMBER_BITS;  // 51
 
@@ -90,7 +90,7 @@ public class TaskMemoryManager {
   private final MemoryBlock[] pageTable = new MemoryBlock[PAGE_TABLE_SIZE];
 
   /**
-   * Bitmap for tracking free pages.
+   * 位图，用于跟踪free页面。
    */
   private final BitSet allocatedPages = new BitSet(PAGE_TABLE_SIZE);
 
@@ -236,7 +236,7 @@ public class TaskMemoryManager {
   }
 
   /**
-   * Dump the memory usage of all consumers.
+   * 转储所有使用者的内存使用情况。
    */
   public void showMemoryUsage() {
     logger.info("Memory used in task " + taskAttemptId);
@@ -268,8 +268,7 @@ public class TaskMemoryManager {
   }
 
   /**
-   * Allocate a block of memory that will be tracked in the MemoryManager's page table; this is
-   * intended for allocating large blocks of Tungsten memory that will be shared between operators.
+   * 分配将在MemoryManager的页表中跟踪的一块内存；这旨在分配将在操作员之间共享的大块钨存储器。
    *
    * Returns `null` if there was not enough memory to allocate the page. May return a page that
    * contains fewer bytes than requested, so callers should verify the size of returned pages.
@@ -309,7 +308,7 @@ public class TaskMemoryManager {
         acquiredButNotUsed += acquired;
         allocatedPages.clear(pageNumber);
       }
-      // this could trigger spilling to free some pages.
+      // 这可能会触发溢出以释放一些页面。
       return allocatePage(size, consumer);
     }
     page.pageNumber = pageNumber;
@@ -321,7 +320,7 @@ public class TaskMemoryManager {
   }
 
   /**
-   * Free a block of memory allocated via {@link TaskMemoryManager#allocatePage}.
+   * 释放通过{@link TaskMemoryManager#allocatePage}分配的一块内存。
    */
   public void freePage(MemoryBlock page, MemoryConsumer consumer) {
     assert (page.pageNumber != MemoryBlock.NO_PAGE_NUMBER) :
@@ -419,14 +418,13 @@ public class TaskMemoryManager {
   }
 
   /**
-   * Clean up all allocated memory and pages. Returns the number of bytes freed. A non-zero return
-   * value can be used to detect memory leaks.
+   * 清理所有分配的内存和页面。返回释放的字节数。非零返回值可用于检测内存泄漏。
    */
   public long cleanUpAllAllocatedMemory() {
     synchronized (this) {
       for (MemoryConsumer c: consumers) {
         if (c != null && c.getUsed() > 0) {
-          // In case of failed task, it's normal to see leaked memory
+          // 如果任务失败，则通常会看到内存泄漏
           logger.debug("unreleased " + Utils.bytesToString(c.getUsed()) + " memory from " + c);
         }
       }
@@ -442,7 +440,7 @@ public class TaskMemoryManager {
       Arrays.fill(pageTable, null);
     }
 
-    // release the memory that is not used by any consumer (acquired for pages in tungsten mode).
+    // 释放任何消费者都不使用的内存（钨模式下的页面需要此内存）。
     memoryManager.releaseExecutionMemory(acquiredButNotUsed, taskAttemptId, tungstenMemoryMode);
 
     return memoryManager.releaseAllExecutionMemoryForTask(taskAttemptId);

@@ -46,7 +46,7 @@ private[memory] abstract class MemoryPool(lock: Object) {
   }
 
   /**
-   * Expands the pool by `delta` bytes.
+   * 用delta字节扩展池。
    */
   final def incrementPoolSize(delta: Long): Unit = lock.synchronized {
     require(delta >= 0)
@@ -54,7 +54,7 @@ private[memory] abstract class MemoryPool(lock: Object) {
   }
 
   /**
-   * Shrinks the pool by `delta` bytes.
+   * 将池缩小“ delta”字节。
    */
   final def decrementPoolSize(delta: Long): Unit = lock.synchronized {
     require(delta >= 0)

@@ -104,8 +104,7 @@ private[spark] abstract class MemoryManager(
   def acquireUnrollMemory(blockId: BlockId, numBytes: Long, memoryMode: MemoryMode): Boolean
 
   /**
-   * Try to acquire up to `numBytes` of execution memory for the current task and return the
-   * number of bytes obtained, or 0 if none can be allocated.
+   * 尝试为当前任务获取最多“ numBytes”个执行内存，并返回获得的字节数，如果不能分配则返回0。
    *
    * This call may block until there is enough free memory in some situations, to make sure each
    * task has a chance to ramp up to at least 1 / 2N of the total memory pool (where N is the # of
@@ -235,17 +234,16 @@ private[spark] abstract class MemoryManager(
   }
 
   /**
-   * The default page size, in bytes.
+   * 默认页面大小，以字节为单位。
    *
-   * If user didn't explicitly set "spark.buffer.pageSize", we figure out the default value
-   * by looking at the number of cores available to the process, and the total amount of memory,
-   * and then divide it by a factor of safety.
+   * 如果用户未明确设置“ spark.buffer.pageSize”，我们将找出默认值
+   * 通过查看可用于该进程的内核数量以及内存总量，然后将其除以安全系数。
    */
   val pageSizeBytes: Long = {
     val minPageSize = 1L * 1024 * 1024   // 1MB
     val maxPageSize = 64L * minPageSize  // 64MB
     val cores = if (numCores > 0) numCores else Runtime.getRuntime.availableProcessors()
-    // Because of rounding to next power of 2, we may have safetyFactor as 8 in worst case
+    // 由于舍入到2的下一个幂，在最坏的情况下，我们可能会将safetyFactor设置为8
     val safetyFactor = 16
     val maxTungstenMemory: Long = tungstenMemoryMode match {
       case MemoryMode.ON_HEAP => onHeapExecutionMemoryPool.poolSize
@@ -257,7 +255,7 @@ private[spark] abstract class MemoryManager(
   }
 
   /**
-   * Allocates memory for use by Unsafe/Tungsten code.
+   * 分配内存以供不安全/钨代码使用。
    */
   private[memory] final val tungstenMemoryAllocator: MemoryAllocator = {
     tungstenMemoryMode match {

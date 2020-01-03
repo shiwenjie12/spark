@@ -146,9 +146,15 @@ public abstract class MemoryConsumer {
     used -= size;
   }
 
+  /**
+   * 抛出oom
+   * @param page
+   * @param required
+   */
   private void throwOom(final MemoryBlock page, final long required) {
     long got = 0;
     if (page != null) {
+      // 释放内存块
       got = page.size();
       taskMemoryManager.freePage(page, this);
     }

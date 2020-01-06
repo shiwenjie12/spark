@@ -45,7 +45,7 @@ class BarrierTaskContext private[spark] (
 
   import BarrierTaskContext._
 
-  // Find the driver side RPCEndpointRef of the coordinator that handles all the barrier() calls.
+  // 找到处理所有barrier()调用的协调器的驱动程序端RPCEndpointRef。
   private val barrierCoordinator: RpcEndpointRef = {
     val env = SparkEnv.get
     RpcUtils.makeDriverRef("barrierSync", env.conf, env.rpcEnv)

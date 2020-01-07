@@ -51,7 +51,7 @@ private[spark] abstract class RpcEndpointRef(conf: SparkConf)
    * [[AbortableRpcFuture]]实例用附加的“ abort”方法包装[[Future]]。
    *
    *
-   * This method only sends the message once and never retries.
+   * 此方法仅发送一次消息，而不会重试。
    */
   def askAbortable[T: ClassTag](message: Any, timeout: RpcTimeout): AbortableRpcFuture[T] = {
     throw new UnsupportedOperationException()

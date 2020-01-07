@@ -518,7 +518,7 @@ private[spark] class TaskSchedulerImpl(
               s"${taskSet.numTasks} tasks got resource offers. The resource offers may have " +
               "been blacklisted or cannot fulfill task locality requirements.")
 
-          // materialize the barrier coordinator.
+          // 落实障碍协调员。
           maybeInitBarrierCoordinator()
 
           // Update the taskInfos into all the barrier task properties.

@@ -24,7 +24,7 @@ import org.apache.spark.annotation.{Experimental, Since}
  * :: Experimental ::
  * Carries all task infos of a barrier task.
  *
- * @param address the IPv4 address(host:port) of the executor that a barrier task is running on
+ * @param address 运行屏障任务的执行程序的IPv4地址（主机：端口）
  */
 @Experimental
 @Since("2.4.0")

@@ -20,7 +20,7 @@ package org.apache.spark.scheduler
 import scala.collection.mutable.Buffer
 
 /**
- * Represents free resources available on an executor.
+ * 表示执行器上可用的免费资源。
  */
 private[spark]
 case class WorkerOffer(

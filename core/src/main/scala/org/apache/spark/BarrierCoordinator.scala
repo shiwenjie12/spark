@@ -80,12 +80,10 @@ private[spark] class BarrierCoordinator(
   }
 
   /**
-   * Provide the current state of a barrier() call. A state is created when a new stage attempt
-   * sends out a barrier() call, and recycled on stage completed.
+   * 提供barrier()调用的当前状态。当新的阶段尝试发出barrier()调用时会创建状态，并在完成阶段进行回收。
    *
-   * @param barrierId Identifier of the barrier stage that make a barrier() call.
-   * @param numTasks Number of tasks of the barrier stage, all barrier() calls from the stage shall
-   *                 collect `numTasks` requests to succeed.
+   * @param barrierId 进行barrier()调用的barrier阶段的标识符。
+   * @param numTasks 屏障阶段的任务数量，该阶段的所有barrier()调用均应收集成功的numTasks请求。
    */
   private class ContextBarrierState(
       val barrierId: ContextBarrierId,
@@ -125,17 +123,16 @@ private[spark] class BarrierCoordinator(
       }
     }
 
-    // Process the global sync request. The barrier() call succeed if collected enough requests
-    // within a configured time, otherwise fail all the pending requests.
+    // 处理全局同步请求。如果在配置的时间内收集了足够多的请求，则barrier()调用成功，否则将使所有未决请求失败。
     def handleRequest(requester: RpcCallContext, request: RequestToSync): Unit = synchronized {
       val taskId = request.taskAttemptId
       val epoch = request.barrierEpoch
 
-      // Require the number of tasks is correctly set from the BarrierTaskContext.
+      // 需要从BarrierTaskContext正确设置任务数。
       require(request.numTasks == numTasks, s"Number of tasks of $barrierId is " +
         s"${request.numTasks} from Task $taskId, previously it was $numTasks.")
 
-      // Check whether the epoch from the barrier tasks matches current barrierEpoch.
+      // 检查障碍任务的纪元是否与当前的barrierEpoch相匹配。
       logInfo(s"Current barrier epoch for $barrierId is $barrierEpoch.")
       if (epoch != barrierEpoch) {
         requester.sendFailure(new SparkException(s"The request to sync of $barrierId with " +
@@ -214,10 +211,9 @@ private[spark] class BarrierCoordinator(
 private[spark] sealed trait BarrierCoordinatorMessage extends Serializable
 
 /**
- * A global sync request message from BarrierTaskContext, by `barrier()` call. Each request is
- * identified by stageId + stageAttemptId + barrierEpoch.
+ * 来自BarrierTaskContext的全局同步请求消息，通过“ barrier()”调用。每个请求都由stageId + stageAttemptId + barrierEpoch标识。
  *
- * @param numTasks The number of global sync requests the BarrierCoordinator shall receive
+ * @param numTasks BarrierCoordinator应收到的全局同步请求数
  * @param stageId ID of current stage
  * @param stageAttemptId ID of current stage attempt
  * @param taskAttemptId Unique ID of current task

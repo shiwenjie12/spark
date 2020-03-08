@@ -25,12 +25,10 @@ import org.apache.spark.unsafe.array.LongArray;
 public class RadixSort {
 
   /**
-   * Sorts a given array of longs using least-significant-digit radix sort. This routine assumes
-   * you have extra space at the end of the array at least equal to the number of records. The
-   * sort is destructive and may relocate the data positioned within the array.
+   * 使用最低有效数字基数排序对给定的long数组进行排序。 此例程假定您在数组末尾的额外空间至少等于记录数。 排序是破坏性的，可能会重新定位数组中的数据。
    *
    * @param array array of long elements followed by at least that many empty slots.
-   * @param numRecords number of data records in the array.
+   * @param numRecords 数组中数据记录的数量。
    * @param startByteIndex the first byte (in range [0, 7]) to sort each long by, counting from the
    *                       least significant byte.
    * @param endByteIndex the last byte (in range [0, 7]) to sort each long by, counting from the
@@ -97,7 +95,7 @@ public class RadixSort {
   }
 
   /**
-   * Computes a value histogram for each byte in the given array.
+   * 为给定数组中的每个字节计算值直方图。
    *
    * @param array array to count records in.
    * @param numRecords number of data records in the array.
@@ -170,8 +168,7 @@ public class RadixSort {
   }
 
   /**
-   * Specialization of sort() for key-prefix arrays. In this type of array, each record consists
-   * of two longs, only the second of which is sorted on.
+   * 键前缀数组的sort（）的特殊化。 在这种类型的数组中，每个记录都由两个long组成，只有第二个long被排序。
    *
    * @param startIndex starting index in the array to sort from. This parameter is not supported
    *    in the plain sort() implementation.

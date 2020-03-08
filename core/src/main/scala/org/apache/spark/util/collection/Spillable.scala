@@ -129,7 +129,7 @@ private[spark] abstract class Spillable[C](taskMemoryManager: TaskMemoryManager)
   def memoryBytesSpilled: Long = _memoryBytesSpilled
 
   /**
-   * Release our memory back to the execution pool so that other tasks can grab it.
+   * 将我们的内存释放回执行池，以便其他任务可以抢占它。
    */
   def releaseMemory(): Unit = {
     freeMemory(myMemoryThreshold - initialMemoryThreshold)

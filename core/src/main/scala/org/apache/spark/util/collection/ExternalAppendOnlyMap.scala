@@ -37,13 +37,12 @@ import org.apache.spark.util.collection.ExternalAppendOnlyMap.HashComparator
 
 /**
  * :: DeveloperApi ::
- * An append-only map that spills sorted content to disk when there is insufficient space for it
- * to grow.
+ * 仅追加映射，当没有足够的空间增长时将排序的内容溢出到磁盘。
  *
- * This map takes two passes over the data:
+ * 此map对数据进行了两次传递：
  *
- *   (1) Values are merged into combiners, which are sorted and spilled to disk as necessary
- *   (2) Combiners are read from disk and merged together
+ *   （1）将值合并到合并器中，并根据需要对其进行排序并溢出到磁盘中
+ *   （2）从磁盘读取组合器并将其合并在一起
  *
  * The setting of the spill threshold faces the following trade-off: If the spill threshold is
  * too high, the in-memory map may occupy more memory than is available, resulting in OOM.

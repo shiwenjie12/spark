@@ -19,13 +19,12 @@ package org.apache.spark.util.collection.unsafe.sort;
 
 public final class RecordPointerAndKeyPrefix {
   /**
-   * A pointer to a record; see {@link org.apache.spark.memory.TaskMemoryManager} for a
-   * description of how these addresses are encoded.
+   * 支持对（记录指针，键前缀）对的数组进行排序。 在{@link UnsafeInMemorySorter}中使用。
    */
   public long recordPointer;
 
   /**
-   * A key prefix, for use in comparisons.
+   * 键前缀，用于比较。
    */
   public long keyPrefix;
 }

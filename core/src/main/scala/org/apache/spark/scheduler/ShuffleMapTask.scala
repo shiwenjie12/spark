@@ -46,8 +46,7 @@ import org.apache.spark.rdd.RDD
  * @param jobId id of the job this task belongs to
  * @param appId id of the app this task belongs to
  * @param appAttemptId attempt id of the app this task belongs to
- * @param isBarrier whether this task belongs to a barrier stage. Spark must launch all the tasks
- *                  at the same time for a barrier stage.
+ * @param isBarrier 此任务是否属于障碍阶段。 Spark必须在屏障阶段同时启动所有任务。
  */
 private[spark] class ShuffleMapTask(
     stageId: Int,

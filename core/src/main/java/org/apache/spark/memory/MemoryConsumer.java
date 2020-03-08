@@ -68,6 +68,7 @@ public abstract class MemoryConsumer {
   /**
    * Spill some data to disk to release memory, which will be called by TaskMemoryManager
    * when there is not enough memory for the task.
+   * 将一些数据溢出到磁盘上以释放内存，当任务没有足够的内存时，TaskMemoryManager将调用该数据。
    *
    * This should be implemented by subclass.
    *
@@ -75,8 +76,8 @@ public abstract class MemoryConsumer {
    *
    * Note: today, this only frees Tungsten-managed pages.
    *
-   * @param size the amount of memory should be released
-   * @param trigger the MemoryConsumer that trigger this spilling
+   * @param size 应该释放的内存量
+   * @param trigger 触发此溢出的MemoryConsumer
    * @return the amount of released memory in bytes
    */
   public abstract long spill(long size, MemoryConsumer trigger) throws IOException;

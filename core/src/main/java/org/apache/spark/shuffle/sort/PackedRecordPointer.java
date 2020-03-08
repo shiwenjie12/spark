@@ -18,7 +18,7 @@
 package org.apache.spark.shuffle.sort;
 
 /**
- * Wrapper around an 8-byte word that holds a 24-bit partition number and 40-bit record pointer.
+ * 围绕8字节字的包装器，其中包含24位分区号和40位记录指针。
  * <p>
  * Within the long, the data is laid out as follows:
  * <pre>

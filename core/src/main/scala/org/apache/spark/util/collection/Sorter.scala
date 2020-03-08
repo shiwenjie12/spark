@@ -20,7 +20,7 @@ package org.apache.spark.util.collection
 import java.util.Comparator
 
 /**
- * A simple wrapper over the Java implementation [[TimSort]].
+ * Java实现[[TimSort]]的简单包装。
  *
  * The Java implementation is package private, and hence it cannot be called outside package
  * org.apache.spark.util.collection. This is a simple wrapper of it that is available to spark.

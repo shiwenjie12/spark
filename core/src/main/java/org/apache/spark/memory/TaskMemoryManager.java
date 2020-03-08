@@ -127,8 +127,7 @@ public class TaskMemoryManager {
   }
 
   /**
-   * Acquire N bytes of memory for a consumer. If there is no enough memory, it will call
-   * spill() of consumers to release more memory.
+   * 为使用者获取N个字节的内存。 如果没有足够的内存，它将调用使用者的pill()释放更多的内存。
    *
    * @return number of bytes successfully granted (<= N).
    */
@@ -143,8 +142,7 @@ public class TaskMemoryManager {
     synchronized (this) {
       long got = memoryManager.acquireExecutionMemory(required, taskAttemptId, mode);
 
-      // Try to release memory from other consumers first, then we can reduce the frequency of
-      // spilling, avoid to have too many spilled files.
+      // 尝试先释放其他使用者的内存，然后我们可以减少溢出的频率，避免溢出的文件过多。
       if (got < required) {
         // Call spill() on other consumers to release memory
         // Sort the consumers according their memory usage. So we avoid spilling the same consumer
@@ -160,7 +158,7 @@ public class TaskMemoryManager {
           }
         }
         while (!sortedConsumers.isEmpty()) {
-          // Get the consumer using the least memory more than the remaining required memory.
+          // 让使用者使用最少的内存而不是剩余的所需内存。
           Map.Entry<Long, List<MemoryConsumer>> currentEntry =
             sortedConsumers.ceilingEntry(required - got);
           // No consumer has used memory more than the remaining required memory.
@@ -228,7 +226,7 @@ public class TaskMemoryManager {
   }
 
   /**
-   * Release N bytes of execution memory for a MemoryConsumer.
+   * 为MemoryConsumer释放N个执行内存字节。
    */
   public void releaseExecutionMemory(long size, MemoryConsumer consumer) {
     logger.debug("Task {} release {} from {}", taskAttemptId, Utils.bytesToString(size), consumer);

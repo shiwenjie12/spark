@@ -26,6 +26,7 @@ import org.apache.spark.unsafe.memory.MemoryBlock;
 import org.apache.spark.util.collection.Sorter;
 import org.apache.spark.util.collection.unsafe.sort.RadixSort;
 
+// 内存shuffle排序
 final class ShuffleInMemorySorter {
 
   private static final class SortComparator implements Comparator<PackedRecordPointer> {
@@ -33,7 +34,7 @@ final class ShuffleInMemorySorter {
     public int compare(PackedRecordPointer left, PackedRecordPointer right) {
       int leftId = left.getPartitionId();
       int rightId = right.getPartitionId();
-      return leftId < rightId ? -1 : (leftId > rightId ? 1 : 0);
+      return Integer.compare(leftId, rightId);
     }
   }
   private static final SortComparator SORT_COMPARATOR = new SortComparator();
@@ -51,8 +52,7 @@ final class ShuffleInMemorySorter {
   private LongArray array;
 
   /**
-   * Whether to use radix sort for sorting in-memory partition ids. Radix sort is much faster
-   * but requires additional memory to be reserved memory as pointers are added.
+   * 是否使用基数排序对内存分区ID进行排序。 基数排序要快得多，但是随着添加指针，需要额外的内存作为保留内存。
    */
   private final boolean useRadixSort;
 
@@ -62,7 +62,7 @@ final class ShuffleInMemorySorter {
   private int pos = 0;
 
   /**
-   * How many records could be inserted, because part of the array should be left for sorting.
+   * 可以插入多少条记录，因为应该保留数组的一部分进行排序。
    */
   private int usableCapacity = 0;
 
@@ -78,8 +78,7 @@ final class ShuffleInMemorySorter {
   }
 
   private int getUsableCapacity() {
-    // Radix sort requires same amount of used memory as buffer, Tim sort requires
-    // half of the used memory as buffer.
+     // 基数排序所需的已用内存量与缓冲区相同，tim 排序所需的已用内存量的一半用作缓冲区。
     return (int) (array.size() / (useRadixSort ? 2 : 1.5));
   }
 
@@ -178,7 +177,7 @@ final class ShuffleInMemorySorter {
   }
 
   /**
-   * Return an iterator over record pointers in sorted order.
+   * 以排序的顺序返回记录指针上的迭代器。
    */
   public ShuffleSorterIterator getSortedIterator() {
     int offset = 0;

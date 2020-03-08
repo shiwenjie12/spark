@@ -22,8 +22,7 @@ import org.apache.spark.unsafe.array.LongArray;
 import org.apache.spark.util.collection.SortDataFormat;
 
 /**
- * Supports sorting an array of (record pointer, key prefix) pairs.
- * Used in {@link UnsafeInMemorySorter}.
+ * 支持对（记录指针，键前缀）对的数组进行排序。 在{@link UnsafeInMemorySorter}中使用。
  * <p>
  * Within each long[] buffer, position {@code 2 * i} holds a pointer to the record at
  * index {@code i}, while position {@code 2 * i + 1} in the array holds an 8-byte key prefix.

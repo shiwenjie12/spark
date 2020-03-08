@@ -35,10 +35,9 @@ import org.apache.spark.storage.{BlockId, DiskBlockObjectWriter, ShuffleBlockId}
 import org.apache.spark.util.{Utils => TryUtils}
 
 /**
- * Sorts and potentially merges a number of key-value pairs of type (K, V) to produce key-combiner
- * pairs of type (K, C). Uses a Partitioner to first group the keys into partitions, and then
- * optionally sorts keys within each partition using a custom Comparator. Can output a single
- * partitioned file with a different byte range for each partition, suitable for shuffle fetches.
+ * 排序并可能合并许多类型为（K，V）的键-值对以产生类型为（K，C）的键组合器对。
+ * 使用分区程序首先将键分组到分区中，然后使用自定义比较器有选择地对每个分区中的键进行排序。
+ * 可以为每个分区输出具有不同字节范围的单个分区文件，适用于随机存取。
  *
  * If combining is disabled, the type C must equal V -- we'll cast the objects at the end.
  *

@@ -20,9 +20,7 @@ package org.apache.spark.util.collection
 import scala.reflect.ClassTag
 
 /**
- * Abstraction for sorting an arbitrary input buffer of data. This interface requires determining
- * the sort key for a given element index, as well as swapping elements and moving data from one
- * buffer to another.
+ * 用于对数据的任意输入缓冲区进行排序的抽象。 该接口需要确定给定元素索引的排序键，以及交换元素并将数据从一个缓冲区移动到另一个缓冲区。
  *
  * Example format: an array of numbers, where each element is also the key.
  * See [[KVArraySortDataFormat]] for a more exciting format.

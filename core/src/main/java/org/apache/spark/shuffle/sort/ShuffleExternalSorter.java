@@ -259,7 +259,7 @@ final class ShuffleExternalSorter extends MemoryConsumer {
   }
 
   /**
-   * Sort and spill the current records in response to memory pressure.
+   * 根据内存压力对当前记录进行排序和溢出。
    */
   @Override
   public long spill(long size, MemoryConsumer trigger) throws IOException {

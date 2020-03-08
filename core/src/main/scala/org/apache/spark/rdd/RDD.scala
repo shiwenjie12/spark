@@ -1911,15 +1911,12 @@ abstract class RDD[T: ClassTag](
   }
 
   /**
-   * Whether the RDD is in a barrier stage. Spark must launch all the tasks at the same time for a
-   * barrier stage.
+   * RDD是否处于障碍阶段。 Spark必须在屏障阶段同时启动所有任务。
    *
-   * An RDD is in a barrier stage, if at least one of its parent RDD(s), or itself, are mapped from
-   * an [[RDDBarrier]]. This function always returns false for a [[ShuffledRDD]], since a
-   * [[ShuffledRDD]] indicates start of a new stage.
+   * 如果从[[RDDBarrier]]映射了RDD的至少一个或多个RDD，则RDD处于屏障阶段。
+   * 对于[[ShuffledRDD]]，此函数始终返回false，因为[[ShuffledRDD]]指示新阶段的开始。
    *
-   * A [[MapPartitionsRDD]] can be transformed from an [[RDDBarrier]], under that case the
-   * [[MapPartitionsRDD]] shall be marked as barrier.
+   * 可以从[[RDDBarrier]]转换[[MapPartitionsRDD]]，在这种情况下，[[MapPartitionsRDD]]应标记为障碍。
    */
   private[spark] def isBarrier(): Boolean = isBarrier_
 

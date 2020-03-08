@@ -45,7 +45,7 @@ class BarrierTaskContext private[spark] (
 
   import BarrierTaskContext._
 
-  // Find the driver side RPCEndpointRef of the coordinator that handles all the barrier() calls.
+  // 找到处理所有barrier()调用的协调器的驱动程序端RPCEndpointRef。
   private val barrierCoordinator: RpcEndpointRef = {
     val env = SparkEnv.get
     RpcUtils.makeDriverRef("barrierSync", env.conf, env.rpcEnv)
@@ -68,8 +68,8 @@ class BarrierTaskContext private[spark] (
    * CAUTION! In a barrier stage, each task must have the same number of barrier() calls, in all
    * possible code branches. Otherwise, you may get the job hanging or a SparkException after
    * timeout. Some examples of '''misuses''' are listed below:
-   * 1. Only call barrier() function on a subset of all the tasks in the same barrier stage, it
-   * shall lead to timeout of the function call.
+   * 1. 仅在同一屏障阶段中所有任务的子集上调用barrier（）函数，否则将导致函数调用超时。
+   *
    * {{{
    *   rdd.barrier().mapPartitions { iter =>
    *       val context = BarrierTaskContext.get()
@@ -82,8 +82,8 @@ class BarrierTaskContext private[spark] (
    *   }
    * }}}
    *
-   * 2. Include barrier() function in a try-catch code block, this may lead to timeout of the
-   * second function call.
+   * 2. 在try-catch代码块中包含barrier()函数，这可能导致第二个函数调用超时。
+   *
    * {{{
    *   rdd.barrier().mapPartitions { iter =>
    *       val context = BarrierTaskContext.get()
@@ -126,9 +126,8 @@ class BarrierTaskContext private[spark] (
         // BarrierCoordinator on timeout, instead of RPCTimeoutException from the RPC framework.
         timeout = new RpcTimeout(365.days, "barrierTimeout"))
 
-      // Wait the RPC future to be completed, but every 1 second it will jump out waiting
-      // and check whether current spark task is killed. If killed, then throw
-      // a `TaskKilledException`, otherwise continue wait RPC until it completes.
+      // 等待RPC将来完成，但是每隔1秒它将跳出等待状态，并检查当前的spark任务是否被终止。
+      // 如果被杀死，则抛出TaskKilledException，否则继续等待RPC直到完成。
       try {
         while (!abortableRpcFuture.toFuture.isCompleted) {
           // wait RPC future for at most 1 second

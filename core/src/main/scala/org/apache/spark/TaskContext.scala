@@ -169,8 +169,7 @@ abstract class TaskContext extends Serializable {
   def taskAttemptId(): Long
 
   /**
-   * Get a local property set upstream in the driver, or null if it is missing. See also
-   * `org.apache.spark.SparkContext.setLocalProperty`.
+   * 获取驱动程序上游的本地属性集；如果缺少，则为null。另请参见org.apache.spark.SparkContext.setLocalProperty。
    */
   def getLocalProperty(key: String): String
 

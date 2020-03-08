@@ -47,11 +47,11 @@ private[spark] abstract class RpcEndpointRef(conf: SparkConf)
   def send(message: Any): Unit
 
   /**
-   * Send a message to the corresponding [[RpcEndpoint.receiveAndReply)]] and return a
-   * [[AbortableRpcFuture]] to receive the reply within the specified timeout.
-   * The [[AbortableRpcFuture]] instance wraps [[Future]] with additional `abort` method.
+   * 向相应的[[RpcEndpoint.receiveAndReply）]发送消息，并返回 [[AbortableRpcFuture]]以在指定的超时时间内接收答复。
+   * [[AbortableRpcFuture]]实例用附加的“ abort”方法包装[[Future]]。
    *
-   * This method only sends the message once and never retries.
+   *
+   * 此方法仅发送一次消息，而不会重试。
    */
   def askAbortable[T: ClassTag](message: Any, timeout: RpcTimeout): AbortableRpcFuture[T] = {
     throw new UnsupportedOperationException()
